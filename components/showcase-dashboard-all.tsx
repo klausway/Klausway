@@ -13,12 +13,10 @@ import {
   List,
   Plus,
   RefreshCw,
-  Sparkles,
   Users,
   type LucideIcon,
 } from "lucide-react";
 import { AnimatedCounter } from "./animation/animated-counter";
-import { RotatingDealNotification } from "./animation/rotating-notification";
 import { cn } from "@/lib/utils";
 import {
   EVENT_TYPE_COLORS,
@@ -646,32 +644,6 @@ export function ShowcaseDashboardAll() {
           </div>
 
           <EventLegends />
-        </div>
-
-        <RotatingDealNotification className="pointer-events-none absolute right-3 top-24 z-20 hidden w-56 xl:block animate-fade-up" />
-
-        <div
-          className="pointer-events-none absolute bottom-20 left-3 z-20 hidden w-56 rounded-xl border border-white/10 bg-card/95 p-3 shadow-2xl shadow-black/50 backdrop-blur xl:block animate-fade-up-stagger"
-          style={{ animationDelay: "800ms" }}
-        >
-          <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-white">
-              <Sparkles className="h-4 w-4 animate-bounce-subtle" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 text-xs font-medium">
-                AI Copilot suggests
-                <span className="typing-dots text-brand-300">
-                  <span />
-                  <span />
-                  <span />
-                </span>
-              </div>
-              <div className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
-                Follow up with Michael Carter — site visit today at 10 AM
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
