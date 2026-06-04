@@ -358,3 +358,17 @@ body {
 .vapi-btn {
   z-index: 9999 !important;
 }
+
+.rich-text-editor:empty::before {
+  content: attr(data-placeholder);
+  color: rgb(var(--muted-foreground));
+  pointer-events: none;
+}
+
+.rich-text-editor:focus {
+  outline: none;
+}
+
+.rich-text a {
+  color: rgb(165 180 252);
+}

@@ -8,6 +8,8 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   date: string;
+  coverImage?: string | null;
+  galleryImages?: string[];
 };
 
 export const blogPosts: BlogPost[] = [

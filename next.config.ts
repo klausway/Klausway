@@ -5,7 +5,8 @@ const basePath = isGitHubPages ? "/Klausway" : "";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  output: "export",
+  // Static export only for GitHub Pages; server mode enables app/api routes + DB.
+  ...(isGitHubPages ? { output: "export" as const } : {}),
   basePath,
   assetPrefix: basePath,
   trailingSlash: true,

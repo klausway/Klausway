@@ -4,25 +4,27 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./animation/reveal";
+import { ContentCardCover } from "./content-card-cover";
 import {
   portfolioCategories,
-  portfolioProjects,
   type PortfolioCategory,
+  type PortfolioProject,
 } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type PortfolioGridProps = {
+  projects: PortfolioProject[];
   hideHeader?: boolean;
 };
 
-export function PortfolioGrid({ hideHeader = false }: PortfolioGridProps) {
+export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridProps) {
   const [active, setActive] = useState<PortfolioCategory | "All">("All");
 
   const filtered =
     active === "All"
-      ? portfolioProjects
-      : portfolioProjects.filter((p) => p.categories.includes(active));
+      ? projects
+      : projects.filter((p) => p.categories.includes(active));
 
   return (
     <section className="relative py-24">
@@ -64,12 +66,19 @@ export function PortfolioGrid({ hideHeader = false }: PortfolioGridProps) {
               delay={((i % 3) * 100) as 0 | 100 | 200 | 300 | 400}
               className="scroll-mt-28 hover-lift group flex flex-col overflow-hidden rounded-2xl border border-white/5 bg-card/40 backdrop-blur transition-all hover:border-white/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20"
             >
-              <div
-                className={cn(
-                  "h-1.5 w-full bg-gradient-to-r",
-                  project.accent,
-                )}
+              <ContentCardCover
+                src={project.coverImage}
+                alt={project.title}
+                accent={project.accent}
               />
+              {!project.coverImage ? (
+                <div
+                  className={cn(
+                    "h-1 w-full bg-gradient-to-r",
+                    project.accent,
+                  )}
+                />
+              ) : null}
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-lg font-semibold tracking-tight">
                   {project.title}

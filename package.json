@@ -13,24 +13,42 @@
     "build:pages": "GITHUB_PAGES=true next build",
     "build:pages:clean": "npm run stop:dev && rm -rf .next out && GITHUB_PAGES=true next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "db:generate": "dotenv -e .env.local -- prisma generate",
+    "db:push": "dotenv -e .env.local -- prisma db push",
+    "db:seed": "dotenv -e .env.local -- tsx prisma/seed.ts",
+    "db:studio": "dotenv -e .env.local -- prisma studio"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1061.0",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "isomorphic-dompurify": "^3.15.0",
+    "jose": "^6.2.3",
+    "lucide-react": "^0.469.0",
     "next": "^15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.469.0",
-    "clsx": "^2.1.1",
+    "resend": "^6.12.4",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5",
-    "tailwindcss": "^3.4.17",
     "autoprefixer": "^10.4.20",
+    "dotenv-cli": "^11.0.0",
     "postcss": "^8.5.1",
-    "@tailwindcss/typography": "^0.5.16"
+    "prisma": "^6.19.3",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.4",
+    "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

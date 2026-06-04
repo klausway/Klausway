@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  excerpt        String
+  content        String   @db.Text
+  coverImage     String?
+  galleryImages  String[] @default([])
+  published      Boolean  @default(false)
+  date           DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model PortfolioProject {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  description    String
+  overview       String   @db.Text
+  coverImage     String?
+  galleryImages  String[] @default([])
+  categories     String[]
+  tags           String[]
+  accent         String   @default("from-cyan-400 to-blue-500")
+  keyFeatures    String[]
+  benefits       String[]
+  useCases       String[]
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model PageContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  title     String?
+  body      String   @db.Text
+  updatedAt DateTime @updatedAt
+}

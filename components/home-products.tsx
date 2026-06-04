@@ -8,7 +8,7 @@ import { AutomationVisual } from "./feature-visuals/automation-visual";
 import { AnalyticsVisual } from "./feature-visuals/analytics-visual";
 import { InboxVisual } from "./feature-visuals/inbox-visual";
 import { MobileVisual } from "./feature-visuals/mobile-visual";
-import { portfolioProjects } from "@/lib/portfolio";
+import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +25,11 @@ const visualMap: Record<string, ComponentType> = {
   "vehicle-tracking": MobileVisual,
 };
 
-export function HomeProducts() {
+type HomeProductsProps = {
+  projects: PortfolioProject[];
+};
+
+export function HomeProducts({ projects }: HomeProductsProps) {
   return (
     <section id="products" className="relative py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -46,7 +50,7 @@ export function HomeProducts() {
         </Reveal>
 
         <div className="mt-20 space-y-32">
-          {portfolioProjects.map((project, i) => (
+          {projects.map((project, i) => (
             <ProductRow key={project.id} project={project} reverse={i % 2 === 1} />
           ))}
         </div>
@@ -66,7 +70,7 @@ export function HomeProducts() {
 }
 
 type ProductRowProps = {
-  project: (typeof portfolioProjects)[number];
+  project: PortfolioProject;
   reverse: boolean;
 };
 

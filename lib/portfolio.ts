@@ -17,6 +17,8 @@ export type PortfolioProject = {
   keyFeatures: string[];
   benefits: string[];
   useCases: string[];
+  coverImage?: string | null;
+  galleryImages?: string[];
 };
 
 export const portfolioCategories: PortfolioCategory[] = [

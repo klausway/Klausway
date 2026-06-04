@@ -5,25 +5,41 @@ import { Reveal } from "./animation/reveal";
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const form = e.currentTarget;
     const data = new FormData(form);
-    const firstName = String(data.get("firstName") ?? "");
-    const lastName = String(data.get("lastName") ?? "");
-    const email = String(data.get("email") ?? "");
-    const message = String(data.get("message") ?? "");
 
-    const subject = encodeURIComponent(
-      `Contact from ${firstName} ${lastName}`.trim(),
-    );
-    const body = encodeURIComponent(
-      `Name: ${firstName} ${lastName}\nEmail: ${email}\n\n${message}`,
-    );
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: data.get("firstName"),
+          lastName: data.get("lastName"),
+          email: data.get("email"),
+          message: data.get("message"),
+        }),
+      });
 
-    window.location.href = `mailto:support@klausway.com?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+      if (!response.ok) {
+        const payload = (await response.json()) as { error?: string };
+        throw new Error(payload.error ?? "Failed to send message.");
+      }
+
+      setSubmitted(true);
+      form.reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send message.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -32,15 +48,8 @@ export function ContactForm() {
 
       {submitted ? (
         <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-          Your email client should open with your message ready to send. If it
-          did not open, email us directly at{" "}
-          <a
-            href="mailto:support@klausway.com"
-            className="text-brand-300 hover:text-brand-200"
-          >
-            support@klausway.com
-          </a>
-          .
+          Thank you — your message has been sent. We will get back to you at the
+          email address you provided.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -53,7 +62,8 @@ export function ContactForm() {
                 name="firstName"
                 type="text"
                 required
-                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30"
+                disabled={loading}
+                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
               />
             </label>
             <label className="block">
@@ -64,7 +74,8 @@ export function ContactForm() {
                 name="lastName"
                 type="text"
                 required
-                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30"
+                disabled={loading}
+                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
               />
             </label>
           </div>
@@ -76,7 +87,8 @@ export function ContactForm() {
               name="email"
               type="email"
               required
-              className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30"
+              disabled={loading}
+              className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
             />
           </label>
           <label className="block">
@@ -87,14 +99,21 @@ export function ContactForm() {
               name="message"
               required
               rows={5}
-              className="w-full resize-y rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30"
+              disabled={loading}
+              className="w-full resize-y rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
             />
           </label>
+          {error ? (
+            <p className="text-sm text-red-400" role="alert">
+              {error}
+            </p>
+          ) : null}
           <button
             type="submit"
-            className="inline-flex rounded-xl bg-white px-6 py-2.5 text-sm font-semibold text-black transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
+            disabled={loading}
+            className="inline-flex rounded-xl bg-white px-6 py-2.5 text-sm font-semibold text-black transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Submit
+            {loading ? "Sending…" : "Submit"}
           </button>
         </form>
       )}

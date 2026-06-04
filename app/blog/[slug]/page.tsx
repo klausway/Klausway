@@ -1,26 +1,28 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
-import { Reveal } from "@/components/animation/reveal";
+import { ContentDetailMedia } from "@/components/content-detail-media";
+import {
+  ContentDetailArticle,
+  ContentDetailMeta,
+  ContentDetailShell,
+} from "@/components/content-detail-shell";
+import { RichTextContent } from "@/components/rich-text-content";
 import { CtaSection } from "@/components/cta-section";
-import { blogPosts, getBlogPost } from "@/lib/blog";
+import { getBlogPost } from "@/lib/blog-data";
 import { routes } from "@/lib/navigation";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getBlogPost(slug);
   if (!post) return { title: "Post Not Found" };
   return {
     title: post.title,
@@ -30,39 +32,45 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = await getBlogPost(slug);
   if (!post) notFound();
+
+  const formattedDate = new Date(post.date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <>
       <PageHeader
+        wide
         eyebrow="Blog"
         title={post.title}
-        description={new Date(post.date).toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        })}
+        description={post.excerpt}
       />
 
-      <section className="relative pb-24">
-        <div className="mx-auto max-w-3xl px-6">
-          <Reveal>
-            <Link
-              href={routes.blog}
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Blog
-            </Link>
-            <div className="prose prose-invert mt-8 max-w-none">
-              <p className="text-lg leading-relaxed text-muted-foreground">
-                {post.excerpt}
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <ContentDetailShell backHref={routes.blog} backLabel="Back to Blog">
+        <ContentDetailMeta
+          items={[
+            { label: "Published", value: formattedDate },
+            { label: "Reading", value: "Article" },
+          ]}
+        />
+
+        <ContentDetailMedia
+          title={post.title}
+          coverImage={post.coverImage}
+          galleryImages={post.galleryImages}
+        />
+
+        <ContentDetailArticle>
+          <RichTextContent
+            html={post.content}
+            className="prose-lg md:prose-xl prose-p:leading-[1.85]"
+          />
+        </ContentDetailArticle>
+      </ContentDetailShell>
 
       <CtaSection />
     </>

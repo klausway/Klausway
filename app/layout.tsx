@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { ScrollProgressClient } from "@/components/scroll-progress-client";
-import { VapiChatWidget } from "@/components/vapi-chat-widget";
+import { LayoutShell } from "@/components/layout-shell";
 import { brand } from "@/lib/brand";
 import { assetPath } from "@/lib/asset-path";
 import "./globals.css";
@@ -51,11 +48,7 @@ export default function RootLayout({
         className="min-h-screen bg-background text-foreground antialiased"
         suppressHydrationWarning
       >
-        <ScrollProgressClient />
-        <Navbar />
-        <main className="relative">{children}</main>
-        <Footer />
-        <VapiChatWidget />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

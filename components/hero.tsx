@@ -2,11 +2,15 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, CircleCheck } from "lucide-react";
 import { ShowcaseDashboardAll } from "./showcase-dashboard-all";
 import { AmbientBackground } from "./animation/ambient-background";
-import { portfolioProjects } from "@/lib/portfolio";
+import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
-export function Hero() {
+type HeroProps = {
+  projects: PortfolioProject[];
+};
+
+export function Hero({ projects = [] }: HeroProps) {
   return (
     <section className="relative pt-32 pb-24">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -72,7 +76,7 @@ export function Hero() {
           >
             <span className="inline-flex items-center gap-1.5">
               <CircleCheck className="h-3.5 w-3.5 text-lime-400" />
-              {portfolioProjects.length} standalone systems
+              {projects.length} standalone systems
             </span>
             <span className="inline-flex items-center gap-1.5">
               <CircleCheck className="h-3.5 w-3.5 text-lime-400" />
@@ -93,16 +97,16 @@ export function Hero() {
           <ShowcaseDashboardAll />
         </div>
 
-        <ProductGridLinks />
+        <ProductGridLinks projects={projects} />
       </div>
     </section>
   );
 }
 
-function ProductGridLinks() {
+function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
   return (
     <div className="mx-auto mt-20 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-      {portfolioProjects.map((project, i) => (
+      {projects.map((project, i) => (
         <Link
           key={project.id}
           href={`#${project.id}`}

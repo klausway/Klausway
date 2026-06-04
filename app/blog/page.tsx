@@ -3,13 +3,18 @@ import { BlogGrid } from "@/components/blog-grid";
 import { PageHeader } from "@/components/page-header";
 import { CtaSection } from "@/components/cta-section";
 import { blogPageHeader } from "@/lib/blog";
+import { getPublishedBlogPosts } from "@/lib/blog-data";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog",
   description: blogPageHeader.subtitle,
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPublishedBlogPosts();
+
   return (
     <>
       <PageHeader
@@ -22,7 +27,7 @@ export default function BlogPage() {
         }
         description={blogPageHeader.subtitle}
       />
-      <BlogGrid hideHeader />
+      <BlogGrid posts={posts} hideHeader />
       <CtaSection />
     </>
   );
