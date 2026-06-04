@@ -3,49 +3,77 @@
 import {
   Briefcase,
   FileText,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { AdminRole } from "@/lib/admin-roles";
 
-export type AdminSection = "overview" | "blog" | "portfolio" | "users";
+export type AdminSection =
+  | "overview"
+  | "blog"
+  | "portfolio"
+  | "users"
+  | "account";
 
-const navItems: {
+const allNavItems: {
   id: AdminSection;
   label: string;
   description: string;
   icon: typeof FileText;
+  roles: AdminRole[] | "all";
 }[] = [
   {
     id: "overview",
     label: "Overview",
     description: "Stats & shortcuts",
     icon: LayoutDashboard,
+    roles: ["admin"],
   },
   {
     id: "blog",
     label: "Blog",
     description: "Posts & articles",
     icon: FileText,
+    roles: "all",
   },
   {
     id: "portfolio",
     label: "Portfolio",
     description: "Projects & case studies",
     icon: Briefcase,
+    roles: "all",
   },
   {
     id: "users",
-    label: "Admin users",
-    description: "Team access",
+    label: "Team",
+    description: "Roles & accounts",
     icon: Users,
+    roles: ["admin"],
+  },
+  {
+    id: "account",
+    label: "Account",
+    description: "Change your password",
+    icon: KeyRound,
+    roles: "all",
   },
 ];
+
+export function navItemsForRole(role: AdminRole) {
+  return allNavItems.filter(
+    (item) =>
+      item.roles === "all" ||
+      (Array.isArray(item.roles) && item.roles.includes(role)),
+  );
+}
 
 type AdminShellProps = {
   section: AdminSection;
   onSectionChange: (section: AdminSection) => void;
+  userRole: AdminRole;
   userName?: string;
   userEmail?: string;
   onLogout: () => void;
@@ -55,11 +83,15 @@ type AdminShellProps = {
 export function AdminShell({
   section,
   onSectionChange,
+  userRole,
   userName,
   userEmail,
   onLogout,
   children,
 }: AdminShellProps) {
+  const navItems = navItemsForRole(userRole);
+  const roleLabel = userRole === "admin" ? "Admin" : "Content";
+
   return (
     <div className="mx-auto flex min-h-screen max-w-[1800px]">
       <aside className="hidden w-72 shrink-0 flex-col border-r border-white/10 bg-[#0a0a14] p-6 lg:flex">
@@ -102,6 +134,9 @@ export function AdminShell({
         <div className="mt-auto rounded-xl border border-white/10 bg-white/[0.03] p-4">
           <p className="truncate text-sm font-medium">{userName}</p>
           <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-brand-300/80">
+            {roleLabel}
+          </p>
           <button
             type="button"
             onClick={onLogout}

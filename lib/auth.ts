@@ -1,10 +1,12 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
+import type { AdminRole } from "@/lib/admin-roles";
 
 export type AuthUser = {
   userId: string;
   email: string;
   name: string;
+  role: AdminRole;
 };
 
 function getJwtSecret() {
@@ -27,6 +29,7 @@ export async function createAuthToken(user: AuthUser) {
   return new SignJWT({
     email: user.email,
     name: user.name,
+    role: user.role,
   })
     .setProtectedHeader({ alg: "HS256" })
     .setSubject(user.userId)
@@ -40,10 +43,16 @@ export async function verifyAuthToken(token: string): Promise<AuthUser> {
   const userId = payload.sub;
   const email = payload.email;
   const name = payload.name;
+  const role = payload.role;
 
   if (typeof userId !== "string" || typeof email !== "string" || typeof name !== "string") {
     throw new Error("Invalid token payload");
   }
 
-  return { userId, email, name };
+  return {
+    userId,
+    email,
+    name,
+    role: role === "admin" || role === "content" ? role : "content",
+  };
 }

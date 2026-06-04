@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { roleFromDb } from "@/lib/admin-roles";
 import { db } from "@/lib/db";
 import { createAuthToken, verifyPassword } from "@/lib/auth";
 
@@ -25,16 +26,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
+    const role = roleFromDb(user.role);
+
     const token = await createAuthToken({
       userId: user.id,
       email: user.email,
       name: user.name,
+      role,
     });
 
     return NextResponse.json({
       ok: true,
       token,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: { id: user.id, name: user.name, email: user.email, role },
     });
   } catch (error) {
     console.error("[admin login]", error);

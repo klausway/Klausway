@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
+import {
+  forbiddenResponse,
+  toPublicUser,
+  unauthorizedResponse,
+  verifyFullAdmin,
+} from "@/lib/admin-auth";
+import { parseAdminRole, roleFromDb, roleToDb } from "@/lib/admin-roles";
 import { db } from "@/lib/db";
 import { createAuthToken, hashPassword } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  if (!(await verifyAdmin(request))) return unauthorizedResponse();
+  if (!(await verifyFullAdmin(request))) return forbiddenResponse();
 
   try {
     const users = await db.adminUser.findMany({
@@ -13,11 +19,12 @@ export async function GET(request: Request) {
         id: true,
         name: true,
         email: true,
+        role: true,
         createdAt: true,
       },
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(users.map((u) => toPublicUser(u)));
   } catch (error) {
     console.error("[admin users GET]", error);
     return NextResponse.json(
@@ -32,14 +39,17 @@ export async function POST(request: Request) {
     const adminCount = await db.adminUser.count();
     const isBootstrap = adminCount === 0;
 
-    if (!isBootstrap && !(await verifyAdmin(request))) {
-      return unauthorizedResponse();
+    if (!isBootstrap && !(await verifyFullAdmin(request))) {
+      return forbiddenResponse();
     }
 
     const body = await request.json();
     const name = String(body.name ?? "").trim();
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "");
+    const role = isBootstrap
+      ? "admin"
+      : parseAdminRole(body.role, "content");
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -68,21 +78,18 @@ export async function POST(request: Request) {
         name,
         email,
         passwordHash: await hashPassword(password),
+        role: roleToDb(role),
       },
     });
 
-    const responseUser = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-    };
+    const responseUser = toPublicUser(user);
 
     if (isBootstrap) {
       const token = await createAuthToken({
         userId: user.id,
         email: user.email,
         name: user.name,
+        role: roleFromDb(user.role),
       });
 
       return NextResponse.json(

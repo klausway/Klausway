@@ -14,7 +14,12 @@ import {
   Users,
 } from "lucide-react";
 import { AdminAuthPanel } from "@/components/admin/admin-auth-panel";
-import { AdminShell, type AdminSection } from "@/components/admin/admin-shell";
+import {
+  AdminShell,
+  navItemsForRole,
+  type AdminSection,
+} from "@/components/admin/admin-shell";
+import type { AdminRole } from "@/lib/admin-roles";
 import {
   BlogCardPreview,
   BlogDetailPreview,
@@ -32,6 +37,7 @@ import { ImageFields } from "@/components/admin/image-fields";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { portfolioCategories } from "@/lib/portfolio";
 import { apiUrl } from "@/lib/api-path";
+import { cn } from "@/lib/utils";
 import {
   AdminButton,
   AdminField,
@@ -43,7 +49,7 @@ import {
   Toast,
 } from "@/components/admin/admin-ui";
 
-type AdminUser = { name: string; email: string };
+type AdminUser = { id?: string; name: string; email: string; role: AdminRole };
 type AdminUserRecord = AdminUser & { id: string; createdAt: string };
 
 type BlogRecord = {
@@ -118,6 +124,14 @@ export function CmsDashboard() {
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
+  const [newUserRole, setNewUserRole] = useState<AdminRole>("content");
+  const [resetPasswordUserId, setResetPasswordUserId] = useState<string | null>(null);
+  const [resetPasswordValue, setResetPasswordValue] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const isFullAdmin = user?.role === "admin";
 
   const [editingBlog, setEditingBlog] = useState<(Partial<BlogRecord> & { originalSlug?: string }) | null>(null);
   const [editingPortfolio, setEditingPortfolio] = useState<(Partial<PortfolioRecord> & { originalSlug?: string }) | null>(null);
@@ -146,14 +160,22 @@ export function CmsDashboard() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  const loadUsers = useCallback(async (authToken: string) => {
+  const loadUsers = useCallback(async (authToken: string, asAdmin: boolean) => {
+    if (!asAdmin) {
+      setAdminUsers([]);
+      return;
+    }
     const res = await fetch(apiUrl("/api/admin/users"), { headers: authHeaders(authToken) });
+    if (res.status === 403) {
+      setAdminUsers([]);
+      return;
+    }
     if (!res.ok) return;
     const users = (await res.json()) as AdminUserRecord[];
     setAdminUsers(users.map((u) => ({ ...u, createdAt: u.createdAt.slice(0, 10) })));
   }, []);
 
-  const loadData = useCallback(async (authToken: string) => {
+  const loadData = useCallback(async (authToken: string, asAdmin: boolean) => {
     setLoading(true);
     try {
       const [blogRes, portfolioRes] = await Promise.all([
@@ -172,7 +194,7 @@ export function CmsDashboard() {
       const projects = (await portfolioRes.json()) as PortfolioRecord[];
       setBlogPosts(blogs.map((p) => ({ ...p, date: p.date.slice(0, 10), galleryImages: p.galleryImages ?? [] })));
       setPortfolioProjects(projects.map((p) => ({ ...p, galleryImages: p.galleryImages ?? [] })));
-      await loadUsers(authToken);
+      await loadUsers(authToken, asAdmin);
     } catch (e) {
       notify(e instanceof Error ? e.message : "Failed to load content.", "error");
     } finally {
@@ -180,7 +202,17 @@ export function CmsDashboard() {
     }
   }, [loadUsers]);
 
-  useEffect(() => { if (token) void loadData(token); }, [token, loadData]);
+  useEffect(() => {
+    if (token) void loadData(token, user?.role === "admin");
+  }, [token, user?.role, loadData]);
+
+  useEffect(() => {
+    if (!user) return;
+    const allowed = navItemsForRole(user.role).map((i) => i.id);
+    if (!allowed.includes(section)) {
+      setSection(user.role === "admin" ? "overview" : "blog");
+    }
+  }, [user, section]);
 
   const stats = useMemo(() => ({
     blogTotal: blogPosts.length,
@@ -240,13 +272,76 @@ export function CmsDashboard() {
     const res = await fetch(apiUrl("/api/admin/users"), {
       method: "POST",
       headers: authHeaders(token),
-      body: JSON.stringify({ name: newUserName, email: newUserEmail, password: newUserPassword }),
+      body: JSON.stringify({
+        name: newUserName,
+        email: newUserEmail,
+        password: newUserPassword,
+        role: newUserRole,
+      }),
     });
     const payload = (await res.json()) as { error?: string };
     if (!res.ok) { notify(payload.error ?? "Failed to create account.", "error"); return; }
     setNewUserName(""); setNewUserEmail(""); setNewUserPassword("");
-    notify("Admin account created.");
-    await loadUsers(token);
+    setNewUserRole("content");
+    notify("Team account created.");
+    await loadUsers(token, true);
+  }
+
+  async function updateUserRole(userId: string, role: AdminRole) {
+    if (!token) return;
+    const res = await fetch(apiUrl(`/api/admin/users/${userId}`), {
+      method: "PATCH",
+      headers: authHeaders(token),
+      body: JSON.stringify({ role }),
+    });
+    const payload = (await res.json()) as { error?: string };
+    if (!res.ok) {
+      notify(payload.error ?? "Failed to update role.", "error");
+      return;
+    }
+    notify("Role updated.");
+    await loadUsers(token, true);
+  }
+
+  async function resetUserPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token || !resetPasswordUserId) return;
+    const res = await fetch(apiUrl(`/api/admin/users/${resetPasswordUserId}`), {
+      method: "PUT",
+      headers: authHeaders(token),
+      body: JSON.stringify({ password: resetPasswordValue }),
+    });
+    const payload = (await res.json()) as { error?: string };
+    if (!res.ok) {
+      notify(payload.error ?? "Failed to reset password.", "error");
+      return;
+    }
+    setResetPasswordUserId(null);
+    setResetPasswordValue("");
+    notify("Password updated.");
+  }
+
+  async function changeOwnPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) return;
+    if (newPassword !== confirmPassword) {
+      notify("New passwords do not match.", "error");
+      return;
+    }
+    const res = await fetch(apiUrl("/api/admin/me/password"), {
+      method: "PUT",
+      headers: authHeaders(token),
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    const payload = (await res.json()) as { error?: string };
+    if (!res.ok) {
+      notify(payload.error ?? "Failed to change password.", "error");
+      return;
+    }
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    notify("Password changed.");
   }
 
   async function saveBlog(e: React.FormEvent) {
@@ -270,7 +365,7 @@ export function CmsDashboard() {
     if (!res.ok) { notify("Failed to save blog post.", "error"); return; }
     setEditingBlog(null);
     notify("Blog post saved.");
-    await loadData(token);
+    await loadData(token, isFullAdmin);
   }
 
   async function deleteBlog(slug: string) {
@@ -279,7 +374,7 @@ export function CmsDashboard() {
     if (!res.ok) { notify("Failed to delete.", "error"); return; }
     if (editingBlog?.slug === slug) setEditingBlog(null);
     notify("Blog post deleted.");
-    await loadData(token);
+    await loadData(token, isFullAdmin);
   }
 
   async function savePortfolio(e: React.FormEvent) {
@@ -296,7 +391,7 @@ export function CmsDashboard() {
     if (!res.ok) { notify("Failed to save portfolio project.", "error"); return; }
     setEditingPortfolio(null);
     notify("Portfolio project saved.");
-    await loadData(token);
+    await loadData(token, isFullAdmin);
   }
 
   async function deletePortfolio(slug: string) {
@@ -305,7 +400,7 @@ export function CmsDashboard() {
     if (!res.ok) { notify("Failed to delete.", "error"); return; }
     if (editingPortfolio?.slug === slug) setEditingPortfolio(null);
     notify("Portfolio project deleted.");
-    await loadData(token);
+    await loadData(token, isFullAdmin);
   }
 
   if (!token && needsBootstrap) {
@@ -331,12 +426,19 @@ export function CmsDashboard() {
 
   return (
     <>
-      <AdminShell section={section} onSectionChange={setSection} userName={user?.name} userEmail={user?.email} onLogout={logout}>
+      <AdminShell
+        section={section}
+        onSectionChange={setSection}
+        userRole={user?.role ?? "content"}
+        userName={user?.name}
+        userEmail={user?.email}
+        onLogout={logout}
+      >
         {loading && section === "overview" ? (
           <p className="text-sm text-muted-foreground">Loading content…</p>
         ) : null}
 
-        {section === "overview" && (
+        {section === "overview" && isFullAdmin && (
           <div className="space-y-8">
             <PageHeading
               title="Overview"
@@ -711,36 +813,150 @@ export function CmsDashboard() {
           )
         )}
 
-        {section === "users" && (
-          <div className="grid gap-8 xl:grid-cols-2">
-            <div>
-              <PageHeading title="Admin users" subtitle="People who can sign in and manage website content" />
-              <ul className="mt-6 space-y-3">
-                {adminUsers.map((admin) => (
-                  <li key={admin.id} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/15 text-sm font-semibold text-brand-200">
-                      {admin.name.charAt(0).toUpperCase()}
+        {section === "users" && isFullAdmin && (
+          <div className="space-y-8">
+            <PageHeading
+              title="Team"
+              subtitle="Assign Admin (full access) or Content (Blog & Portfolio only)"
+            />
+            <div className="grid gap-8 xl:grid-cols-2">
+              <ul className="space-y-3">
+                {adminUsers.map((member) => (
+                  <li
+                    key={member.id}
+                    className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                  >
+                    <div className="flex flex-wrap items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-sm font-semibold text-brand-200">
+                        {member.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium">{member.name}</p>
+                        <p className="text-sm text-muted-foreground">{member.email}</p>
+                        <p className="text-xs text-muted-foreground">Joined {member.createdAt}</p>
+                      </div>
+                      <RoleBadge role={member.role} />
                     </div>
-                    <div>
-                      <p className="font-medium">{admin.name}</p>
-                      <p className="text-sm text-muted-foreground">{admin.email}</p>
-                      <p className="text-xs text-muted-foreground">Joined {admin.createdAt}</p>
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      <label className="text-xs text-muted-foreground">Role</label>
+                      <select
+                        value={member.role}
+                        onChange={(e) =>
+                          void updateUserRole(member.id, e.target.value as AdminRole)
+                        }
+                        disabled={member.id === user?.id && member.role === "admin"}
+                        className="rounded-lg border border-white/10 bg-background/80 px-2 py-1 text-sm"
+                      >
+                        <option value="admin">Admin</option>
+                        <option value="content">Content</option>
+                      </select>
+                      <AdminButton
+                        type="button"
+                        variant="secondary"
+                        className="ml-auto text-xs"
+                        onClick={() => {
+                          setResetPasswordUserId(member.id);
+                          setResetPasswordValue("");
+                        }}
+                      >
+                        Reset password
+                      </AdminButton>
                     </div>
+                    {resetPasswordUserId === member.id ? (
+                      <form onSubmit={resetUserPassword} className="mt-4 space-y-3 border-t border-white/10 pt-4">
+                        <AdminField
+                          label="New password"
+                          type="password"
+                          value={resetPasswordValue}
+                          onChange={setResetPasswordValue}
+                          hint="Minimum 8 characters"
+                        />
+                        <div className="flex gap-2">
+                          <AdminButton type="submit" className="text-xs">
+                            Save password
+                          </AdminButton>
+                          <AdminButton
+                            type="button"
+                            variant="ghost"
+                            className="text-xs"
+                            onClick={() => setResetPasswordUserId(null)}
+                          >
+                            Cancel
+                          </AdminButton>
+                        </div>
+                      </form>
+                    ) : null}
                   </li>
                 ))}
               </ul>
+              <form onSubmit={createAdminUser} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                <h3 className="text-lg font-semibold">Create account</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Content editors can only manage Blog and Portfolio.
+                </p>
+                <div className="mt-6 space-y-4">
+                  <AdminField label="Full name" value={newUserName} onChange={setNewUserName} />
+                  <AdminField label="Email" type="email" value={newUserEmail} onChange={setNewUserEmail} />
+                  <AdminField
+                    label="Password"
+                    type="password"
+                    value={newUserPassword}
+                    onChange={setNewUserPassword}
+                    hint="Minimum 8 characters"
+                  />
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-medium">Role</span>
+                    <select
+                      value={newUserRole}
+                      onChange={(e) => setNewUserRole(e.target.value as AdminRole)}
+                      className="w-full rounded-xl border border-white/10 bg-background/80 px-3.5 py-2.5 text-sm"
+                    >
+                      <option value="content">Content — Blog & Portfolio</option>
+                      <option value="admin">Admin — full access</option>
+                    </select>
+                  </label>
+                  <AdminButton type="submit" className="w-full">
+                    <Plus className="h-4 w-4" />
+                    Create account
+                  </AdminButton>
+                </div>
+              </form>
             </div>
-            <form onSubmit={createAdminUser} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <h3 className="text-lg font-semibold">Create admin account</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Only signed-in admins can invite new team members.
-              </p>
-              <div className="mt-6 space-y-4">
-                <AdminField label="Full name" value={newUserName} onChange={setNewUserName} />
-                <AdminField label="Email" type="email" value={newUserEmail} onChange={setNewUserEmail} />
-                <AdminField label="Password" type="password" value={newUserPassword} onChange={setNewUserPassword} hint="Minimum 8 characters" />
-                <AdminButton type="submit" className="w-full"><Plus className="h-4 w-4" />Create account</AdminButton>
-              </div>
+          </div>
+        )}
+
+        {section === "account" && (
+          <div className="mx-auto max-w-md">
+            <PageHeading
+              title="Account"
+              subtitle="Change the password for your signed-in account"
+            />
+            <form
+              onSubmit={changeOwnPassword}
+              className="mt-6 space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+            >
+              <AdminField
+                label="Current password"
+                type="password"
+                value={currentPassword}
+                onChange={setCurrentPassword}
+              />
+              <AdminField
+                label="New password"
+                type="password"
+                value={newPassword}
+                onChange={setNewPassword}
+                hint="Minimum 8 characters"
+              />
+              <AdminField
+                label="Confirm new password"
+                type="password"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+              />
+              <AdminButton type="submit" className="w-full">
+                Update password
+              </AdminButton>
             </form>
           </div>
         )}
@@ -748,6 +964,21 @@ export function CmsDashboard() {
 
       {toast ? <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} /> : null}
     </>
+  );
+}
+
+function RoleBadge({ role }: { role: AdminRole }) {
+  return (
+    <span
+      className={cn(
+        "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+        role === "admin"
+          ? "bg-brand-400/15 text-brand-200"
+          : "bg-white/10 text-muted-foreground",
+      )}
+    >
+      {role === "admin" ? "Admin" : "Content"}
+    </span>
   );
 }
 

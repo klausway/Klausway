@@ -4,10 +4,13 @@ import { useState } from "react";
 import { Lock, ShieldCheck } from "lucide-react";
 import { AdminButton, AdminField } from "@/components/admin/admin-ui";
 import { apiUrl } from "@/lib/api-path";
+import type { AdminRole } from "@/lib/admin-roles";
 
 type AdminUser = {
+  id?: string;
   name: string;
   email: string;
+  role: AdminRole;
 };
 
 type AdminAuthPanelProps = {
