@@ -47,7 +47,7 @@ export function AutomationVisual() {
   return (
     <div className="relative">
       <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-violet-500/10 to-amber-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/60 p-5 backdrop-blur">
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 p-5 backdrop-blur">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <div className="text-sm font-medium">High-Value Lead Workflow</div>
@@ -55,7 +55,7 @@ export function AutomationVisual() {
               Active · 248 runs this month
             </div>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-medium text-lime-400">
+          <div className="flex items-center gap-1.5 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-medium text-lime-600">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 rounded-full bg-lime-400/60 animate-ping-soft" />
               <span className="relative h-1.5 w-1.5 rounded-full bg-lime-400" />
@@ -71,7 +71,7 @@ export function AutomationVisual() {
               className="animate-fade-up-stagger"
               style={{ animationDelay: `${100 + idx * 120}ms` }}
             >
-              <div className="group flex items-center gap-3 rounded-xl border border-white/5 bg-background/40 p-3 transition-all hover:-translate-y-px hover:border-white/15 hover:bg-background/60 hover:shadow-md">
+              <div className="group flex items-center gap-3 rounded-xl border border-black/[0.08] bg-background/40 p-3 transition-all hover:-translate-y-px hover:border-black/15 hover:bg-background/60 hover:shadow-md">
                 <div
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${node.color} text-white shadow-lg transition-transform group-hover:scale-110`}
                 >
@@ -80,7 +80,7 @@ export function AutomationVisual() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium">{node.title}</span>
-                    <span className="rounded bg-white/5 px-1.5 py-0.5 text-[8px] font-semibold tracking-wider text-muted-foreground">
+                    <span className="rounded bg-black/[0.03] px-1.5 py-0.5 text-[8px] font-semibold tracking-wider text-muted-foreground">
                       {node.badge}
                     </span>
                   </div>
@@ -99,7 +99,7 @@ export function AutomationVisual() {
           ))}
         </div>
 
-        <div className="mt-4 flex items-center justify-between rounded-lg border border-white/5 bg-background/30 p-3">
+        <div className="mt-4 flex items-center justify-between rounded-lg border border-black/[0.08] bg-background/30 p-3">
           <div className="flex items-center gap-2">
             <Zap className="h-3.5 w-3.5 text-amber-400" />
             <div className="text-[10px] text-muted-foreground">
@@ -107,7 +107,7 @@ export function AutomationVisual() {
               {" "}/ month
             </div>
           </div>
-          <button className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] text-foreground">
+          <button className="rounded-md border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px] text-foreground">
             View history
           </button>
         </div>

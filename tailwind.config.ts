@@ -39,9 +39,9 @@ export default {
       },
       backgroundImage: {
         "grid-pattern":
-          "linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px)",
+          "linear-gradient(to right, rgb(15 17 26 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, rgb(15 17 26 / 0.06) 1px, transparent 1px)",
         "radial-glow":
-          "radial-gradient(circle at 50% 0%, rgba(99,102,241,0.25), transparent 50%)",
+          "radial-gradient(circle at 50% 0%, rgba(99,102,241,0.16), transparent 50%)",
       },
       animation: {
         "fade-in": "fade-in 0.6s ease-out forwards",

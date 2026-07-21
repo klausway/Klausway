@@ -38,7 +38,7 @@ export function Features() {
     <section id="features" className="relative py-24">
       <div className="mx-auto max-w-7xl px-6">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted-foreground">
+          <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
             Our Services
           </div>
@@ -57,7 +57,7 @@ export function Features() {
           {pillars.map((pillar, pillarIdx) => (
             <div key={pillar.id} id={pillar.id} className="scroll-mt-28">
               <Reveal className="mb-16 max-w-2xl">
-                <div className="text-xs font-semibold uppercase tracking-wider text-brand-300">
+                <div className="text-xs font-semibold uppercase tracking-wider text-brand-600">
                   {pillar.label}
                 </div>
                 <h3 className="mt-2 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
@@ -102,15 +102,15 @@ function FeatureRow({
     >
       <Reveal as="div" delay={100}>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-brand-300">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-600">
             {app.eyebrow}
           </span>
           {app.badge === "New" ? (
-            <span className="rounded-full bg-lime-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lime-400">
+            <span className="rounded-full bg-lime-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lime-600">
               New
             </span>
           ) : (
-            <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+            <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-600">
               {app.badge}
             </span>
           )}
@@ -129,7 +129,7 @@ function FeatureRow({
               key={b}
               className="flex items-start gap-2.5 text-sm text-foreground/90"
             >
-              <span className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-300">
+              <span className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-600">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-2.5 w-2.5"
@@ -151,7 +151,7 @@ function FeatureRow({
 
         <Link
           href={`#${app.id}`}
-          className="group/learn mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-300 transition-colors hover:text-brand-200"
+          className="group/learn mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-600"
         >
           <span className="relative inline-flex items-center">
             Open solution

@@ -7,13 +7,13 @@ import { allProducts } from "@/lib/products";
 function Badge({ label }: { label: string }) {
   if (label === "New") {
     return (
-      <span className="rounded-full bg-lime-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lime-400">
+      <span className="rounded-full bg-lime-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lime-600">
         {label}
       </span>
     );
   }
   return (
-    <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+    <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-600">
       {label}
     </span>
   );
@@ -24,7 +24,7 @@ export function ProductsShowcase() {
     <section id="products" className="relative py-24">
       <div className="mx-auto max-w-7xl px-6">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted-foreground">
+          <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-lime-400" />
             All 9 portal apps
           </div>
@@ -46,7 +46,7 @@ export function ProductsShowcase() {
             >
               <Link
                 href={`${routes.apps}#${product.id}`}
-                className="hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-white/5 bg-card/40 transition-all hover:border-white/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20"
+                className="hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 transition-all hover:border-black/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/8"
               >
                 <div
                   className={`h-1 bg-gradient-to-r ${product.color} opacity-80 transition-opacity group-hover:opacity-100`}
@@ -64,7 +64,7 @@ export function ProductsShowcase() {
                   <div className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     {product.pillarLabel}
                   </div>
-                  <h3 className="mt-1 text-base font-semibold tracking-tight text-foreground transition-colors group-hover:text-brand-200">
+                  <h3 className="mt-1 text-base font-semibold tracking-tight text-foreground transition-colors group-hover:text-brand-600">
                     {product.eyebrow}
                   </h3>
                   <p className="mt-1 text-sm text-muted-foreground/90">
@@ -74,7 +74,7 @@ export function ProductsShowcase() {
                     {product.description}
                   </p>
 
-                  <div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-brand-300 transition-colors group-hover:text-brand-200">
+                  <div className="mt-4 flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors group-hover:text-brand-600">
                     View product
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -87,7 +87,7 @@ export function ProductsShowcase() {
         <Reveal className="mt-10 text-center">
           <Link
             href={routes.apps}
-            className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold backdrop-blur transition-all hover:border-white/20 hover:bg-white/10"
+            className="group inline-flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-6 py-3 text-sm font-semibold backdrop-blur transition-all hover:border-black/15 hover:bg-black/[0.06]"
           >
             Browse full app catalog
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

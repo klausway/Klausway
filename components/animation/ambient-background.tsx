@@ -6,9 +6,9 @@ export function AmbientBackground({ variant = "hero" }: { variant?: "hero" | "se
   if (variant === "hero") {
     return (
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-20 left-1/4 h-[28rem] w-[28rem] rounded-full bg-brand-500/25 blur-3xl animate-blob-1" />
-        <div className="absolute top-40 right-1/4 h-[26rem] w-[26rem] rounded-full bg-fuchsia-500/20 blur-3xl animate-blob-2" />
-        <div className="absolute top-80 left-1/3 h-[20rem] w-[20rem] rounded-full bg-cyan-500/15 blur-3xl animate-blob-3" />
+        <div className="absolute -top-20 left-1/4 h-[28rem] w-[28rem] rounded-full bg-brand-500/18 blur-3xl animate-blob-1" />
+        <div className="absolute top-40 right-1/4 h-[26rem] w-[26rem] rounded-full bg-fuchsia-500/14 blur-3xl animate-blob-2" />
+        <div className="absolute top-80 left-1/3 h-[20rem] w-[20rem] rounded-full bg-cyan-500/12 blur-3xl animate-blob-3" />
       </div>
     );
   }

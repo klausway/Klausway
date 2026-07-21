@@ -151,9 +151,9 @@ export function ImageFields({
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <div className="rounded-xl border border-black/10 bg-black/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
-          <ImageIcon className="h-4 w-4 text-brand-300" />
+          <ImageIcon className="h-4 w-4 text-brand-600" />
           <div>
             <p className="text-sm font-medium">Cover image</p>
             <p className="text-xs text-muted-foreground">
@@ -166,7 +166,7 @@ export function ImageFields({
             <DropZone
               disabled={uploadingCover}
               onFiles={(files) => void handleCoverUpload(files)}
-              className="relative overflow-hidden rounded-lg border border-white/10 transition-colors"
+              className="relative overflow-hidden rounded-lg border border-black/10 transition-colors"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -191,7 +191,7 @@ export function ImageFields({
                 onFiles={(files) => void handleCoverUpload(files)}
                 className="inline-flex flex-1"
               >
-                <label className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium hover:border-brand-400/40 hover:bg-brand-500/5">
+                <label className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-black/10 px-3 py-2 text-xs font-medium hover:border-brand-400/40 hover:bg-brand-500/5">
                   {uploadingCover ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   ) : (
@@ -213,7 +213,7 @@ export function ImageFields({
               <button
                 type="button"
                 onClick={() => onCoverChange(null)}
-                className="rounded-lg border border-white/10 px-3 py-2 text-xs font-medium hover:border-red-400/40 hover:bg-red-500/10"
+                className="rounded-lg border border-black/10 px-3 py-2 text-xs font-medium hover:border-red-400/40 hover:bg-red-500/10"
               >
                 Remove
               </button>
@@ -223,7 +223,7 @@ export function ImageFields({
           <DropZone
             disabled={uploadingCover}
             onFiles={(files) => void handleCoverUpload(files)}
-            className="rounded-lg border border-dashed border-white/15 transition-colors hover:border-brand-400/40 hover:bg-brand-500/5"
+            className="rounded-lg border border-dashed border-black/15 transition-colors hover:border-brand-400/40 hover:bg-brand-500/5"
           >
             <label className="flex cursor-pointer flex-col items-center justify-center px-4 py-10 text-center">
               {uploadingCover ? (
@@ -252,9 +252,9 @@ export function ImageFields({
         )}
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <div className="rounded-xl border border-black/10 bg-black/[0.02] p-4">
         <div className="mb-3 flex items-center gap-2">
-          <Images className="h-4 w-4 text-brand-300" />
+          <Images className="h-4 w-4 text-brand-600" />
           <div>
             <p className="text-sm font-medium">Gallery</p>
             <p className="text-xs text-muted-foreground">
@@ -267,7 +267,7 @@ export function ImageFields({
             {galleryImages.map((url, index) => (
               <div
                 key={`${url}-${index}`}
-                className="relative overflow-hidden rounded-lg border border-white/10"
+                className="relative overflow-hidden rounded-lg border border-black/10"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -299,7 +299,7 @@ export function ImageFields({
         <DropZone
           disabled={uploadingGallery}
           onFiles={(files) => void handleGalleryUpload(files)}
-          className="rounded-lg border border-dashed border-white/15 transition-colors hover:border-brand-400/40 hover:bg-brand-500/5"
+          className="rounded-lg border border-dashed border-black/15 transition-colors hover:border-brand-400/40 hover:bg-brand-500/5"
         >
           <label className="flex cursor-pointer items-center justify-center gap-2 px-4 py-3 text-sm text-muted-foreground">
             {uploadingGallery ? (

@@ -65,14 +65,14 @@ export function CrmDashboardPreview() {
     <div className="relative mx-auto max-w-6xl">
       <div className="absolute -inset-x-8 -inset-y-4 -z-10 rounded-3xl bg-gradient-to-b from-brand-500/10 via-fuchsia-500/5 to-transparent blur-2xl" />
 
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/80 shadow-2xl shadow-black/50 backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-4 py-3">
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/80 shadow-xl shadow-black/10 backdrop-blur-xl">
+        <div className="flex items-center justify-between border-b border-black/[0.08] bg-black/[0.02] px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="h-3 w-3 rounded-full bg-red-500/80" />
             <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
             <span className="h-3 w-3 rounded-full bg-green-500/80" />
           </div>
-          <div className="hidden items-center gap-2 rounded-md border border-white/5 bg-background/50 px-3 py-1 text-xs text-muted-foreground md:flex">
+          <div className="hidden items-center gap-2 rounded-md border border-black/[0.08] bg-background/50 px-3 py-1 text-xs text-muted-foreground md:flex">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 rounded-full bg-lime-400/60 animate-ping-soft" />
               <span className="relative h-1.5 w-1.5 rounded-full bg-lime-400" />
@@ -83,7 +83,7 @@ export function CrmDashboardPreview() {
         </div>
 
         <div className="flex">
-          <aside className="hidden w-56 shrink-0 border-r border-white/5 bg-background/40 p-4 lg:block">
+          <aside className="hidden w-56 shrink-0 border-r border-black/[0.08] bg-background/40 p-4 lg:block">
             <div className="mb-6 px-2">
               <Logo height={28} textClassName="text-sm" />
             </div>
@@ -101,13 +101,13 @@ export function CrmDashboardPreview() {
                   key={item.name}
                   className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs ${
                     item.active
-                      ? "bg-white/10 font-medium text-foreground"
+                      ? "bg-black/[0.05] font-medium text-foreground"
                       : "text-muted-foreground"
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${
-                      item.active ? "bg-brand-400" : "bg-white/20"
+                      item.active ? "bg-brand-400" : "bg-black/20"
                     }`}
                   />
                   {item.name}
@@ -115,8 +115,8 @@ export function CrmDashboardPreview() {
               ))}
             </nav>
 
-            <div className="mt-6 rounded-lg border border-white/5 bg-gradient-to-br from-brand-500/10 to-fuchsia-500/10 p-3">
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+            <div className="mt-6 rounded-lg border border-black/[0.08] bg-gradient-to-br from-brand-500/10 to-fuchsia-500/10 p-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-brand-600">
                 AI Copilot
               </div>
               <div className="mt-1 text-xs text-muted-foreground">
@@ -136,17 +136,17 @@ export function CrmDashboardPreview() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="hidden items-center gap-2 rounded-lg border border-white/5 bg-background/50 px-3 py-1.5 text-xs text-muted-foreground md:flex">
+                <div className="hidden items-center gap-2 rounded-lg border border-black/[0.08] bg-background/50 px-3 py-1.5 text-xs text-muted-foreground md:flex">
                   <Search className="h-3.5 w-3.5" />
                   Search...
                 </div>
-                <button className="rounded-lg border border-white/5 bg-background/50 p-2">
+                <button className="rounded-lg border border-black/[0.08] bg-background/50 p-2">
                   <Filter className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
-                <button className="rounded-lg border border-white/5 bg-background/50 p-2">
+                <button className="rounded-lg border border-black/[0.08] bg-background/50 p-2">
                   <Bell className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
-                <button className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-black">
+                <button className="flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-background">
                   <Plus className="h-3.5 w-3.5" />
                   New deal
                 </button>
@@ -195,7 +195,7 @@ export function CrmDashboardPreview() {
               {pipelineStages.map((stage, sIdx) => (
                 <div
                   key={stage.name}
-                  className="hover-lift rounded-lg border border-white/5 bg-background/40 p-3 hover:border-white/10 hover:bg-background/60 animate-fade-up-stagger"
+                  className="hover-lift rounded-lg border border-black/[0.08] bg-background/40 p-3 hover:border-black/10 hover:bg-background/60 animate-fade-up-stagger"
                   style={{ animationDelay: `${100 + sIdx * 100}ms` }}
                 >
                   <div className="mb-3 flex items-center justify-between">
@@ -203,7 +203,7 @@ export function CrmDashboardPreview() {
                       <span className={`h-2 w-2 rounded-full ${stage.color}`} />
                       <span className="text-xs font-medium">{stage.name}</span>
                     </div>
-                    <span className="rounded-full bg-white/5 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    <span className="rounded-full bg-black/[0.03] px-1.5 py-0.5 text-[10px] text-muted-foreground">
                       {stage.count}
                     </span>
                   </div>
@@ -228,7 +228,7 @@ export function CrmDashboardPreview() {
       <RotatingDealNotification className="absolute -right-6 top-32 hidden w-64 xl:block animate-fade-up" />
 
       <div
-        className="absolute -left-4 bottom-24 hidden w-64 rounded-xl border border-white/10 bg-card/95 p-3 shadow-2xl shadow-black/50 backdrop-blur xl:block animate-fade-up-stagger"
+        className="absolute -left-4 bottom-24 hidden w-64 rounded-xl border border-black/10 bg-card/95 p-3 shadow-xl shadow-black/10 backdrop-blur xl:block animate-fade-up-stagger"
         style={{ animationDelay: "600ms" }}
       >
         <div className="flex items-start gap-3">
@@ -238,7 +238,7 @@ export function CrmDashboardPreview() {
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-xs font-medium">
               AI Copilot suggests
-              <span className="typing-dots text-brand-300">
+              <span className="typing-dots text-brand-600">
                 <span />
                 <span />
                 <span />
@@ -268,9 +268,9 @@ function KpiCard({
   positive: boolean;
 }) {
   return (
-    <div className="hover-lift group rounded-lg border border-white/5 bg-background/40 p-3 hover:border-white/10 hover:bg-background/60 hover:shadow-lg hover:shadow-brand-500/5">
+    <div className="hover-lift group rounded-lg border border-black/[0.08] bg-background/40 p-3 hover:border-black/10 hover:bg-background/60 hover:shadow-lg hover:shadow-brand-500/5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-muted-foreground transition-colors group-hover:text-brand-300">
+        <div className="flex items-center gap-1.5 text-muted-foreground transition-colors group-hover:text-brand-600">
           {icon}
           <span className="text-[10px] uppercase tracking-wider">{label}</span>
         </div>
@@ -279,7 +279,7 @@ function KpiCard({
       <div className="mt-1.5 text-base font-semibold tabular-nums">{value}</div>
       <div
         className={`mt-0.5 text-[10px] ${
-          positive ? "text-lime-400" : "text-rose-400"
+          positive ? "text-lime-600" : "text-rose-400"
         }`}
       >
         {change} vs last month
@@ -299,7 +299,7 @@ function DealCard({
 }) {
   return (
     <div
-      className="cursor-grab rounded-md border border-white/5 bg-background/60 p-2 transition-all hover:-translate-y-0.5 hover:border-white/15 hover:bg-background/80 hover:shadow-md hover:shadow-black/20 animate-fade-up-stagger"
+      className="cursor-grab rounded-md border border-black/[0.08] bg-background/60 p-2 transition-all hover:-translate-y-0.5 hover:border-black/15 hover:bg-background/80 hover:shadow-md hover:shadow-black/8 animate-fade-up-stagger"
       style={{ animationDelay: `${250 + index * 40}ms` }}
     >
       <div className="text-[11px] font-medium leading-tight">{deal.name}</div>

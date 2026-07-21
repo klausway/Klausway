@@ -23,7 +23,7 @@ export function ContentDetailShell({
         <Reveal>
           <Link
             href={backHref}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-white/20 hover:bg-white/[0.06] hover:text-foreground"
+            className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-black/15 hover:bg-black/[0.05] hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             {backLabel}
@@ -45,9 +45,9 @@ export function ContentDetailMeta({
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+          className="rounded-2xl border border-black/10 bg-black/[0.03] px-4 py-3"
         >
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-300">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-600">
             {item.label}
           </p>
           <div className="mt-1 text-sm text-foreground/90">{item.value}</div>
@@ -68,7 +68,7 @@ export function ContentDetailArticle({
     <Reveal delay={200}>
       <article
         className={cn(
-          "mt-10 rounded-3xl border border-white/10 bg-card/30 p-8 backdrop-blur-sm md:p-10 lg:p-12",
+          "mt-10 rounded-3xl border border-black/10 bg-card/30 p-8 backdrop-blur-sm md:p-10 lg:p-12",
           className,
         )}
       >

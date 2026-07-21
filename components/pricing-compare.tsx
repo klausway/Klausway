@@ -24,7 +24,7 @@ export function PricingCompare({ hideHeader = false }: { hideHeader?: boolean })
           </Reveal>
         )}
 
-        <Reveal as="div" delay={100} className={`mx-auto max-w-5xl rounded-3xl border border-white/10 bg-card/50 p-1 backdrop-blur ${hideHeader ? "" : "mt-12"}`}>
+        <Reveal as="div" delay={100} className={`mx-auto max-w-5xl rounded-3xl border border-black/10 bg-card/50 p-1 backdrop-blur ${hideHeader ? "" : "mt-12"}`}>
           <div className="grid grid-cols-1 gap-1 rounded-[20px] md:grid-cols-2">
             <div className="rounded-2xl p-8 md:p-10">
               <div className="flex items-center gap-2">
@@ -59,10 +59,10 @@ export function PricingCompare({ hideHeader = false }: { hideHeader?: boolean })
             <div className="relative rounded-2xl bg-gradient-to-br from-brand-500/10 via-fuchsia-500/5 to-transparent p-8 md:p-10 transition-all hover:from-brand-500/15 hover:via-fuchsia-500/10">
               <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
               <div className="flex items-center justify-between">
-                <div className="rounded-lg bg-lime-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime-400">
+                <div className="rounded-lg bg-lime-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime-600">
                   Klaus Way Portal
                 </div>
-                <div className="inline-flex items-center gap-1 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-semibold text-lime-400">
+                <div className="inline-flex items-center gap-1 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-semibold text-lime-600">
                   <TrendingDown className="h-3 w-3" />
                   All connected
                 </div>
@@ -92,7 +92,7 @@ export function PricingCompare({ hideHeader = false }: { hideHeader?: boolean })
 
               <Link
                 href={routes.pricing}
-                className="group/cta mt-8 flex items-center justify-center gap-1.5 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-white/20"
+                className="group/cta mt-8 flex items-center justify-center gap-1.5 rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-brand-500/20"
               >
                 Request portal access
                 <svg
@@ -128,7 +128,7 @@ function CompareItem({
         className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${
           negative
             ? "bg-rose-500/20 text-rose-400"
-            : "bg-lime-500/20 text-lime-400"
+            : "bg-lime-500/20 text-lime-600"
         }`}
       >
         {negative ? (
@@ -214,10 +214,10 @@ function PricingPlans() {
         <Reveal
           key={plan.name}
           delay={(i * 100) as 0 | 100 | 200 | 300 | 400}
-          className={`hover-lift relative rounded-2xl border p-7 transition-colors hover:border-white/15 ${
+          className={`hover-lift relative rounded-2xl border p-7 transition-colors hover:border-black/15 ${
             plan.highlight
               ? "border-brand-400/40 bg-gradient-to-b from-brand-500/10 to-transparent shadow-xl shadow-brand-500/10 hover:shadow-2xl hover:shadow-brand-500/20"
-              : "border-white/5 bg-card/40 hover:bg-card/60"
+              : "border-black/[0.08] bg-card/40 hover:bg-card/60"
           }`}
         >
           {plan.highlight && (
@@ -244,8 +244,8 @@ function PricingPlans() {
             href={routes.contact}
             className={`mt-6 block rounded-lg px-4 py-2.5 text-center text-sm font-medium transition-all ${
               plan.highlight
-                ? "bg-white text-black hover:shadow-lg hover:shadow-white/20"
-                : "border border-white/10 bg-white/5 text-foreground hover:bg-white/10"
+                ? "bg-foreground text-background hover:shadow-lg hover:shadow-brand-500/20"
+                : "border border-black/10 bg-black/[0.03] text-foreground hover:bg-black/[0.06]"
             }`}
           >
             {plan.cta}
@@ -256,7 +256,7 @@ function PricingPlans() {
                 key={f}
                 className="flex items-start gap-2 text-muted-foreground"
               >
-                <span className="mt-1 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-300">
+                <span className="mt-1 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-brand-600">
                   <svg
                     viewBox="0 0 24 24"
                     className="h-2 w-2"

@@ -27,7 +27,7 @@ export function BlogGrid({ posts, hideHeader = false }: BlogGridProps) {
             <Reveal
               key={post.slug}
               delay={((i % 3) * 100) as 0 | 100 | 200}
-              className="hover-lift group flex flex-col overflow-hidden rounded-2xl border border-white/5 bg-card/40 backdrop-blur transition-all hover:border-white/10 hover:bg-card/60"
+              className="hover-lift group flex flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
             >
               <ContentCardCover
                 src={post.coverImage}
@@ -45,7 +45,7 @@ export function BlogGrid({ posts, hideHeader = false }: BlogGridProps) {
                     year: "numeric",
                   })}
                 </time>
-                <h3 className="mt-3 text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-brand-200">
+                <h3 className="mt-3 text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-brand-600">
                   {post.title}
                 </h3>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -53,7 +53,7 @@ export function BlogGrid({ posts, hideHeader = false }: BlogGridProps) {
                 </p>
                 <Link
                   href={`${routes.blog}/${post.slug}`}
-                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 transition-colors hover:text-brand-600"
                 >
                   Read More
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -40,17 +40,17 @@ function ShowcaseToast({
 }) {
   const iconClass =
     icon === "success"
-      ? "text-lime-400"
+      ? "text-lime-600"
       : icon === "warning"
         ? "text-amber-400"
         : icon === "error"
           ? "text-rose-400"
-          : "text-brand-300";
+          : "text-brand-600";
 
   return (
     <div
       role="status"
-      className="fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-xl border border-white/10 bg-card/95 px-4 py-3 shadow-2xl shadow-black/50 backdrop-blur-xl animate-fade-up"
+      className="fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-xl border border-black/10 bg-card/95 px-4 py-3 shadow-xl shadow-black/10 backdrop-blur-xl animate-fade-up"
     >
       <CheckCircle className={cn("mt-0.5 h-4 w-4 shrink-0", iconClass)} />
       <p className="flex-1 text-sm text-foreground">{message}</p>
@@ -81,7 +81,7 @@ function taskStatusStyle(status: string) {
     case "done":
       return "bg-lime-500/15 text-lime-300";
     default:
-      return "bg-white/10 text-muted-foreground";
+      return "bg-black/[0.05] text-muted-foreground";
   }
 }
 
@@ -110,8 +110,8 @@ function MetricCard({
       onClick={onClick}
       style={{ animationDelay: `${120 + index * 90}ms` }}
       className={cn(
-        "showcase-metric-card showcase-shine hover-lift group relative w-full overflow-hidden rounded-xl border border-white/5 bg-background/40 p-3 text-left",
-        "animate-fade-up-stagger transition-all hover:border-white/10 hover:bg-background/60 hover:shadow-lg hover:shadow-brand-500/10",
+        "showcase-metric-card showcase-shine hover-lift group relative w-full overflow-hidden rounded-xl border border-black/[0.08] bg-background/40 p-3 text-left",
+        "animate-fade-up-stagger transition-all hover:border-black/10 hover:bg-background/60 hover:shadow-lg hover:shadow-brand-500/10",
       )}
     >
       <div className="relative z-10 flex items-center gap-3">
@@ -124,7 +124,7 @@ function MetricCard({
           <Icon className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1 text-right">
-          <div className="text-xs text-muted-foreground transition-colors group-hover:text-brand-200">
+          <div className="text-xs text-muted-foreground transition-colors group-hover:text-brand-600">
             {label}
           </div>
           <div className="text-lg font-bold tabular-nums">{value}</div>
@@ -174,7 +174,7 @@ function ShowcaseDashboardMetrics({
         label="Set"
         icon={CalendarCheck}
         accent="bg-lime-500/15 text-lime-300"
-        iconColor="text-lime-400"
+        iconColor="text-lime-600"
         value={<AnimatedCounter to={METRICS.set} className="font-bold" />}
         footer="Today"
         onClick={() => onToast(`Set Today: ${METRICS.set}`, "info")}
@@ -226,16 +226,16 @@ function PersonalTasksPanel({
 
   return (
     <div
-      className="hover-lift flex h-full flex-col rounded-xl border border-white/5 bg-background/40 animate-fade-up-stagger"
+      className="hover-lift flex h-full flex-col rounded-xl border border-black/[0.08] bg-background/40 animate-fade-up-stagger"
       style={{ animationDelay: "400ms" }}
     >
-      <div className="flex items-center justify-between border-b border-white/5 px-3 py-2.5">
+      <div className="flex items-center justify-between border-b border-black/[0.08] px-3 py-2.5">
         <h3 className="text-sm font-semibold">Personal Tasks</h3>
         <div className="flex gap-1">
           <button
             type="button"
             onClick={() => onToast("Add task (demo)", "info")}
-            className="inline-flex items-center gap-1 rounded-md bg-brand-500/15 px-2 py-1 text-[10px] font-medium text-brand-300 transition-transform hover:scale-105"
+            className="inline-flex items-center gap-1 rounded-md bg-brand-500/15 px-2 py-1 text-[10px] font-medium text-brand-600 transition-transform hover:scale-105"
           >
             <Plus className="h-3 w-3" />
             New
@@ -243,7 +243,7 @@ function PersonalTasksPanel({
           <button
             type="button"
             onClick={() => onToast("Open Personal Tasks (demo)", "info")}
-            className="inline-flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1 rounded-md bg-black/[0.03] px-2 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <List className="h-3 w-3" />
             View All
@@ -251,7 +251,7 @@ function PersonalTasksPanel({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1 border-b border-white/5 p-2">
+      <div className="flex flex-wrap gap-1 border-b border-black/[0.08] p-2">
         {[
           { label: "All", value: null },
           { label: "TODO", value: "TODO" },
@@ -265,8 +265,8 @@ function PersonalTasksPanel({
             className={cn(
               "rounded-md px-2 py-0.5 text-[10px] font-medium transition-all",
               filterStatus === f.value
-                ? "scale-105 bg-brand-500/20 text-brand-200"
-                : "bg-white/5 text-muted-foreground hover:text-foreground",
+                ? "scale-105 bg-brand-500/20 text-brand-700"
+                : "bg-black/[0.03] text-muted-foreground hover:text-foreground",
             )}
           >
             {f.label}
@@ -281,10 +281,10 @@ function PersonalTasksPanel({
             type="button"
             onClick={() => onToast(`Edit task: ${task.task_name}`, "info")}
             style={{ animationDelay: `${480 + i * 60}ms` }}
-            className="hover-lift w-full cursor-grab rounded-lg border border-white/5 bg-background/60 p-2.5 text-left animate-fade-up-stagger transition-all hover:-translate-y-0.5 hover:border-white/15 hover:bg-background/80 hover:shadow-md hover:shadow-black/20"
+            className="hover-lift w-full cursor-grab rounded-lg border border-black/[0.08] bg-background/60 p-2.5 text-left animate-fade-up-stagger transition-all hover:-translate-y-0.5 hover:border-black/15 hover:bg-background/80 hover:shadow-md hover:shadow-black/8"
           >
             <div className="flex items-start justify-between gap-2">
-              <span className="truncate text-xs font-semibold text-brand-200">
+              <span className="truncate text-xs font-semibold text-brand-700">
                 {task.task_name}
               </span>
               <span
@@ -301,7 +301,7 @@ function PersonalTasksPanel({
             </p>
             <div className="mt-2 flex gap-3 text-[10px] text-muted-foreground">
               <span className="inline-flex items-center gap-1">
-                <Calendar className="h-3 w-3 text-brand-300" />
+                <Calendar className="h-3 w-3 text-brand-600" />
                 {new Date(task.date_start).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
@@ -355,34 +355,34 @@ function MiniCalendar({
 
   return (
     <div
-      className="hover-lift flex h-full flex-col rounded-xl border border-white/5 bg-background/40 animate-fade-up-stagger"
+      className="hover-lift flex h-full flex-col rounded-xl border border-black/[0.08] bg-background/40 animate-fade-up-stagger"
       style={{ animationDelay: "480ms" }}
     >
-      <div className="flex items-center justify-between border-b border-white/5 px-3 py-2.5">
+      <div className="flex items-center justify-between border-b border-black/[0.08] px-3 py-2.5">
         <h3 className="text-sm font-semibold">{monthLabel}</h3>
         <div className="flex gap-1">
           <button
             type="button"
-            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-black/[0.04] hover:text-foreground"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
-            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-black/[0.04] hover:text-foreground"
           >
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px border-b border-white/5 bg-white/5 px-2 py-1.5 text-center text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+      <div className="grid grid-cols-7 gap-px border-b border-black/[0.08] bg-black/[0.03] px-2 py-1.5 text-center text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
           <div key={d}>{d}</div>
         ))}
       </div>
 
-      <div className="grid flex-1 grid-cols-7 gap-px bg-white/5 p-2">
+      <div className="grid flex-1 grid-cols-7 gap-px bg-black/[0.03] p-2">
         {cells.map((day, i) => {
           const dayEvents = day ? eventsByDay.get(day) : undefined;
           const isToday = day === now.getDate();
@@ -401,7 +401,7 @@ function MiniCalendar({
                     className={cn(
                       "mb-0.5 text-right text-[10px]",
                       isToday
-                        ? "font-bold text-brand-300"
+                        ? "font-bold text-brand-600"
                         : "text-muted-foreground",
                     )}
                   >
@@ -456,10 +456,10 @@ function UpcomingEventsPanel({
 
   return (
     <div
-      className="hover-lift flex h-full flex-col rounded-xl border border-white/5 bg-background/40 animate-fade-up-stagger"
+      className="hover-lift flex h-full flex-col rounded-xl border border-black/[0.08] bg-background/40 animate-fade-up-stagger"
       style={{ animationDelay: "560ms" }}
     >
-      <div className="border-b border-white/5 px-3 py-2.5">
+      <div className="border-b border-black/[0.08] px-3 py-2.5">
         <h3 className="text-sm font-semibold">Upcoming events</h3>
       </div>
       <div className="max-h-[320px] flex-1 space-y-3 overflow-y-auto p-3">
@@ -472,11 +472,11 @@ function UpcomingEventsPanel({
               animationDelay: `${600 + i * 70}ms`,
               borderLeftColor: event.color,
             }}
-            className="hover-lift w-full rounded-lg border-l-[3px] bg-background/60 p-2 text-left animate-fade-up-stagger transition-all hover:-translate-y-0.5 hover:bg-background/80 hover:shadow-md hover:shadow-black/20"
+            className="hover-lift w-full rounded-lg border-l-[3px] bg-background/60 p-2 text-left animate-fade-up-stagger transition-all hover:-translate-y-0.5 hover:bg-background/80 hover:shadow-md hover:shadow-black/8"
           >
             <div className="flex gap-3">
               <div className="shrink-0 text-center">
-                <div className="text-lg font-bold text-brand-300">
+                <div className="text-lg font-bold text-brand-600">
                   {new Date(event.start).getDate()}
                 </div>
                 <div className="text-[10px] text-muted-foreground">
@@ -516,7 +516,7 @@ function UpcomingEventsPanel({
 function EventLegends() {
   return (
     <div
-      className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-white/5 pt-4 animate-fade-up-stagger"
+      className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-black/[0.08] pt-4 animate-fade-up-stagger"
       style={{ animationDelay: "720ms" }}
     >
       {Object.entries(EVENT_TYPE_NAMES).map(([typeId, typeName], i) => (
@@ -563,14 +563,14 @@ export function ShowcaseDashboardAll() {
     <div className="relative mx-auto max-w-6xl overflow-visible px-2 sm:px-4 xl:px-8">
       <div className="absolute -inset-x-8 -inset-y-4 -z-10 rounded-3xl bg-gradient-to-b from-brand-500/10 via-fuchsia-500/5 to-transparent blur-2xl" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-card/80 shadow-2xl shadow-black/50 backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.02] px-4 py-3">
+      <div className="relative overflow-hidden rounded-2xl border border-black/10 bg-card/80 shadow-xl shadow-black/10 backdrop-blur-xl">
+        <div className="flex items-center justify-between border-b border-black/[0.08] bg-black/[0.02] px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="h-3 w-3 rounded-full bg-red-500/80 transition-transform hover:scale-110" />
             <span className="h-3 w-3 rounded-full bg-yellow-500/80 transition-transform hover:scale-110" />
             <span className="h-3 w-3 rounded-full bg-green-500/80 transition-transform hover:scale-110" />
           </div>
-          <div className="hidden items-center gap-2 rounded-md border border-white/5 bg-background/50 px-3 py-1 text-xs text-muted-foreground md:flex">
+          <div className="hidden items-center gap-2 rounded-md border border-black/[0.08] bg-background/50 px-3 py-1 text-xs text-muted-foreground md:flex">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 rounded-full bg-lime-400/60 animate-ping-soft" />
               <span className="relative h-1.5 w-1.5 rounded-full bg-lime-400" />
@@ -595,7 +595,7 @@ export function ShowcaseDashboardAll() {
               <select
                 defaultValue="v1"
                 onChange={() => showToast("Version switch (demo)", "info")}
-                className="rounded-lg border border-white/10 bg-background/50 px-2 py-1.5 text-xs text-foreground transition-colors hover:border-white/20"
+                className="rounded-lg border border-black/10 bg-background/50 px-2 py-1.5 text-xs text-foreground transition-colors hover:border-black/15"
               >
                 <option value="v1">Version 1</option>
                 <option value="v2">Version 2</option>
@@ -604,7 +604,7 @@ export function ShowcaseDashboardAll() {
               <button
                 type="button"
                 onClick={handleSync}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-background/50 px-3 py-1.5 text-xs font-medium text-foreground transition-all hover:scale-[1.02] hover:bg-white/5"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-black/10 bg-background/50 px-3 py-1.5 text-xs font-medium text-foreground transition-all hover:scale-[1.02] hover:bg-black/[0.04]"
               >
                 <RefreshCw
                   className={cn(
@@ -617,7 +617,7 @@ export function ShowcaseDashboardAll() {
               <button
                 type="button"
                 onClick={() => showToast("Create Event (demo)", "info")}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-black transition-all hover:scale-[1.03] hover:shadow-lg hover:shadow-white/20"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-all hover:scale-[1.03] hover:shadow-lg hover:shadow-brand-500/20"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New Event

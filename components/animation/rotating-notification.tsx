@@ -36,11 +36,11 @@ export function RotatingDealNotification({
 
   return (
     <div
-      className={`${className ?? ""} rounded-xl border border-white/10 bg-card/95 p-3 shadow-2xl shadow-black/50 backdrop-blur`}
+      className={`${className ?? ""} rounded-xl border border-black/10 bg-card/95 p-3 shadow-xl shadow-black/10 backdrop-blur`}
     >
       <div className="flex items-start gap-3">
         <div className="relative">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-500/20 text-lime-400">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-500/20 text-lime-600">
             <TrendingUp className="h-4 w-4" />
           </div>
           <span className="absolute inset-0 rounded-full bg-lime-400/40 animate-ping-soft" />

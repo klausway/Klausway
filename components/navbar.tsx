@@ -38,7 +38,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "border-b border-white/5 bg-background/80 backdrop-blur-xl"
+          ? "border-b border-black/[0.08] bg-background/80 backdrop-blur-xl"
           : "bg-transparent",
       )}
     >
@@ -53,7 +53,7 @@ export function Navbar() {
               key={item.label}
               href={item.href}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/5 hover:text-foreground",
+                "rounded-lg px-3 py-2 text-sm transition-colors hover:bg-black/[0.04] hover:text-foreground",
                 isActive(item.href)
                   ? "text-foreground"
                   : "text-muted-foreground",
@@ -67,7 +67,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             href={routes.contact}
-            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
+            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:bg-foreground/90 hover:shadow-lg hover:shadow-brand-500/15"
           >
             Contact Us
             <svg
@@ -100,14 +100,14 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-white/5 bg-background/95 backdrop-blur-xl lg:hidden">
+        <div className="border-t border-black/[0.08] bg-background/95 backdrop-blur-xl lg:hidden">
           <nav className="flex flex-col gap-1 px-6 py-4">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "block rounded-lg px-3 py-2.5 text-sm hover:bg-white/5 hover:text-foreground",
+                  "block rounded-lg px-3 py-2.5 text-sm hover:bg-black/[0.04] hover:text-foreground",
                   isActive(item.href)
                     ? "text-foreground"
                     : "text-muted-foreground",
@@ -116,10 +116,10 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-white/5 pt-4">
+            <div className="mt-2 flex flex-col gap-2 border-t border-black/[0.08] pt-4">
               <Link
                 href={routes.contact}
-                className="rounded-lg bg-white px-3 py-2.5 text-center text-sm font-medium text-black"
+                className="rounded-lg bg-foreground px-3 py-2.5 text-center text-sm font-medium text-background"
               >
                 Contact Us
               </Link>

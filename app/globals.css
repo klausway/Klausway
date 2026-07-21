@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: 9 9 16;
-  --foreground: 240 242 248;
-  --muted: 24 24 35;
-  --muted-foreground: 156 163 175;
-  --border: 39 39 55;
-  --card: 17 17 27;
+  --background: 250 250 252;
+  --foreground: 15 17 26;
+  --muted: 241 243 248;
+  --muted-foreground: 100 108 125;
+  --border: 226 229 237;
+  --card: 255 255 255;
   --accent: 99 102 241;
 
   --font-sans: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
@@ -21,6 +21,7 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
@@ -33,28 +34,28 @@ body {
 
 @layer utilities {
   .text-gradient-brand {
-    background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f0abfc 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
   .text-gradient-lime {
-    background: linear-gradient(135deg, #a3e635 0%, #4ade80 100%);
+    background: linear-gradient(135deg, #65a30d 0%, #16a34a 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
   .bg-glass {
-    background: rgba(17, 17, 27, 0.5);
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
   .border-glow {
-    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2),
-      0 0 40px -10px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18),
+      0 0 40px -10px rgba(99, 102, 241, 0.28);
   }
 
   .mask-fade-bottom {
@@ -78,23 +79,23 @@ body {
 
 /* Custom selection */
 ::selection {
-  background-color: rgba(129, 140, 248, 0.3);
-  color: white;
+  background-color: rgba(99, 102, 241, 0.22);
+  color: rgb(15, 17, 26);
 }
 
 /* Smooth gradient backgrounds */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 800px 500px at 50% -10%, rgba(99, 102, 241, 0.25), transparent 60%),
-    radial-gradient(ellipse 600px 400px at 10% 20%, rgba(168, 85, 247, 0.15), transparent 50%),
-    radial-gradient(ellipse 600px 400px at 90% 30%, rgba(236, 72, 153, 0.1), transparent 50%);
+    radial-gradient(ellipse 800px 500px at 50% -10%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 10% 20%, rgba(168, 85, 247, 0.1), transparent 50%),
+    radial-gradient(ellipse 600px 400px at 90% 30%, rgba(236, 72, 153, 0.08), transparent 50%);
 }
 
 .section-divider {
   background: linear-gradient(
     to right,
     transparent,
-    rgba(99, 102, 241, 0.3),
+    rgba(99, 102, 241, 0.25),
     transparent
   );
   height: 1px;
@@ -103,7 +104,7 @@ body {
 
 /* Animated dot pattern */
 .dot-pattern {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(15, 17, 26, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -225,7 +226,7 @@ body {
   content: "▍";
   display: inline-block;
   margin-left: 2px;
-  color: rgb(129 140 248);
+  color: rgb(79 70 229);
   animation: caret-blink 1s steps(1) infinite;
 }
 @keyframes caret-blink {
@@ -256,10 +257,10 @@ body {
 .text-gradient-animated {
   background: linear-gradient(
     120deg,
-    #818cf8,
-    #c084fc,
-    #f0abfc,
-    #818cf8
+    #4f46e5,
+    #9333ea,
+    #db2777,
+    #4f46e5
   );
   background-size: 300% 100%;
   -webkit-background-clip: text;
@@ -326,7 +327,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(15, 17, 26, 0.06),
     transparent
   );
   transform: skewX(-12deg);
@@ -370,5 +371,5 @@ body {
 }
 
 .rich-text a {
-  color: rgb(165 180 252);
+  color: rgb(79 70 229);
 }

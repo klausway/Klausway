@@ -41,10 +41,10 @@ export function InboxVisual() {
   return (
     <div className="relative">
       <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/60 backdrop-blur">
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 backdrop-blur">
         <div className="grid grid-cols-5">
-          <div className="col-span-2 border-r border-white/5">
-            <div className="border-b border-white/5 p-3">
+          <div className="col-span-2 border-r border-black/[0.08]">
+            <div className="border-b border-black/[0.08] p-3">
               <div className="text-xs font-semibold">Unified Inbox</div>
               <div className="mt-0.5 text-[10px] text-muted-foreground">
                 4 new messages
@@ -54,8 +54,8 @@ export function InboxVisual() {
               {conversations.map((c, i) => (
                 <div
                   key={i}
-                  className={`flex cursor-pointer items-start gap-2 border-b border-white/5 p-3 transition-colors ${
-                    c.active ? "bg-white/5" : "hover:bg-white/[0.02]"
+                  className={`flex cursor-pointer items-start gap-2 border-b border-black/[0.08] p-3 transition-colors ${
+                    c.active ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
                   }`}
                 >
                   <div className="relative">
@@ -95,7 +95,7 @@ export function InboxVisual() {
           </div>
 
           <div className="col-span-3 flex flex-col">
-            <div className="flex items-center justify-between border-b border-white/5 p-3">
+            <div className="flex items-center justify-between border-b border-black/[0.08] p-3">
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-[9px] font-semibold text-white">
@@ -111,14 +111,14 @@ export function InboxVisual() {
                   </div>
                 </div>
               </div>
-              <button className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px]">
+              <button className="rounded-md border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px]">
                 View deal
               </button>
             </div>
 
             <div className="flex-1 space-y-2 p-3">
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/5 px-3 py-2 text-[10px]">
+                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-black/[0.03] px-3 py-2 text-[10px]">
                   Hi! Just reviewing the package you sent over.
                 </div>
               </div>
@@ -129,13 +129,13 @@ export function InboxVisual() {
                 </div>
               </div>
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-white/5 px-3 py-2 text-[10px]">
+                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-black/[0.03] px-3 py-2 text-[10px]">
                   Can you send over a revised quote for the enterprise tier?
                 </div>
               </div>
 
               <div className="rounded-lg border border-dashed border-brand-400/30 bg-brand-500/5 p-2">
-                <div className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-brand-300">
+                <div className="flex items-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-brand-600">
                   AI suggested reply
                   <span className="typing-dots">
                     <span />
@@ -155,8 +155,8 @@ export function InboxVisual() {
               </div>
             </div>
 
-            <div className="border-t border-white/5 p-2">
-              <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-background/60 px-3 py-1.5">
+            <div className="border-t border-black/[0.08] p-2">
+              <div className="flex items-center gap-2 rounded-lg border border-black/10 bg-background/60 px-3 py-1.5">
                 <Mail className="h-3 w-3 text-muted-foreground" />
                 <input
                   readOnly

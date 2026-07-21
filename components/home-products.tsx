@@ -34,7 +34,7 @@ export function HomeProducts({ projects }: HomeProductsProps) {
     <section id="products" className="relative py-24">
       <div className="mx-auto max-w-7xl px-6">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted-foreground">
+          <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
             Our Products
           </div>
@@ -58,7 +58,7 @@ export function HomeProducts({ projects }: HomeProductsProps) {
         <Reveal className="mt-20 text-center">
           <Link
             href={routes.portfolio}
-            className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold backdrop-blur transition-all hover:border-white/20 hover:bg-white/10"
+            className="group inline-flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-6 py-3 text-sm font-semibold backdrop-blur transition-all hover:border-black/15 hover:bg-black/[0.06]"
           >
             View full portfolio
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -91,7 +91,7 @@ function ProductRow({ project, reverse }: ProductRowProps) {
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+              className="rounded-full border border-black/10 bg-black/[0.03] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
             >
               {tag}
             </span>
@@ -109,14 +109,14 @@ function ProductRow({ project, reverse }: ProductRowProps) {
               key={feature}
               className="flex items-start gap-2.5 text-sm text-foreground/90"
             >
-              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-lime-400" />
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-lime-600" />
               {feature}
             </li>
           ))}
         </ul>
         <Link
           href={`${routes.portfolio}/${project.id}`}
-          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-300 transition-colors hover:text-brand-200"
+          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-600"
         >
           Learn more about {project.title}
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />

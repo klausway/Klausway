@@ -40,26 +40,26 @@ export function PreviewPanel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a12] shadow-2xl shadow-black/40">
-      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-card shadow-xl shadow-black/10">
+      <div className="flex items-center gap-2 border-b border-black/10 bg-muted/50 px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-lime-400/80" />
-        <span className="ml-2 flex-1 truncate rounded-md bg-black/30 px-3 py-1 text-[10px] text-muted-foreground">
+        <span className="ml-2 flex-1 truncate rounded-md bg-black/[0.05] px-3 py-1 text-[10px] text-muted-foreground">
           klausway.com preview
         </span>
       </div>
 
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-black/10 px-4 py-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-brand-300">
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
             Live preview
           </p>
           <p className="text-[11px] text-muted-foreground">
             Updates as you edit
           </p>
         </div>
-        <div className="flex rounded-lg border border-white/10 bg-black/20 p-0.5">
+        <div className="flex rounded-lg border border-black/10 bg-black/20 p-0.5">
           {(["card", "detail"] as const).map((item) => (
             <button
               key={item}
@@ -68,7 +68,7 @@ export function PreviewPanel({
               className={cn(
                 "rounded-md px-3 py-1.5 text-[11px] font-medium transition-colors",
                 mode === item
-                  ? "bg-brand-500/25 text-brand-100"
+                  ? "bg-brand-500/15 text-brand-800"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -78,7 +78,7 @@ export function PreviewPanel({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-[#090912] p-4">{children}</div>
+      <div className="flex-1 overflow-y-auto bg-muted/30 p-4">{children}</div>
     </div>
   );
 }
@@ -89,7 +89,7 @@ export function BlogCardPreview({ data }: { data: BlogPreviewData }) {
   const date = data.date || new Date().toISOString().slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-white/5 bg-card/40">
+    <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40">
       <ContentCardCover
         src={data.coverImage}
         alt={title}
@@ -105,7 +105,7 @@ export function BlogCardPreview({ data }: { data: BlogPreviewData }) {
         </time>
         <h3 className="mt-2 text-lg font-semibold leading-snug">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{excerpt}</p>
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300">
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600">
           Read More
           <ArrowRight className="h-4 w-4" />
         </span>
@@ -121,7 +121,7 @@ export function BlogDetailPreview({ data }: { data: BlogPreviewData }) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <p className="text-xs font-medium uppercase tracking-wider text-brand-300">Blog</p>
+      <p className="text-xs font-medium uppercase tracking-wider text-brand-600">Blog</p>
       <h1 className="mt-2 text-2xl font-semibold leading-tight">{title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {new Date(date).toLocaleDateString("en-US", {
@@ -147,7 +147,7 @@ export function PortfolioCardPreview({ data }: { data: PortfolioPreviewData }) {
   const tags = data.tags?.length ? data.tags : ["Tag"];
 
   return (
-    <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-white/5 bg-card/40">
+    <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40">
       <ContentCardCover src={data.coverImage} alt={title} accent={accent} />
       {!data.coverImage ? (
         <div className={cn("h-1 w-full bg-gradient-to-r", accent)} />
@@ -159,13 +159,13 @@ export function PortfolioCardPreview({ data }: { data: PortfolioPreviewData }) {
           {tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              className="rounded-md bg-black/[0.03] px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
             >
               {tag}
             </span>
           ))}
         </div>
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-300">
+        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600">
           View Project
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
@@ -186,7 +186,7 @@ export function PortfolioDetailPreview({ data }: { data: PortfolioPreviewData })
 
   return (
     <div className="mx-auto max-w-2xl">
-      <p className="text-xs font-medium uppercase tracking-wider text-brand-300">Portfolio</p>
+      <p className="text-xs font-medium uppercase tracking-wider text-brand-600">Portfolio</p>
       <h1 className="mt-2 text-2xl font-semibold">{title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{description}</p>
 
@@ -204,7 +204,7 @@ export function PortfolioDetailPreview({ data }: { data: PortfolioPreviewData })
         {tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted-foreground"
+            className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground"
           >
             {tag}
           </span>
@@ -213,12 +213,12 @@ export function PortfolioDetailPreview({ data }: { data: PortfolioPreviewData })
 
       <RichTextContent html={overview} className="mt-4" />
 
-      <div className="mt-6 rounded-2xl border border-white/5 bg-card/40 p-4">
+      <div className="mt-6 rounded-2xl border border-black/[0.08] bg-card/40 p-4">
         <h2 className="text-sm font-semibold">Key Features</h2>
         <ul className="mt-3 space-y-2">
           {keyFeatures.map((item) => (
             <li key={item} className="flex items-start gap-2 text-sm">
-              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-300" />
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
               {item}
             </li>
           ))}

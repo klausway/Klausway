@@ -22,7 +22,7 @@ export function Hero({ projects = [] }: HeroProps) {
         <div className="mx-auto max-w-4xl text-center">
           <Link
             href={routes.portfolio}
-            className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 hover:text-foreground animate-fade-up"
+            className="group inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur transition-all hover:scale-[1.02] hover:border-black/15 hover:bg-black/[0.06] hover:text-foreground animate-fade-up"
           >
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 rounded-full bg-lime-400/70 animate-ping-soft" />
@@ -56,16 +56,16 @@ export function Hero({ projects = [] }: HeroProps) {
           >
             <Link
               href={routes.contact}
-              className="group inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-black transition-all hover:scale-[1.03] hover:shadow-2xl hover:shadow-white/20 active:scale-100"
+              className="group inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3.5 text-sm font-semibold text-background transition-all hover:scale-[1.03] hover:shadow-2xl hover:shadow-brand-500/20 active:scale-100"
             >
               Get a Free Consultation
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="#products"
-              className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition-all hover:border-white/20 hover:bg-white/10"
+              className="group inline-flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition-all hover:border-black/15 hover:bg-black/[0.06]"
             >
-              <Sparkles className="h-4 w-4 text-brand-300 transition-transform group-hover:rotate-12" />
+              <Sparkles className="h-4 w-4 text-brand-600 transition-transform group-hover:rotate-12" />
               Explore our products
             </Link>
           </div>
@@ -75,15 +75,15 @@ export function Hero({ projects = [] }: HeroProps) {
             style={{ animationDelay: "550ms" }}
           >
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-400" />
+              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
               {projects.length} standalone systems
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-400" />
+              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
               24/7 expert support
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-400" />
+              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
               Enterprise-grade security
             </span>
           </div>
@@ -110,7 +110,7 @@ function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
         <Link
           key={project.id}
           href={`#${project.id}`}
-          className="hover-lift group relative overflow-hidden rounded-xl border border-white/5 bg-white/[0.02] px-3 py-3 transition-all hover:border-white/10 hover:bg-white/[0.04] animate-fade-up-stagger"
+          className="hover-lift group relative overflow-hidden rounded-xl border border-black/[0.08] bg-black/[0.02] px-3 py-3 transition-all hover:border-black/10 hover:bg-black/[0.04] animate-fade-up-stagger"
           style={{ animationDelay: `${i * 40}ms` }}
         >
           <span

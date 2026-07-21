@@ -5,8 +5,8 @@ export function AiCopilotVisual() {
   return (
     <div className="relative">
       <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-fuchsia-500/15 to-brand-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/60 backdrop-blur">
-        <div className="flex items-center gap-2 border-b border-white/5 bg-gradient-to-r from-brand-500/10 to-fuchsia-500/10 px-4 py-3">
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 backdrop-blur">
+        <div className="flex items-center gap-2 border-b border-black/[0.08] bg-gradient-to-r from-brand-500/10 to-fuchsia-500/10 px-4 py-3">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-400 to-fuchsia-500 text-white">
             <Sparkles className="h-3.5 w-3.5" />
           </div>
@@ -16,7 +16,7 @@ export function AiCopilotVisual() {
               Analyzing: Wayne Tech deal
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-1 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-medium text-lime-400">
+          <div className="ml-auto flex items-center gap-1 rounded-full bg-lime-500/10 px-2 py-0.5 text-[10px] font-medium text-lime-600">
             <span className="typing-dots">
               <span />
               <span />
@@ -39,15 +39,15 @@ export function AiCopilotVisual() {
               <Sparkles className="h-3 w-3" />
             </div>
             <div className="flex-1 space-y-2">
-              <div className="rounded-2xl rounded-tl-sm border border-white/5 bg-background/60 p-3">
-                <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+              <div className="rounded-2xl rounded-tl-sm border border-black/[0.08] bg-background/60 p-3">
+                <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-brand-600">
                   Suggested email draft
                 </div>
                 <div className="space-y-1.5 text-xs text-foreground/90">
                   <div className="text-muted-foreground">
                     Subject: Following up on the Wayne Tech proposal
                   </div>
-                  <div className="border-t border-white/5 pt-1.5">
+                  <div className="border-t border-black/[0.08] pt-1.5">
                     Hi Bruce,
                   </div>
                   <div>
@@ -59,10 +59,10 @@ export function AiCopilotVisual() {
                   </div>
                 </div>
                 <div className="mt-3 flex items-center gap-1.5">
-                  <button className="rounded-md bg-white px-2 py-1 text-[10px] font-medium text-black">
+                  <button className="rounded-md bg-foreground px-2 py-1 text-[10px] font-medium text-background">
                     Send email
                   </button>
-                  <button className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] text-foreground">
+                  <button className="rounded-md border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px] text-foreground">
                     Edit
                   </button>
                   <button className="ml-auto rounded-md p-1 text-muted-foreground">
@@ -72,12 +72,12 @@ export function AiCopilotVisual() {
               </div>
 
               <div className="rounded-xl border border-lime-400/20 bg-lime-500/5 p-3">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-lime-400">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-lime-600">
                   <span className="h-1 w-1 rounded-full bg-lime-400" />
                   AI INSIGHT
                 </div>
                 <div className="mt-1 text-xs text-foreground/80">
-                  This deal has an <span className="font-semibold text-lime-400">87%</span>
+                  This deal has an <span className="font-semibold text-lime-600">87%</span>
                   {" "}probability of closing — following up today adds another 12%.
                 </div>
               </div>
@@ -85,8 +85,8 @@ export function AiCopilotVisual() {
           </div>
         </div>
 
-        <div className="border-t border-white/5 p-3">
-          <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-background/60 px-3 py-2">
+        <div className="border-t border-black/[0.08] p-3">
+          <div className="flex items-center gap-2 rounded-lg border border-black/10 bg-background/60 px-3 py-2">
             <input
               readOnly
               placeholder="Ask AI Copilot anything..."

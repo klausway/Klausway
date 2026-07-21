@@ -63,9 +63,9 @@ export default function ContactPage() {
               <Reveal
                 key={item.title}
                 delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift rounded-2xl border border-white/5 bg-card/40 p-6 backdrop-blur transition-all hover:border-white/10 hover:bg-card/60"
+                className="hover-lift rounded-2xl border border-black/[0.08] bg-card/40 p-6 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/15 text-brand-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/15 text-brand-600">
                   <item.icon className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -76,7 +76,7 @@ export default function ContactPage() {
                     href={item.href}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
-                    className="mt-2 block text-sm font-medium leading-relaxed transition-colors hover:text-brand-200"
+                    className="mt-2 block text-sm font-medium leading-relaxed transition-colors hover:text-brand-600"
                   >
                     {item.value}
                   </a>
@@ -93,14 +93,14 @@ export default function ContactPage() {
             <ContactForm />
 
             <Reveal delay={100} className="flex flex-col">
-              <div className="flex-1 rounded-2xl border border-white/10 bg-gradient-to-br from-brand-500/10 via-card/40 to-fuchsia-500/5 p-6 backdrop-blur md:p-8">
+              <div className="flex-1 rounded-2xl border border-black/10 bg-gradient-to-br from-brand-500/10 via-card/40 to-fuchsia-500/5 p-6 backdrop-blur md:p-8">
                 <h2 className="text-2xl font-semibold tracking-tight">
                   Our Location
                 </h2>
                 <p className="mt-4 text-sm font-medium">
                   29 Northridge Drive, North Windham, CT 06256
                 </p>
-                <div className="mt-6 aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-background/40">
+                <div className="mt-6 aspect-[4/3] overflow-hidden rounded-xl border border-black/10 bg-background/40">
                   <iframe
                     title="Klaus Way office location"
                     src="https://maps.google.com/maps?q=29+Northridge+Drive+North+Windham+CT+06256&output=embed"
@@ -111,7 +111,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-white/5 bg-card/40 p-6 backdrop-blur">
+              <div className="mt-6 rounded-2xl border border-black/[0.08] bg-card/40 p-6 backdrop-blur">
                 <h3 className="text-lg font-semibold">Schedule a Visit</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   Please call ahead or book an appointment online to ensure

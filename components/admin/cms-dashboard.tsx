@@ -406,7 +406,7 @@ export function CmsDashboard() {
   if (!token && needsBootstrap) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.03] p-8">
+        <div className="w-full max-w-md rounded-2xl border border-black/10 bg-black/[0.03] p-8">
           <h1 className="text-xl font-semibold">Set up your first admin</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             No admin accounts exist yet. Create the first account to access Content Studio.
@@ -824,10 +824,10 @@ export function CmsDashboard() {
                 {adminUsers.map((member) => (
                   <li
                     key={member.id}
-                    className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                    className="rounded-xl border border-black/10 bg-black/[0.03] p-4"
                   >
                     <div className="flex flex-wrap items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-sm font-semibold text-brand-200">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-sm font-semibold text-brand-700">
                         {member.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -845,7 +845,7 @@ export function CmsDashboard() {
                           void updateUserRole(member.id, e.target.value as AdminRole)
                         }
                         disabled={member.id === user?.id && member.role === "admin"}
-                        className="rounded-lg border border-white/10 bg-background/80 px-2 py-1 text-sm"
+                        className="rounded-lg border border-black/10 bg-background/80 px-2 py-1 text-sm"
                       >
                         <option value="admin">Admin</option>
                         <option value="content">Content</option>
@@ -863,7 +863,7 @@ export function CmsDashboard() {
                       </AdminButton>
                     </div>
                     {resetPasswordUserId === member.id ? (
-                      <form onSubmit={resetUserPassword} className="mt-4 space-y-3 border-t border-white/10 pt-4">
+                      <form onSubmit={resetUserPassword} className="mt-4 space-y-3 border-t border-black/10 pt-4">
                         <AdminField
                           label="New password"
                           type="password"
@@ -889,7 +889,7 @@ export function CmsDashboard() {
                   </li>
                 ))}
               </ul>
-              <form onSubmit={createAdminUser} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+              <form onSubmit={createAdminUser} className="rounded-2xl border border-black/10 bg-black/[0.03] p-6">
                 <h3 className="text-lg font-semibold">Create account</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Content editors can only manage Blog and Portfolio.
@@ -909,7 +909,7 @@ export function CmsDashboard() {
                     <select
                       value={newUserRole}
                       onChange={(e) => setNewUserRole(e.target.value as AdminRole)}
-                      className="w-full rounded-xl border border-white/10 bg-background/80 px-3.5 py-2.5 text-sm"
+                      className="w-full rounded-xl border border-black/10 bg-background/80 px-3.5 py-2.5 text-sm"
                     >
                       <option value="content">Content — Blog & Portfolio</option>
                       <option value="admin">Admin — full access</option>
@@ -933,7 +933,7 @@ export function CmsDashboard() {
             />
             <form
               onSubmit={changeOwnPassword}
-              className="mt-6 space-y-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+              className="mt-6 space-y-4 rounded-2xl border border-black/10 bg-black/[0.03] p-6"
             >
               <AdminField
                 label="Current password"
@@ -973,8 +973,8 @@ function RoleBadge({ role }: { role: AdminRole }) {
       className={cn(
         "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
         role === "admin"
-          ? "bg-brand-400/15 text-brand-200"
-          : "bg-white/10 text-muted-foreground",
+          ? "bg-brand-400/15 text-brand-700"
+          : "bg-black/[0.05] text-muted-foreground",
       )}
     >
       {role === "admin" ? "Admin" : "Content"}
@@ -993,8 +993,8 @@ function PageHeading({ title, subtitle }: { title: string; subtitle: string }) {
 
 function QuickAction({ title, description, onClick }: { title: string; description: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition-colors hover:border-brand-400/30 hover:bg-brand-500/5">
-      <Plus className="h-5 w-5 text-brand-300" />
+    <button type="button" onClick={onClick} className="rounded-2xl border border-black/10 bg-black/[0.03] p-5 text-left transition-colors hover:border-brand-400/30 hover:bg-brand-500/5">
+      <Plus className="h-5 w-5 text-brand-600" />
       <p className="mt-3 font-medium">{title}</p>
       <p className="mt-1 text-xs text-muted-foreground">{description}</p>
     </button>
@@ -1024,7 +1024,7 @@ function ContentListPage({
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search by title or slug…"
-          className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-brand-400/50"
+          className="w-full rounded-xl border border-black/10 bg-black/[0.03] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-brand-400/50"
         />
       </div>
       {isEmpty ? (
@@ -1053,7 +1053,7 @@ function ContentListItem({
   coverImage?: string | null; onEdit: () => void; onDelete: () => void;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-colors hover:border-white/20">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-black/10 bg-black/[0.03] transition-colors hover:border-black/15">
       {coverImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={coverImage} alt="" className="aspect-[16/10] w-full object-cover" />

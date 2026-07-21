@@ -44,7 +44,7 @@ export function ContactForm() {
   }
 
   return (
-    <Reveal className="rounded-2xl border border-white/10 bg-card/40 p-6 backdrop-blur md:p-8">
+    <Reveal className="rounded-2xl border border-black/10 bg-card/40 p-6 backdrop-blur md:p-8">
       <h2 className="text-2xl font-semibold tracking-tight">Contact us</h2>
 
       {submitted ? (
@@ -64,7 +64,7 @@ export function ContactForm() {
                 type="text"
                 required
                 disabled={loading}
-                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+                className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
               />
             </label>
             <label className="block">
@@ -76,32 +76,32 @@ export function ContactForm() {
                 type="text"
                 required
                 disabled={loading}
-                className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+                className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
               />
             </label>
           </div>
           <label className="block">
             <span className="mb-1.5 block text-sm text-muted-foreground">
-              Email<span className="text-brand-300">*</span>
+              Email<span className="text-brand-600">*</span>
             </span>
             <input
               name="email"
               type="email"
               required
               disabled={loading}
-              className="w-full rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+              className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
             />
           </label>
           <label className="block">
             <span className="mb-1.5 block text-sm text-muted-foreground">
-              Message<span className="text-brand-300">*</span>
+              Message<span className="text-brand-600">*</span>
             </span>
             <textarea
               name="message"
               required
               rows={5}
               disabled={loading}
-              className="w-full resize-y rounded-xl border border-white/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+              className="w-full resize-y rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
             />
           </label>
           {error ? (
@@ -112,7 +112,7 @@ export function ContactForm() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex rounded-xl bg-white px-6 py-2.5 text-sm font-semibold text-black transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex rounded-xl bg-foreground px-6 py-2.5 text-sm font-semibold text-background transition-all hover:bg-foreground/90 hover:shadow-lg hover:shadow-brand-500/15 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Sending…" : "Submit"}
           </button>

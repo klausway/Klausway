@@ -40,12 +40,12 @@ export function ContentEditorLayout({
 }: ContentEditorLayoutProps) {
   return (
     <div className="-mx-2 flex min-h-[calc(100vh-4rem)] flex-col lg:-mx-4">
-      <header className="sticky top-0 z-30 -mx-4 border-b border-white/10 bg-[#07070f]/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
+      <header className="sticky top-0 z-30 -mx-4 border-b border-black/10 bg-background/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-white/20 hover:bg-white/5 hover:text-foreground"
+            className="inline-flex items-center gap-2 rounded-lg border border-black/10 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-black/15 hover:bg-black/[0.04] hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -58,7 +58,7 @@ export function ContentEditorLayout({
               </h2>
               <StatusBadge published={published} />
               {isNew ? (
-                <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-200">
+                <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-700">
                   New
                 </span>
               ) : null}
@@ -70,7 +70,7 @@ export function ContentEditorLayout({
               href={publicPath}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-brand-300 transition-colors hover:border-brand-400/30 hover:bg-brand-500/10"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-brand-600 transition-colors hover:border-brand-400/30 hover:bg-brand-500/10"
             >
               View on site
               <ExternalLink className="h-3.5 w-3.5" />
@@ -90,11 +90,11 @@ export function ContentEditorLayout({
                 className={cn(
                   "inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors",
                   active
-                    ? "bg-brand-500/15 text-brand-100 ring-1 ring-brand-400/25"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
+                    ? "bg-brand-500/15 text-brand-800 ring-1 ring-brand-400/25"
+                    : "text-muted-foreground hover:bg-black/[0.04] hover:text-foreground",
                 )}
               >
-                <Icon className={cn("h-4 w-4", active && "text-brand-300")} />
+                <Icon className={cn("h-4 w-4", active && "text-brand-600")} />
                 {tab.label}
               </button>
             );
@@ -104,7 +104,7 @@ export function ContentEditorLayout({
 
       <div className="grid flex-1 gap-6 py-6 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="min-w-0">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6">
+          <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-5 sm:p-6">
             {children}
           </div>
         </div>
@@ -114,7 +114,7 @@ export function ContentEditorLayout({
         </aside>
       </div>
 
-      <footer className="sticky bottom-0 z-30 -mx-4 border-t border-white/10 bg-[#07070f]/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
+      <footer className="sticky bottom-0 z-30 -mx-4 border-t border-black/10 bg-background/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
         {footer}
       </footer>
     </div>
@@ -172,7 +172,7 @@ export function EditorListFields({
       {items.map((item) => (
         <div
           key={item.title}
-          className="rounded-xl border border-white/10 bg-white/[0.02] p-4"
+          className="rounded-xl border border-black/10 bg-black/[0.02] p-4"
         >
           <p className="text-sm font-medium">{item.title}</p>
           {item.description ? (

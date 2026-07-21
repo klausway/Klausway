@@ -12,7 +12,7 @@ const cols = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-background/80">
+    <footer className="border-t border-black/[0.08] bg-background/80">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-10 lg:grid-cols-6">
           <div className="lg:col-span-2">
@@ -28,13 +28,13 @@ export function Footer() {
                 <a
                   key={s}
                   href="#"
-                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/5 bg-white/[0.03] text-xs text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-black/[0.08] bg-black/[0.03] text-xs text-muted-foreground transition-colors hover:bg-black/[0.06] hover:text-foreground"
                 >
                   {s}
                 </a>
               ))}
             </div>
-            <div className="mt-6 flex items-center gap-2 rounded-lg border border-white/5 bg-card/40 px-3 py-2">
+            <div className="mt-6 flex items-center gap-2 rounded-lg border border-black/[0.08] bg-card/40 px-3 py-2">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-400" />
               <span className="text-xs text-muted-foreground">
                 24/7 support available
@@ -63,7 +63,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-white/5 pt-8 md:flex-row md:items-center">
+        <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-black/[0.08] pt-8 md:flex-row md:items-center">
           <div className="text-xs text-muted-foreground">
             © 2026 {brand.name} · {brand.tagline}
           </div>

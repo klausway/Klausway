@@ -19,10 +19,10 @@ export function PipelineVisual() {
   return (
     <div className="relative">
       <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-brand-500/10 to-fuchsia-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-card/60 p-5 backdrop-blur">
+      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 p-5 backdrop-blur">
         <div className="mb-4 flex items-center justify-between">
           <div className="text-sm font-medium">Q1 2026 Pipeline</div>
-          <div className="rounded-md border border-white/5 bg-background/50 px-2 py-1 text-[10px] text-muted-foreground">
+          <div className="rounded-md border border-black/[0.08] bg-background/50 px-2 py-1 text-[10px] text-muted-foreground">
             Last 30 days
           </div>
         </div>
@@ -30,7 +30,7 @@ export function PipelineVisual() {
         <div className="grid grid-cols-4 gap-3">
           {stages.map((stage, sidx) => (
             <div key={stage.name} className="space-y-2">
-              <div className="rounded-lg border border-white/5 bg-background/40 p-2.5">
+              <div className="rounded-lg border border-black/[0.08] bg-background/40 p-2.5">
                 <div className="flex items-center gap-1.5">
                   <span className={`h-1.5 w-1.5 rounded-full ${stage.color}`} />
                   <span className="text-[10px] font-medium">{stage.name}</span>
@@ -45,7 +45,7 @@ export function PipelineVisual() {
                 .map((deal, i) => (
                   <div
                     key={i}
-                    className={`group relative rounded-lg border border-white/10 bg-gradient-to-br ${deal.color} p-2.5 backdrop-blur`}
+                    className={`group relative rounded-lg border border-black/10 bg-gradient-to-br ${deal.color} p-2.5 backdrop-blur`}
                   >
                     <div className="flex items-start justify-between gap-1">
                       <div className="min-w-0">
@@ -64,7 +64,7 @@ export function PipelineVisual() {
           ))}
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-3 rounded-lg border border-white/5 bg-background/30 p-3">
+        <div className="mt-4 grid grid-cols-3 gap-3 rounded-lg border border-black/[0.08] bg-background/30 p-3">
           <div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
               Total Pipeline
@@ -75,7 +75,7 @@ export function PipelineVisual() {
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
               Forecasted
             </div>
-            <div className="mt-0.5 text-base font-semibold text-lime-400">
+            <div className="mt-0.5 text-base font-semibold text-lime-600">
               $210K
             </div>
           </div>

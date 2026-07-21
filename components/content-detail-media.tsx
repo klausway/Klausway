@@ -29,7 +29,7 @@ export function ContentDetailMedia({
 
   return (
     <Reveal delay={100} className="mt-10 space-y-5">
-      <figure className="group relative overflow-hidden rounded-3xl border border-white/10 bg-card/20 shadow-2xl shadow-black/30">
+      <figure className="group relative overflow-hidden rounded-3xl border border-black/10 bg-card/20 shadow-xl shadow-black/8">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -40,7 +40,7 @@ export function ContentDetailMedia({
       </figure>
 
       {showGallery ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 md:p-5">
+        <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 md:p-5">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Gallery
@@ -64,7 +64,7 @@ export function ContentDetailMedia({
                     "relative shrink-0 overflow-hidden rounded-xl border transition-all",
                     isActive
                       ? "border-brand-400/70 ring-2 ring-brand-400/30"
-                      : "border-white/10 hover:border-white/25",
+                      : "border-black/10 hover:border-black/20",
                   )}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

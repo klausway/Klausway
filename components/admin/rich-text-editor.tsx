@@ -99,10 +99,10 @@ export function RichTextEditor({
       <div
         className={cn(
           "overflow-hidden rounded-xl border bg-background/80 transition-colors",
-          focused ? "border-brand-400/50 ring-1 ring-brand-400/20" : "border-white/10",
+          focused ? "border-brand-400/50 ring-1 ring-brand-400/20" : "border-black/10",
         )}
       >
-        <div className="flex flex-wrap gap-1 border-b border-white/10 bg-white/[0.02] p-2">
+        <div className="flex flex-wrap gap-1 border-b border-black/10 bg-black/[0.02] p-2">
           {toolbar.map(({ label: actionLabel, icon: Icon, command }) => (
             <button
               key={actionLabel}
@@ -113,7 +113,7 @@ export function RichTextEditor({
                 event.preventDefault();
                 command();
               }}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-black/[0.06] hover:text-foreground"
             >
               <Icon className="h-4 w-4" />
             </button>
@@ -133,7 +133,7 @@ export function RichTextEditor({
           onBlur={() => setFocused(false)}
           className={cn(
             "rich-text-editor px-3.5 py-3 text-sm outline-none",
-            "prose prose-invert max-w-none prose-p:my-3 prose-headings:my-4",
+            "prose max-w-none prose-p:my-3 prose-headings:my-4",
           )}
           style={{ minHeight }}
         />
