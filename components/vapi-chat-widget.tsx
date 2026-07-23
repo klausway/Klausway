@@ -21,6 +21,18 @@ const VAPI_SDK = {
   },
 };
 
+function pinSupportButton(btn: HTMLElement) {
+  if (btn.parentElement !== document.body) {
+    document.body.appendChild(btn);
+  }
+  btn.style.setProperty("position", "fixed", "important");
+  btn.style.setProperty("bottom", "1.25rem", "important");
+  btn.style.setProperty("right", "1.25rem", "important");
+  btn.style.setProperty("top", "auto", "important");
+  btn.style.setProperty("left", "auto", "important");
+  btn.style.setProperty("z-index", "9999", "important");
+}
+
 export function VapiChatWidget() {
   const widgetRootRef = useRef<HTMLDivElement>(null);
   const widgetMounted = useRef(false);
@@ -55,6 +67,20 @@ export function VapiChatWidget() {
     }
 
     return () => window.removeEventListener("load", onLoad);
+  }, []);
+
+  useEffect(() => {
+    const pinExisting = () => {
+      const btn = document.getElementById("vapi-support-btn");
+      if (btn) pinSupportButton(btn);
+    };
+
+    pinExisting();
+
+    const observer = new MutationObserver(() => pinExisting());
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
   }, []);
 
   return (
