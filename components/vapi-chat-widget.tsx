@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Script from "next/script";
 
 const SDK_SCRIPT =
@@ -21,22 +21,17 @@ const VAPI_SDK = {
   },
 };
 
-function pinSupportButton(btn: HTMLElement) {
-  if (btn.parentElement !== document.body) {
-    document.body.appendChild(btn);
-  }
-  btn.style.setProperty("position", "fixed", "important");
-  btn.style.setProperty("bottom", "1.25rem", "important");
-  btn.style.setProperty("right", "1.25rem", "important");
-  btn.style.setProperty("top", "auto", "important");
-  btn.style.setProperty("left", "auto", "important");
-  btn.style.setProperty("z-index", "9999", "important");
-}
-
 export function VapiChatWidget() {
   const widgetRootRef = useRef<HTMLDivElement>(null);
   const widgetMounted = useRef(false);
   const sdkInitialized = useRef(false);
+
+  const initSdk = useCallback(() => {
+    if (sdkInitialized.current || !window.vapiSDK?.run) return false;
+    sdkInitialized.current = true;
+    window.vapiSDK.run(VAPI_SDK);
+    return true;
+  }, []);
 
   useEffect(() => {
     const root = widgetRootRef.current;
@@ -53,35 +48,20 @@ export function VapiChatWidget() {
   }, []);
 
   useEffect(() => {
-    const initSdk = () => {
-      if (sdkInitialized.current || !window.vapiSDK?.run) return;
-      sdkInitialized.current = true;
-      window.vapiSDK.run(VAPI_SDK);
+    if (initSdk()) return;
+
+    // Script may load after this effect if the window "load" event already fired.
+    const id = window.setInterval(() => {
+      if (initSdk()) window.clearInterval(id);
+    }, 250);
+
+    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
+
+    return () => {
+      window.clearInterval(id);
+      window.clearTimeout(timeout);
     };
-
-    const onLoad = () => initSdk();
-    window.addEventListener("load", onLoad);
-
-    if (document.readyState === "complete") {
-      initSdk();
-    }
-
-    return () => window.removeEventListener("load", onLoad);
-  }, []);
-
-  useEffect(() => {
-    const pinExisting = () => {
-      const btn = document.getElementById("vapi-support-btn");
-      if (btn) pinSupportButton(btn);
-    };
-
-    pinExisting();
-
-    const observer = new MutationObserver(() => pinExisting());
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => observer.disconnect();
-  }, []);
+  }, [initSdk]);
 
   return (
     <>
@@ -91,7 +71,13 @@ export function VapiChatWidget() {
         className="pointer-events-none fixed bottom-5 right-5 z-[9999] [&>*]:pointer-events-auto"
         aria-hidden
       />
-      <Script src={SDK_SCRIPT} strategy="afterInteractive" />
+      <Script
+        src={SDK_SCRIPT}
+        strategy="afterInteractive"
+        onLoad={() => {
+          initSdk();
+        }}
+      />
     </>
   );
 }
