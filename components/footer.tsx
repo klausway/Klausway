@@ -68,16 +68,22 @@ export function Footer() {
             © 2026 {brand.name} · {brand.tagline}
           </div>
           <div className="flex items-center gap-5 text-xs text-muted-foreground">
-            <a href="#" className="hover:text-foreground">
+            <Link href={routes.privacyPolicy} className="hover:text-foreground">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <Link href={routes.termsOfService} className="hover:text-foreground">
               Terms of Service
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <Link
+              href={`${routes.privacyPolicy}#cookie-notice`}
+              className="hover:text-foreground"
+            >
               Cookies
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <a
+              href="mailto:support@klausway.com?subject=Data%20Processing%20Addendum"
+              className="hover:text-foreground"
+            >
               DPA
             </a>
           </div>

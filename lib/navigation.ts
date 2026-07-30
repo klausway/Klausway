@@ -6,6 +6,8 @@ export const routes = {
   pricing: "/pricing",
   portfolio: "/portfolio",
   contact: "/contact",
+  privacyPolicy: "/privacy-policy",
+  termsOfService: "/terms-of-service",
 } as const;
 
 export type RouteKey = keyof typeof routes;
