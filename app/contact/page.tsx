@@ -22,8 +22,8 @@ const contactCards = [
   {
     icon: Phone,
     title: "Call Us",
-    value: "(860) 771-9058",
-    href: "tel:+18607719058",
+    value: "(860) 400-0758",
+    href: "tel:+18604000758",
     external: false,
   },
   {

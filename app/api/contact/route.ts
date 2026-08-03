@@ -7,16 +7,17 @@ export async function POST(request: Request) {
     const firstName = String(body.firstName ?? "").trim();
     const lastName = String(body.lastName ?? "").trim();
     const email = String(body.email ?? "").trim();
+    const phone = String(body.phone ?? "").trim();
     const message = String(body.message ?? "").trim();
 
-    if (!firstName || !lastName || !email || !message) {
+    if (!firstName || !lastName || !email || !phone || !message) {
       return NextResponse.json(
         { error: "All fields are required." },
         { status: 400 },
       );
     }
 
-    await sendContactEmail({ firstName, lastName, email, message });
+    await sendContactEmail({ firstName, lastName, email, phone, message });
 
     return NextResponse.json({ ok: true });
   } catch (error) {

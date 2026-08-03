@@ -4,6 +4,7 @@ type ContactEmailInput = {
   firstName: string;
   lastName: string;
   email: string;
+  phone: string;
   message: string;
 };
 
@@ -34,6 +35,7 @@ export async function sendContactEmail(input: ContactEmailInput) {
     text: [
       `Name: ${fullName}`,
       `Email: ${input.email}`,
+      `Phone: ${input.phone}`,
       "",
       input.message,
     ].join("\n"),

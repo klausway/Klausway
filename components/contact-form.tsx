@@ -25,6 +25,7 @@ export function ContactForm() {
           firstName: data.get("firstName"),
           lastName: data.get("lastName"),
           email: data.get("email"),
+          phone: data.get("phone"),
           message: data.get("message"),
         }),
       });
@@ -80,18 +81,34 @@ export function ContactForm() {
               />
             </label>
           </div>
-          <label className="block">
-            <span className="mb-1.5 block text-sm text-muted-foreground">
-              Email<span className="text-brand-600">*</span>
-            </span>
-            <input
-              name="email"
-              type="email"
-              required
-              disabled={loading}
-              className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
-            />
-          </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-muted-foreground">
+                Email<span className="text-brand-600">*</span>
+              </span>
+              <input
+                name="email"
+                type="email"
+                required
+                disabled={loading}
+                className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-muted-foreground">
+                Phone<span className="text-brand-600">*</span>
+              </span>
+              <input
+                name="phone"
+                type="tel"
+                required
+                autoComplete="tel"
+                placeholder="(860) 400-0758"
+                disabled={loading}
+                className="w-full rounded-xl border border-black/10 bg-background/60 px-4 py-2.5 text-sm outline-none transition-colors focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/30 disabled:opacity-60"
+              />
+            </label>
+          </div>
           <label className="block">
             <span className="mb-1.5 block text-sm text-muted-foreground">
               Message<span className="text-brand-600">*</span>

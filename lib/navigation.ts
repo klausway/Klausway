@@ -44,7 +44,7 @@ export const footerLinks = {
   ],
   contact: [
     { label: "support@klausway.com", href: "mailto:support@klausway.com" },
-    { label: "(860) 771-9058", href: "tel:+18607719058" },
+    { label: "(860) 400-0758", href: "tel:+18604000758" },
     {
       label: "North Windham, CT",
       href: "https://maps.google.com/?q=29+Northridge+Drive+North+Windham+CT+06256",

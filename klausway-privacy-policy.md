@@ -114,7 +114,7 @@ Klaus Way
 29 Northridge Drive
 North Windham, CT 06256
 Email: support@klausway.com
-Phone: (860) 771-9058
+Phone: (860) 400-0758
 [Contact form](https://www.klausway.com/contact/)
 
 ---
