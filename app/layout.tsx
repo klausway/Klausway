@@ -1,39 +1,80 @@
 import type { Metadata } from "next";
 import { LayoutShell } from "@/components/layout-shell";
-import { brand } from "@/lib/brand";
+import { JsonLd } from "@/components/json-ld";
 import { assetPath } from "@/lib/asset-path";
+import {
+  absoluteImageUrl,
+  absoluteUrl,
+  getSiteUrl,
+  organizationJsonLd,
+  professionalServiceJsonLd,
+  siteConfig,
+  websiteJsonLd,
+} from "@/lib/seo";
 import "./globals.css";
 
+const ogImage = absoluteImageUrl(siteConfig.defaultOgImage);
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://kotchamon-20.github.io/Klausway",
-  ),
+  metadataBase: new URL(`${getSiteUrl()}/`),
   icons: {
     icon: assetPath("/Logo.jpg"),
     apple: assetPath("/Logo.jpg"),
   },
   title: {
-    default: `${brand.name} — Strategic IT Solutions for Business Growth`,
-    template: `%s · ${brand.name}`,
+    default: siteConfig.title,
+    template: `%s · ${siteConfig.name}`,
   },
-  description:
-    "Comprehensive IT solutions designed to drive your business forward. IT consulting, custom apps, system integration, smart automation, data analytics, and cloud services.",
-  keywords: [
-    "Klaus Way",
-    "IT consulting",
-    "custom software",
-    "CRM",
-    "system integration",
-    "business automation",
-    "cloud migration",
-    "data analytics",
-  ],
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
+  authors: [{ name: siteConfig.name, url: absoluteUrl("/") }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  applicationName: siteConfig.name,
+  category: "technology",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: `${brand.name} — Strategic IT Solutions`,
+    title: `${siteConfig.name} — Strategic IT Solutions`,
     description:
       "Transform your digital infrastructure with custom apps, integration, automation, and cloud expertise.",
-    locale: "en_US",
+    url: absoluteUrl("/"),
+    siteName: siteConfig.name,
+    locale: siteConfig.locale,
     type: "website",
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} logo`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} — Strategic IT Solutions`,
+    description:
+      "Transform your digital infrastructure with custom apps, integration, automation, and cloud expertise.",
+    images: [ogImage],
   },
 };
 
@@ -43,11 +84,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-US" className="light" suppressHydrationWarning>
+    <html lang={siteConfig.language} className="light" suppressHydrationWarning>
       <body
         className="min-h-screen bg-background text-foreground antialiased"
         suppressHydrationWarning
       >
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd(), professionalServiceJsonLd()]} />
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>

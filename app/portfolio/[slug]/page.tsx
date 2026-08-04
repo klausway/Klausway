@@ -3,7 +3,14 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { PortfolioDetail } from "@/components/portfolio-detail";
 import { CtaSection } from "@/components/cta-section";
+import { JsonLd } from "@/components/json-ld";
 import { getPortfolioProject } from "@/lib/portfolio-data";
+import { routes } from "@/lib/navigation";
+import {
+  breadcrumbJsonLd,
+  buildPageMetadata,
+  portfolioProjectJsonLd,
+} from "@/lib/seo";
 
 type PortfolioProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -16,11 +23,13 @@ export async function generateMetadata({
 }: PortfolioProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getPortfolioProject(slug);
-  if (!project) return { title: "Project Not Found" };
-  return {
+  if (!project) return { title: "Project Not Found", robots: { index: false } };
+  return buildPageMetadata({
     title: project.title,
     description: project.overview,
-  };
+    path: `${routes.portfolio}/${project.id}`,
+    image: project.coverImage,
+  });
 }
 
 export default async function PortfolioProjectPage({
@@ -32,6 +41,19 @@ export default async function PortfolioProjectPage({
 
   return (
     <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: routes.home },
+            { name: "Portfolio", path: routes.portfolio },
+            {
+              name: project.title,
+              path: `${routes.portfolio}/${project.id}`,
+            },
+          ]),
+          portfolioProjectJsonLd(project),
+        ]}
+      />
       <PageHeader
         wide
         eyebrow="Portfolio"

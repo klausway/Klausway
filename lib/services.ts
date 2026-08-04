@@ -29,7 +29,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Technology Roadmap Development",
     ],
     icon: Lightbulb,
-    accent: "from-blue-400 to-cyan-400",
+    accent: "from-blue-500 to-cyan-500",
   },
   {
     id: "custom-apps",
@@ -42,7 +42,7 @@ export const serviceCategories: ServiceCategory[] = [
       "User-focused interface design.",
     ],
     icon: LayoutGrid,
-    accent: "from-violet-400 to-purple-400",
+    accent: "from-violet-500 to-purple-600",
   },
   {
     id: "system-integration",
@@ -55,7 +55,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Automated data synchronization.",
     ],
     icon: Layers,
-    accent: "from-emerald-400 to-teal-400",
+    accent: "from-emerald-500 to-teal-600",
   },
   {
     id: "automation-ai",
@@ -68,7 +68,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Predictive analytics implementation.",
     ],
     icon: Cpu,
-    accent: "from-amber-400 to-orange-400",
+    accent: "from-amber-500 to-orange-600",
   },
   {
     id: "data-analytics",
@@ -81,7 +81,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Comprehensive data governance policies.",
     ],
     icon: BarChart3,
-    accent: "from-fuchsia-400 to-pink-400",
+    accent: "from-fuchsia-500 to-pink-600",
   },
   {
     id: "cloud-services",
@@ -94,7 +94,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Disaster Recovery and Data Backup solutions.",
     ],
     icon: Cloud,
-    accent: "from-indigo-400 to-blue-400",
+    accent: "from-indigo-500 to-blue-600",
   },
 ];
 

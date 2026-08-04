@@ -9,7 +9,7 @@ type ImageFieldsProps = {
   token: string;
   coverImage?: string | null;
   galleryImages?: string[];
-  folder: "blog" | "portfolio";
+  folder: "blog" | "portfolio" | "resources";
   onCoverChange: (url: string | null) => void;
   onGalleryChange: (urls: string[]) => void;
 };

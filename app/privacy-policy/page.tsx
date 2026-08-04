@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { LegalDocumentPage } from "@/components/legal-document-page";
 import { loadLegalDocument } from "@/lib/legal-documents";
+import { routes } from "@/lib/navigation";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy",
   description:
     "Learn how Klaus Way collects, uses, protects, and shares personal information.",
-};
+  path: routes.privacyPolicy,
+});
 
 export default function PrivacyPolicyPage() {
   const document = loadLegalDocument("klausway-privacy-policy.md");

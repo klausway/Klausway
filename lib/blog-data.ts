@@ -1,71 +1,111 @@
 import { db } from "@/lib/db";
 import {
-  blogPosts as staticBlogPosts,
-  type BlogPost,
+  fromPrismaResourceType,
+  resourcePosts as staticResourcePosts,
+  type ResourcePost,
+  type ResourceType,
 } from "@/lib/blog";
 
-function mapBlogPost(post: {
+function mapResourcePost(post: {
   slug: string;
   title: string;
   excerpt: string;
   content: string;
+  type: string;
   coverImage: string | null;
   galleryImages: string[];
   date: Date;
-}): BlogPost & { content: string } {
+}): ResourcePost & { content: string } {
   return {
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     content: post.content,
+    type: fromPrismaResourceType(post.type),
     coverImage: post.coverImage,
     galleryImages: post.galleryImages,
     date: post.date.toISOString().slice(0, 10),
   };
 }
 
-export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
+function staticAsDetail(
+  post: ResourcePost,
+): ResourcePost & { content: string } {
+  return {
+    ...post,
+    content: post.excerpt,
+    galleryImages: post.galleryImages ?? [],
+  };
+}
+
+/** When DATABASE_URL is set, the database is the source of truth (CMS edits). */
+export async function getPublishedResourcePosts(options?: {
+  type?: ResourceType | "all";
+}): Promise<ResourcePost[]> {
+  const typeFilter = options?.type && options.type !== "all" ? options.type : undefined;
+
   if (!process.env.DATABASE_URL) {
-    return staticBlogPosts;
+    return typeFilter
+      ? staticResourcePosts.filter((post) => post.type === typeFilter)
+      : staticResourcePosts;
   }
 
   try {
     const posts = await db.blogPost.findMany({
-      where: { published: true },
+      where: {
+        published: true,
+        ...(typeFilter
+          ? {
+              type:
+                typeFilter === "article"
+                  ? "ARTICLE"
+                  : typeFilter === "guide"
+                    ? "GUIDE"
+                    : typeFilter === "news"
+                      ? "NEWS"
+                      : "CASE_STUDY",
+            }
+          : {}),
+      },
       orderBy: { date: "desc" },
     });
-
-    if (posts.length > 0) {
-      return posts.map((post) => mapBlogPost(post));
-    }
+    return posts.map((post) => mapResourcePost(post));
   } catch (error) {
-    console.error("[blog-data] getPublishedBlogPosts", error);
+    console.error("[blog-data] getPublishedResourcePosts", error);
+    return typeFilter
+      ? staticResourcePosts.filter((post) => post.type === typeFilter)
+      : staticResourcePosts;
   }
-
-  return staticBlogPosts;
 }
 
-export async function getBlogPost(
+export async function getResourcePost(
   slug: string,
-): Promise<(BlogPost & { content: string }) | undefined> {
+): Promise<(ResourcePost & { content: string }) | undefined> {
   if (!process.env.DATABASE_URL) {
-    const fallback = staticBlogPosts.find((item) => item.slug === slug);
-    if (!fallback) return undefined;
-    return { ...fallback, content: fallback.excerpt, galleryImages: [] };
+    const fallback = staticResourcePosts.find((item) => item.slug === slug);
+    return fallback ? staticAsDetail(fallback) : undefined;
   }
 
   try {
     const post = await db.blogPost.findFirst({
       where: { slug, published: true },
     });
-
-    if (post) return mapBlogPost(post);
+    return post ? mapResourcePost(post) : undefined;
   } catch (error) {
-    console.error("[blog-data] getBlogPost", error);
+    console.error("[blog-data] getResourcePost", error);
+    const fallback = staticResourcePosts.find((item) => item.slug === slug);
+    return fallback ? staticAsDetail(fallback) : undefined;
   }
+}
 
-  const fallback = staticBlogPosts.find((item) => item.slug === slug);
-  if (!fallback) return undefined;
+/** @deprecated Use getPublishedResourcePosts */
+export async function getPublishedBlogPosts(): Promise<ResourcePost[]> {
+  return getPublishedResourcePosts();
+}
 
-  return { ...fallback, content: fallback.excerpt, galleryImages: [] };
+/** @deprecated Use getResourcePost */
+export async function getBlogPost(
+  slug: string,
+): Promise<(ResourcePost & { content: string }) | undefined> {
+  return getResourcePost(slug);
 }

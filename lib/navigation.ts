@@ -2,7 +2,8 @@ export const routes = {
   home: "/",
   about: "/about",
   apps: "/apps",
-  blog: "/blog",
+  blog: "/resources",
+  resources: "/resources",
   pricing: "/pricing",
   portfolio: "/portfolio",
   contact: "/contact",
@@ -16,7 +17,7 @@ export const navItems = [
   { label: "Home", href: routes.home },
   { label: "About", href: routes.about },
   { label: "Services", href: routes.apps },
-  { label: "Blog", href: routes.blog },
+  { label: "Resources", href: routes.resources },
   { label: "Portfolio", href: routes.portfolio },
   { label: "Contact", href: routes.contact },
 ] as const;
@@ -37,7 +38,7 @@ export const footerLinks = {
   company: [
     { label: "Home", href: routes.home },
     { label: "About Us", href: routes.about },
-    { label: "Blog", href: routes.blog },
+    { label: "Resources", href: routes.resources },
     { label: "Our Services", href: routes.apps },
     { label: "Portfolio", href: routes.portfolio },
     { label: "Contact", href: routes.contact },

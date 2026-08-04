@@ -13,8 +13,8 @@ export function StatusBadge({
       className={cn(
         "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
         published
-          ? "bg-lime-400/15 text-lime-300"
-          : "bg-amber-400/15 text-amber-200",
+          ? "bg-lime-500/15 text-lime-700"
+          : "bg-amber-500/15 text-amber-700",
       )}
     >
       {published ? "Published" : "Draft"}

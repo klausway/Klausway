@@ -4,6 +4,10 @@ import { ArrowRight, CircleCheck } from "lucide-react";
 import { ContentCardCover } from "@/components/content-card-cover";
 import { ContentDetailMedia } from "@/components/content-detail-media";
 import { RichTextContent } from "@/components/rich-text-content";
+import {
+  fromPrismaResourceType,
+  resourceTypeLabels,
+} from "@/lib/blog";
 import { cn } from "@/lib/utils";
 
 type BlogPreviewData = {
@@ -12,6 +16,7 @@ type BlogPreviewData = {
   excerpt?: string;
   content?: string;
   date?: string;
+  type?: string;
   coverImage?: string | null;
   galleryImages?: string[];
 };
@@ -40,8 +45,8 @@ export function PreviewPanel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-card shadow-xl shadow-black/10">
-      <div className="flex items-center gap-2 border-b border-black/10 bg-muted/50 px-4 py-2.5">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/10 bg-card shadow-sm">
+      <div className="flex items-center gap-2 border-b border-black/10 bg-muted/40 px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-lime-400/80" />
@@ -59,7 +64,7 @@ export function PreviewPanel({
             Updates as you edit
           </p>
         </div>
-        <div className="flex rounded-lg border border-black/10 bg-black/20 p-0.5">
+        <div className="flex rounded-lg border border-black/10 bg-black/[0.03] p-0.5">
           {(["card", "detail"] as const).map((item) => (
             <button
               key={item}
@@ -78,15 +83,16 @@ export function PreviewPanel({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-muted/30 p-4">{children}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto bg-muted/20 p-4">{children}</div>
     </div>
   );
 }
 
 export function BlogCardPreview({ data }: { data: BlogPreviewData }) {
-  const title = data.title || "Blog post title";
-  const excerpt = data.excerpt || "Short excerpt shown on the blog listing card.";
+  const title = data.title || "Resource title";
+  const excerpt = data.excerpt || "Short excerpt shown on the resources listing card.";
   const date = data.date || new Date().toISOString().slice(0, 10);
+  const type = resourceTypeLabels[fromPrismaResourceType(data.type)];
 
   return (
     <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40">
@@ -96,17 +102,22 @@ export function BlogCardPreview({ data }: { data: BlogPreviewData }) {
         accent="from-brand-500/25 via-card/60 to-violet-500/15"
       />
       <div className="p-5">
-        <time className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {new Date(date).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </time>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-brand-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-700">
+            {type}
+          </span>
+          <time className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {new Date(date).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </time>
+        </div>
         <h3 className="mt-2 text-lg font-semibold leading-snug">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{excerpt}</p>
         <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600">
-          Read More
+          Read more
           <ArrowRight className="h-4 w-4" />
         </span>
       </div>
@@ -115,13 +126,14 @@ export function BlogCardPreview({ data }: { data: BlogPreviewData }) {
 }
 
 export function BlogDetailPreview({ data }: { data: BlogPreviewData }) {
-  const title = data.title || "Blog post title";
-  const content = data.content || data.excerpt || "Full article content appears here.";
+  const title = data.title || "Resource title";
+  const content = data.content || data.excerpt || "Full resource content appears here.";
   const date = data.date || new Date().toISOString().slice(0, 10);
+  const type = resourceTypeLabels[fromPrismaResourceType(data.type)];
 
   return (
     <div className="mx-auto max-w-2xl">
-      <p className="text-xs font-medium uppercase tracking-wider text-brand-600">Blog</p>
+      <p className="text-xs font-medium uppercase tracking-wider text-brand-600">{type}</p>
       <h1 className="mt-2 text-2xl font-semibold leading-tight">{title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {new Date(date).toLocaleDateString("en-US", {

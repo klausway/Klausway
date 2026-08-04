@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
+import { toPrismaResourceType } from "@/lib/blog";
 
 type RouteContext = {
   params: Promise<{ slug: string }>;
@@ -26,6 +27,9 @@ export async function PUT(request: Request, context: RouteContext) {
         ...(body.title !== undefined ? { title: String(body.title) } : {}),
         ...(body.excerpt !== undefined ? { excerpt: String(body.excerpt) } : {}),
         ...(body.content !== undefined ? { content: String(body.content) } : {}),
+        ...(body.type !== undefined
+          ? { type: toPrismaResourceType(body.type) }
+          : {}),
         ...(body.published !== undefined
           ? { published: Boolean(body.published) }
           : {}),
@@ -44,7 +48,7 @@ export async function PUT(request: Request, context: RouteContext) {
   } catch (error) {
     console.error("[admin blog PUT]", error);
     return NextResponse.json(
-      { error: "Failed to update blog post." },
+      { error: "Failed to update resource." },
       { status: 500 },
     );
   }
@@ -60,7 +64,7 @@ export async function DELETE(request: Request, context: RouteContext) {
   } catch (error) {
     console.error("[admin blog DELETE]", error);
     return NextResponse.json(
-      { error: "Failed to delete blog post." },
+      { error: "Failed to delete resource." },
       { status: 500 },
     );
   }

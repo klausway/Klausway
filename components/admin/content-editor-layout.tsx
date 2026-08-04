@@ -25,6 +25,10 @@ type ContentEditorLayoutProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Fixed chrome (header + footer) with a scrollable middle pane so the
+ * sticky footer never covers form fields.
+ */
 export function ContentEditorLayout({
   title,
   isNew,
@@ -39,8 +43,8 @@ export function ContentEditorLayout({
   children,
 }: ContentEditorLayoutProps) {
   return (
-    <div className="-mx-2 flex min-h-[calc(100vh-4rem)] flex-col lg:-mx-4">
-      <header className="sticky top-0 z-30 -mx-4 border-b border-black/10 bg-background/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-4 flex h-[calc(100%+2rem)] min-h-0 flex-1 flex-col overflow-hidden lg:-mx-8">
+      <header className="shrink-0 border-b border-black/10 bg-background px-4 pb-3 pt-1 lg:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
@@ -78,7 +82,7 @@ export function ContentEditorLayout({
           ) : null}
         </div>
 
-        <nav className="mt-4 flex gap-1 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <nav className="mt-3 flex gap-1 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -102,19 +106,21 @@ export function ContentEditorLayout({
         </nav>
       </header>
 
-      <div className="grid flex-1 gap-6 py-6 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px]">
-        <div className="min-w-0">
-          <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-5 sm:p-6">
-            {children}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="grid gap-6 px-4 py-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="min-w-0">
+            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-5 sm:p-6">
+              {children}
+            </div>
           </div>
-        </div>
 
-        <aside className="lg:sticky lg:top-[9.5rem] lg:self-start">
-          <div className="h-[min(640px,calc(100vh-12rem))]">{preview}</div>
-        </aside>
+          <aside className="min-w-0 lg:sticky lg:top-4 lg:self-start">
+            <div className="h-[min(560px,70vh)]">{preview}</div>
+          </aside>
+        </div>
       </div>
 
-      <footer className="sticky bottom-0 z-30 -mx-4 border-t border-black/10 bg-background/95 px-4 py-4 backdrop-blur-md lg:-mx-8 lg:px-8">
+      <footer className="shrink-0 border-t border-black/10 bg-background px-4 py-3 lg:px-8">
         {footer}
       </footer>
     </div>
@@ -151,12 +157,7 @@ export function EditorFieldGrid({
   cols?: 1 | 2;
 }) {
   return (
-    <div
-      className={cn(
-        "grid gap-4",
-        cols === 2 && "sm:grid-cols-2",
-      )}
-    >
+    <div className={cn("grid gap-4", cols === 2 && "sm:grid-cols-2")}>
       {children}
     </div>
   );
@@ -176,7 +177,9 @@ export function EditorListFields({
         >
           <p className="text-sm font-medium">{item.title}</p>
           {item.description ? (
-            <p className="mt-0.5 text-xs text-muted-foreground">{item.description}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {item.description}
+            </p>
           ) : null}
           <div className="mt-3">{item.content}</div>
         </div>

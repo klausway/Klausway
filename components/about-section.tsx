@@ -1,14 +1,18 @@
 import { Reveal } from "./animation/reveal";
+import { TeamMemberPhoto } from "./team-member-photo";
 import {
   aboutPageHeader,
   missionVision,
   ourStory,
-  teamMembers,
   values,
+  type TeamMember,
 } from "@/lib/about";
-import { cn } from "@/lib/utils";
 
-export function AboutSection() {
+type AboutSectionProps = {
+  teamMembers: TeamMember[];
+};
+
+export function AboutSection({ teamMembers }: AboutSectionProps) {
   return (
     <>
       <section id="story" className="relative pb-24">
@@ -102,27 +106,27 @@ export function AboutSection() {
             <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
               Meet Our Team
             </h2>
+            <p className="mt-4 text-muted-foreground">
+              The people building technology that works for your business.
+            </p>
           </Reveal>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {teamMembers.map((member, i) => (
               <Reveal
-                key={member.name}
+                key={member.slug}
                 delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift group rounded-2xl border border-black/[0.08] bg-card/40 p-6 text-center backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
+                className="hover-lift group overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/8"
               >
-                <div
-                  className={cn(
-                    "mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br text-2xl font-semibold text-white shadow-lg transition-transform group-hover:scale-105",
-                    member.accent,
-                  )}
-                >
-                  {member.initials}
+                <TeamMemberPhoto member={member} className="rounded-none" />
+                <div className="p-5 text-center">
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    {member.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {member.role}
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-semibold">{member.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {member.role}
-                </p>
               </Reveal>
             ))}
           </div>

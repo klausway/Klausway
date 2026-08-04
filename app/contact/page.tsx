@@ -4,12 +4,21 @@ import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/animation/reveal";
 import { ContactForm } from "@/components/contact-form";
 import { CtaSection } from "@/components/cta-section";
+import { JsonLd } from "@/components/json-ld";
+import { routes } from "@/lib/navigation";
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  buildPageMetadata,
+  siteConfig,
+} from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Contact",
   description:
     "Ready to transform your IT infrastructure? Get in touch with Klaus Way.",
-};
+  path: routes.contact,
+});
 
 const contactCards = [
   {
@@ -45,6 +54,28 @@ const contactCards = [
 export default function ContactPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: routes.home },
+            { name: "Contact", path: routes.contact },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            name: `Contact ${siteConfig.name}`,
+            description:
+              "Ready to transform your IT infrastructure? Get in touch with Klaus Way.",
+            url: absoluteUrl(routes.contact),
+            mainEntity: {
+              "@type": "Organization",
+              name: siteConfig.name,
+              email: siteConfig.email,
+              telephone: siteConfig.phone,
+            },
+          },
+        ]}
+      />
       <PageHeader
         eyebrow="Klaus Way"
         title={

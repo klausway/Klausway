@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
-import { uploadToS3 } from "@/lib/s3";
+import { uploadMedia } from "@/lib/storage";
 
 export async function POST(request: Request) {
   if (!(await verifyAdmin(request))) return unauthorizedResponse();
@@ -16,13 +16,13 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const key = `uploads/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
 
-    const url = await uploadToS3({
+    const result = await uploadMedia({
       key,
       body: buffer,
       contentType: file.type || "application/octet-stream",
     });
 
-    return NextResponse.json({ url, key });
+    return NextResponse.json({ url: result.url, key, driver: result.driver });
   } catch (error) {
     console.error("[upload]", error);
     return NextResponse.json(

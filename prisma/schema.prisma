@@ -12,6 +12,13 @@ enum AdminRole {
   CONTENT
 }
 
+enum ResourceType {
+  ARTICLE
+  GUIDE
+  NEWS
+  CASE_STUDY
+}
+
 model AdminUser {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -23,17 +30,18 @@ model AdminUser {
 }
 
 model BlogPost {
-  id             String   @id @default(cuid())
-  slug           String   @unique
+  id             String       @id @default(cuid())
+  slug           String       @unique
   title          String
   excerpt        String
-  content        String   @db.Text
+  content        String       @db.Text
+  type           ResourceType @default(ARTICLE)
   coverImage     String?
-  galleryImages  String[] @default([])
-  published      Boolean  @default(false)
-  date           DateTime @default(now())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  galleryImages  String[]     @default([])
+  published      Boolean      @default(false)
+  date           DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model PortfolioProject {
@@ -60,5 +68,19 @@ model PageContent {
   key       String   @unique
   title     String?
   body      String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  role      String
+  image     String?
+  initials  String
+  accent    String   @default("from-brand-500 to-violet-600")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

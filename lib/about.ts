@@ -53,29 +53,52 @@ export const values = [
   },
 ];
 
-export const teamMembers = [
+export type TeamMember = {
+  slug: string;
+  name: string;
+  role: string;
+  initials: string;
+  accent: string;
+  /** Local path (`/team/jim.jpg`) or remote URL (S3). Optional until a photo is attached. */
+  image?: string | null;
+  sortOrder?: number;
+};
+
+export const teamMembers: TeamMember[] = [
   {
+    slug: "jim",
     name: "Jim",
     role: "Co-Owner and CEO",
     initials: "J",
     accent: "from-brand-500 to-violet-600",
+    image: "/team/jim.jpg",
+    sortOrder: 0,
   },
   {
+    slug: "marcus",
     name: "Marcus",
     role: "Head of Developer",
     initials: "M",
     accent: "from-fuchsia-500 to-pink-600",
+    image: "/team/marcus.jpg",
+    sortOrder: 1,
   },
   {
+    slug: "faye",
     name: "Faye",
     role: "Developer",
     initials: "F",
     accent: "from-cyan-500 to-blue-600",
+    image: "/team/faye.jpg",
+    sortOrder: 2,
   },
   {
+    slug: "mew",
     name: "Mew",
     role: "Developer",
     initials: "M",
     accent: "from-lime-500 to-emerald-600",
+    image: "/team/mew.jpg",
+    sortOrder: 3,
   },
 ];

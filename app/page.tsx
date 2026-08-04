@@ -1,7 +1,10 @@
 import { Hero } from "@/components/hero";
 import { HomeProducts } from "@/components/home-products";
 import { CtaSection } from "@/components/cta-section";
+import { JsonLd } from "@/components/json-ld";
 import { getPublishedPortfolioProjects } from "@/lib/portfolio-data";
+import { routes } from "@/lib/navigation";
+import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +13,9 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([{ name: "Home", path: routes.home }])}
+      />
       <Hero projects={projects} />
       <HomeProducts projects={projects} />
       <CtaSection />

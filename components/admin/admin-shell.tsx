@@ -6,6 +6,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  UserRound,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,8 +14,9 @@ import type { AdminRole } from "@/lib/admin-roles";
 
 export type AdminSection =
   | "overview"
-  | "blog"
+  | "resources"
   | "portfolio"
+  | "our-team"
   | "users"
   | "account";
 
@@ -33,9 +35,9 @@ const allNavItems: {
     roles: ["admin"],
   },
   {
-    id: "blog",
-    label: "Blog",
-    description: "Posts & articles",
+    id: "resources",
+    label: "Resources",
+    description: "Articles, guides & news",
     icon: FileText,
     roles: "all",
   },
@@ -47,8 +49,15 @@ const allNavItems: {
     roles: "all",
   },
   {
+    id: "our-team",
+    label: "Our Team",
+    description: "About page photos",
+    icon: UserRound,
+    roles: "all",
+  },
+  {
     id: "users",
-    label: "Team",
+    label: "Admins",
     description: "Roles & accounts",
     icon: Users,
     roles: ["admin"],
@@ -93,8 +102,8 @@ export function AdminShell({
   const roleLabel = userRole === "admin" ? "Admin" : "Content";
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-[1800px]">
-      <aside className="hidden w-72 shrink-0 flex-col border-r border-black/10 bg-muted/60 p-6 lg:flex">
+    <div className="mx-auto flex h-dvh max-w-[1800px] overflow-hidden">
+      <aside className="hidden h-full w-72 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-muted/60 p-6 lg:flex">
         <div className="mb-10">
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-600">
             Klaus Way
@@ -148,8 +157,8 @@ export function AdminShell({
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 border-b border-black/10 bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-20 shrink-0 border-b border-black/10 bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
           <div className="flex flex-wrap items-center gap-2">
             <p className="mr-2 text-xs font-semibold uppercase tracking-wider text-brand-600">
               Content Studio
@@ -180,7 +189,9 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4 lg:px-8 lg:py-4">
+          {children}
+        </main>
       </div>
     </div>
   );

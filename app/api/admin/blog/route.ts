@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
+import { toPrismaResourceType } from "@/lib/blog";
 
 function parseGallery(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("[admin blog GET]", error);
     return NextResponse.json(
-      { error: "Failed to load blog posts." },
+      { error: "Failed to load resources." },
       { status: 500 },
     );
   }
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
     const date = body.date ? new Date(String(body.date)) : new Date();
     const coverImage = body.coverImage ? String(body.coverImage) : null;
     const galleryImages = parseGallery(body.galleryImages);
+    const type = toPrismaResourceType(body.type);
 
     if (!slug || !title || !excerpt) {
       return NextResponse.json(
@@ -51,6 +53,7 @@ export async function POST(request: Request) {
         title,
         excerpt,
         content,
+        type,
         coverImage,
         galleryImages,
         published,
@@ -62,7 +65,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[admin blog POST]", error);
     return NextResponse.json(
-      { error: "Failed to create blog post." },
+      { error: "Failed to create resource." },
       { status: 500 },
     );
   }

@@ -36,6 +36,7 @@ function mapPortfolioProject(project: {
   };
 }
 
+/** When DATABASE_URL is set, the database is the source of truth (CMS edits). */
 export async function getPublishedPortfolioProjects(): Promise<PortfolioProject[]> {
   if (!process.env.DATABASE_URL) {
     return staticPortfolioProjects;
@@ -46,15 +47,11 @@ export async function getPublishedPortfolioProjects(): Promise<PortfolioProject[
       where: { published: true },
       orderBy: { title: "asc" },
     });
-
-    if (projects.length > 0) {
-      return projects.map((project) => mapPortfolioProject(project));
-    }
+    return projects.map((project) => mapPortfolioProject(project));
   } catch (error) {
     console.error("[portfolio-data] getPublishedPortfolioProjects", error);
+    return staticPortfolioProjects;
   }
-
-  return staticPortfolioProjects;
 }
 
 export async function getPortfolioProject(
@@ -68,13 +65,11 @@ export async function getPortfolioProject(
     const project = await db.portfolioProject.findFirst({
       where: { slug, published: true },
     });
-
-    if (project) return mapPortfolioProject(project);
+    return project ? mapPortfolioProject(project) : undefined;
   } catch (error) {
     console.error("[portfolio-data] getPortfolioProject", error);
+    return staticPortfolioProjects.find((item) => item.id === slug);
   }
-
-  return staticPortfolioProjects.find((item) => item.id === slug);
 }
 
 export { portfolioCategories };
