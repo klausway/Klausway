@@ -1,92 +1,67 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import Script from "next/script";
 
-const SDK_SCRIPT =
-  "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+/**
+ * Official Vapi Web Widget (chat).
+ * @see https://docs.vapi.ai/chat/web-widget
+ */
+const WIDGET_SCRIPT =
+  "https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js";
 
-const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
-const SDK_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY;
-const SDK_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_SDK_ASSISTANT_ID;
+// Publishable client keys — safe in the browser. Override with NEXT_PUBLIC_VAPI_*.
+const ASSISTANT_ID =
+  process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID ||
+  "0db87fab-f87f-4919-a21e-31469df88433";
+const PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY ||
+  "b567aa4f-4374-4545-8f93-8d8c66b3670e";
 
-const VAPI_SDK =
-  SDK_API_KEY && SDK_ASSISTANT_ID
-    ? {
-        apiKey: SDK_API_KEY,
-        assistant: SDK_ASSISTANT_ID,
-        config: {
-          position: "bottom-right" as const,
-          theme: {
-            primary: "#0A2540",
-            secondary: "#FFFFFF",
-          },
-        },
-      }
-    : null;
+const MODE = process.env.NEXT_PUBLIC_VAPI_MODE || "chat";
 
 export function VapiChatWidget() {
-  const widgetRootRef = useRef<HTMLDivElement>(null);
-  const widgetMounted = useRef(false);
-  const sdkInitialized = useRef(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const mounted = useRef(false);
 
-  const initSdk = useCallback(() => {
-    if (sdkInitialized.current || !VAPI_SDK || !window.vapiSDK?.run) return false;
-    sdkInitialized.current = true;
-    window.vapiSDK.run(VAPI_SDK);
-    return true;
-  }, []);
+  const mountWidget = useCallback(() => {
+    const root = rootRef.current;
+    if (!root || mounted.current || !ASSISTANT_ID || !PUBLIC_KEY) return;
 
-  useEffect(() => {
-    const root = widgetRootRef.current;
-    if (!root || widgetMounted.current) return;
-    if (!ASSISTANT_ID || !PUBLIC_KEY) return;
-
-    widgetMounted.current = true;
-
-    if (!root.querySelector("vapi-widget")) {
-      const widget = document.createElement("vapi-widget");
-      widget.setAttribute("assistant-id", ASSISTANT_ID);
-      widget.setAttribute("public-key", PUBLIC_KEY);
-      root.appendChild(widget);
+    if (root.querySelector("vapi-widget")) {
+      mounted.current = true;
+      return;
     }
+
+    const widget = document.createElement("vapi-widget");
+    widget.setAttribute("public-key", PUBLIC_KEY);
+    widget.setAttribute("assistant-id", ASSISTANT_ID);
+    widget.setAttribute("mode", MODE);
+    widget.setAttribute("theme", "light");
+    widget.setAttribute("position", "bottom-right");
+    widget.setAttribute("size", "compact");
+    widget.setAttribute("radius", "large");
+    widget.setAttribute("accent-color", "#0A2540");
+    widget.setAttribute("button-base-color", "#0A2540");
+    widget.setAttribute("button-accent-color", "#FFFFFF");
+    widget.setAttribute("main-label", "Chat with Klaus Way");
+    widget.setAttribute(
+      "empty-chat-message",
+      "Hi! How can we help you today?",
+    );
+    root.appendChild(widget);
+    mounted.current = true;
   }, []);
 
-  useEffect(() => {
-    if (!VAPI_SDK) return;
-    if (initSdk()) return;
-
-    // Script may load after this effect if the window "load" event already fired.
-    const id = window.setInterval(() => {
-      if (initSdk()) window.clearInterval(id);
-    }, 250);
-
-    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
-
-    return () => {
-      window.clearInterval(id);
-      window.clearTimeout(timeout);
-    };
-  }, [initSdk]);
-
-  const isConfigured = Boolean((ASSISTANT_ID && PUBLIC_KEY) || VAPI_SDK);
-  if (!isConfigured) return null;
+  if (!ASSISTANT_ID || !PUBLIC_KEY) return null;
 
   return (
     <>
-      <div
-        ref={widgetRootRef}
-        id="vapi-widget-root"
-        className="pointer-events-none fixed bottom-5 right-5 z-[9999] [&>*]:pointer-events-auto"
-        aria-hidden
-      />
+      <div ref={rootRef} id="vapi-widget-root" className="contents" />
       <Script
-        src={SDK_SCRIPT}
+        src={WIDGET_SCRIPT}
         strategy="afterInteractive"
-        onLoad={() => {
-          initSdk();
-        }}
+        onLoad={mountWidget}
       />
     </>
   );
