@@ -230,7 +230,7 @@ Klausway/
 
 ## 8. บริการภายนอก (Environment)
 
-คัดลอกจาก `.env.example` → `.env.local`
+คัดลอกจาก `.env.example` → `.env`
 
 | ตัวแปร | ต่อกับ | ใช้เมื่อ |
 |--------|--------|---------|
@@ -299,7 +299,7 @@ npm run dev:clean        # ลบ .next แล้ว dev ใหม่
 npm run build            # Production (ต้องปิด dev server ก่อน)
 npm run build:pages      # Static สำหรับ GitHub Pages
 
-npm run db:push          # sync schema → DB (.env.local)
+npm run db:push          # sync schema → DB (.env)
 npm run db:seed          # seed จาก static blog/portfolio
 npm run db:studio        # Prisma Studio
 ```

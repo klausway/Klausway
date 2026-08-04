@@ -20,14 +20,16 @@ manually** (it does not auto-start): `sudo pg_ctlcluster 16 main start`.
 
 The dev DB and connection config already exist in the snapshot:
 - Role/DB: `klausway` / `klausway` → database `klausway_website` on `localhost:5432`
-- `.env.local` (gitignored) holds `DATABASE_URL`, `UPLOAD_DRIVER=local`, and dev
-  `JWT_SECRET` / `ADMIN_SECRET`.
+- `.env` (gitignored) holds `DATABASE_URL`, `UPLOAD_DRIVER=local`, dev
+  `JWT_SECRET` / `ADMIN_SECRET`, and the `NEXT_PUBLIC_VAPI_*` widget keys. This project
+  uses `.env` (not `.env.local`) as the single working env file; the `db:*` npm scripts
+  load it via `dotenv -e .env`.
 
-If `.env.local` is ever missing, recreate it from `.env.example` with
+If `.env` is ever missing, recreate it from `.env.example` with
 `DATABASE_URL="postgresql://klausway:klausway@localhost:5432/klausway_website"`, then run
 `npm run db:push` and `npm run db:seed`. The apt-installed Postgres has no `createdb`-based
 peer setup, so the repo's `npm run db:setup:local` script is **not** the path used here —
-use `db:push` + `db:seed` directly (they read `.env.local` via `dotenv-cli`).
+use `db:push` + `db:seed` directly.
 
 ### Lint / typecheck / build
 

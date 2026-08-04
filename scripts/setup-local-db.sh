@@ -32,7 +32,7 @@ DATABASE_URL="$LOCAL_URL" npx prisma db push
 echo "→ Seeding blog / portfolio / team from frontend static data …"
 DATABASE_URL="$LOCAL_URL" SEED_OVERWRITE="${SEED_OVERWRITE:-false}" npx tsx prisma/seed.ts
 
-ENV_FILE="$ROOT/.env.local"
+ENV_FILE="$ROOT/.env"
 if [[ -f "$ENV_FILE" ]]; then
   if grep -q '^DATABASE_URL=' "$ENV_FILE"; then
     # Keep a backup comment of previous remote URL if switching.
@@ -47,7 +47,7 @@ cat <<EOF
 
 ✓ Local database ready.
 
-Add / update these in .env.local:
+Add / update these in .env:
 
 DATABASE_URL="${LOCAL_URL}"
 UPLOAD_DRIVER="local"

@@ -15,12 +15,12 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "db:generate": "dotenv -e .env.local -- prisma generate",
-    "db:push": "dotenv -e .env.local -- prisma db push",
-    "db:seed": "dotenv -e .env.local -- tsx prisma/seed.ts",
-    "db:seed:overwrite": "dotenv -e .env.local -- env SEED_OVERWRITE=true tsx prisma/seed.ts",
+    "db:generate": "dotenv -e .env -- prisma generate",
+    "db:push": "dotenv -e .env -- prisma db push",
+    "db:seed": "dotenv -e .env -- tsx prisma/seed.ts",
+    "db:seed:overwrite": "dotenv -e .env -- env SEED_OVERWRITE=true tsx prisma/seed.ts",
     "db:setup:local": "bash scripts/setup-local-db.sh",
-    "db:studio": "dotenv -e .env.local -- prisma studio"
+    "db:studio": "dotenv -e .env -- prisma studio"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1061.0",
