@@ -35,6 +35,11 @@ jobs:
         env:
           GITHUB_PAGES: "true"
           NEXT_PUBLIC_SITE_URL: https://kotchamon-20.github.io/Klausway
+          # Optional overrides (publishable). Component defaults keep the chatbot
+          # working when these secrets are unset.
+          NEXT_PUBLIC_VAPI_ASSISTANT_ID: ${{ secrets.NEXT_PUBLIC_VAPI_ASSISTANT_ID }}
+          NEXT_PUBLIC_VAPI_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPI_PUBLIC_KEY }}
+          NEXT_PUBLIC_VAPI_MODE: ${{ secrets.NEXT_PUBLIC_VAPI_MODE }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
