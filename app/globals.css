@@ -380,21 +380,7 @@ body {
   color: rgb(79 70 229);
 }
 
-/* Vapi chat widget — tighten FAB + panel (SDK paints a wide empty pill by default) */
-#vapi-widget-root .vapi-widget-wrapper [style*="cursor: pointer"] {
-  width: 3.5rem !important;
-  height: 3.5rem !important;
-  min-width: 3.5rem !important;
-  padding: 0 !important;
-  border-radius: 9999px !important;
-}
-
-/* Hide the text column on the floating button; keep the status/chat icon only */
-#vapi-widget-root .vapi-widget-wrapper [style*="cursor: pointer"] > div > div {
-  display: none !important;
-}
-
-/* Compact the opened panel so it isn’t a tall empty sheet */
+/* Vapi open panel — keep compact so empty chat isn’t a tall blank sheet */
 #vapi-widget-root .vapi-widget-wrapper > div[style*="position: fixed"] > div[style*="flex-direction: column"] {
   width: min(22rem, calc(100vw - 2rem)) !important;
   height: min(26rem, calc(100vh - 6rem)) !important;

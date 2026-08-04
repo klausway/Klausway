@@ -49,13 +49,13 @@ export function VapiChatWidget() {
           position: "bottom-right",
           size: "compact",
           radius: "large",
-          // FAB icon is painted with accentColor (not buttonAccentColor).
-          // Must contrast the navy button; also used for send/user bubbles.
+          // FAB icon uses accentColor (not buttonAccentColor) — must contrast navy.
           accentColor: "#38BDF8",
           buttonBaseColor: "#0A2540",
           buttonAccentColor: "#FFFFFF",
           baseColor: "#FFFFFF",
           mainLabel: "Chat with us",
+          ctaTitle: "Chat with us",
           emptyChatMessage: "Hi! How can we help you today?",
         },
       });
