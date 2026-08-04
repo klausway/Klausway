@@ -6,20 +6,25 @@ import Script from "next/script";
 const SDK_SCRIPT =
   "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
 
-const ASSISTANT_ID = "0db87fab-f87f-4919-a21e-31469df88433";
-const PUBLIC_KEY = "b567aa4f-4374-4545-8f93-8d8c66b3670e";
+const ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
+const SDK_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY;
+const SDK_ASSISTANT_ID = process.env.NEXT_PUBLIC_VAPI_SDK_ASSISTANT_ID;
 
-const VAPI_SDK = {
-  apiKey: "64f6e7bc-e983-498b-9c36-b21810378753",
-  assistant: "50dd647c-790e-48f6-ad20-4f5945b7d4fa",
-  config: {
-    position: "bottom-right" as const,
-    theme: {
-      primary: "#0A2540",
-      secondary: "#FFFFFF",
-    },
-  },
-};
+const VAPI_SDK =
+  SDK_API_KEY && SDK_ASSISTANT_ID
+    ? {
+        apiKey: SDK_API_KEY,
+        assistant: SDK_ASSISTANT_ID,
+        config: {
+          position: "bottom-right" as const,
+          theme: {
+            primary: "#0A2540",
+            secondary: "#FFFFFF",
+          },
+        },
+      }
+    : null;
 
 export function VapiChatWidget() {
   const widgetRootRef = useRef<HTMLDivElement>(null);
@@ -27,7 +32,7 @@ export function VapiChatWidget() {
   const sdkInitialized = useRef(false);
 
   const initSdk = useCallback(() => {
-    if (sdkInitialized.current || !window.vapiSDK?.run) return false;
+    if (sdkInitialized.current || !VAPI_SDK || !window.vapiSDK?.run) return false;
     sdkInitialized.current = true;
     window.vapiSDK.run(VAPI_SDK);
     return true;
@@ -36,6 +41,7 @@ export function VapiChatWidget() {
   useEffect(() => {
     const root = widgetRootRef.current;
     if (!root || widgetMounted.current) return;
+    if (!ASSISTANT_ID || !PUBLIC_KEY) return;
 
     widgetMounted.current = true;
 
@@ -48,6 +54,7 @@ export function VapiChatWidget() {
   }, []);
 
   useEffect(() => {
+    if (!VAPI_SDK) return;
     if (initSdk()) return;
 
     // Script may load after this effect if the window "load" event already fired.
@@ -62,6 +69,9 @@ export function VapiChatWidget() {
       window.clearTimeout(timeout);
     };
   }, [initSdk]);
+
+  const isConfigured = Boolean((ASSISTANT_ID && PUBLIC_KEY) || VAPI_SDK);
+  if (!isConfigured) return null;
 
   return (
     <>
