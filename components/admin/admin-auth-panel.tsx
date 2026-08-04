@@ -37,12 +37,17 @@ export function AdminAuthPanel({ onAuthenticated }: AdminAuthPanelProps) {
 
       const payload = (await response.json()) as {
         error?: string;
+        detail?: string;
         token?: string;
         user?: AdminUser;
       };
 
       if (!response.ok || !payload.token || !payload.user) {
-        throw new Error(payload.error ?? "Sign in failed");
+        const detail =
+          process.env.NODE_ENV === "development" && payload.detail
+            ? ` (${payload.detail})`
+            : "";
+        throw new Error((payload.error ?? "Sign in failed") + detail);
       }
 
       onAuthenticated(payload.token, payload.user);
@@ -89,7 +94,7 @@ export function AdminAuthPanel({ onAuthenticated }: AdminAuthPanelProps) {
           </div>
 
           {error ? (
-            <p className="mt-4 rounded-lg border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+            <p className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-700">
               {error}
             </p>
           ) : null}

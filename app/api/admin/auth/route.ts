@@ -5,9 +5,16 @@ import { createAuthToken, verifyPassword } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const email = String(body.email ?? "").trim().toLowerCase();
-    const password = String(body.password ?? "");
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    }
+
+    const record = body && typeof body === "object" ? (body as Record<string, unknown>) : {};
+    const email = String(record.email ?? "").trim().toLowerCase();
+    const password = String(record.password ?? "");
 
     if (!email || !password) {
       return NextResponse.json(
@@ -42,6 +49,17 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("[admin login]", error);
-    return NextResponse.json({ error: "Failed to sign in." }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to sign in.";
+    const misconfigured =
+      message.includes("JWT secret") || message.includes("Environment variable not found");
+    return NextResponse.json(
+      {
+        error: misconfigured
+          ? "Server auth is misconfigured. Check JWT_SECRET / DATABASE_URL."
+          : "Failed to sign in.",
+        ...(process.env.NODE_ENV === "development" ? { detail: message } : {}),
+      },
+      { status: misconfigured ? 503 : 500 },
+    );
   }
 }
