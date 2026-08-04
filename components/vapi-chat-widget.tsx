@@ -52,7 +52,7 @@ export function VapiChatWidget() {
           accentColor: "#0A2540",
           buttonBaseColor: "#0A2540",
           buttonAccentColor: "#FFFFFF",
-          mainLabel: "Chat with Klaus Way",
+          mainLabel: "Chat with us",
           emptyChatMessage: "Hi! How can we help you today?",
         },
       });
