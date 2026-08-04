@@ -5,6 +5,7 @@ import Script from "next/script";
 
 /**
  * Official Vapi Web Widget (chat).
+ * Loaded from the embed UMD, which exposes window.WidgetLoader.
  * @see https://docs.vapi.ai/chat/web-widget
  */
 const WIDGET_SCRIPT =
@@ -21,47 +22,55 @@ const PUBLIC_KEY =
 const MODE = process.env.NEXT_PUBLIC_VAPI_MODE || "chat";
 
 export function VapiChatWidget() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const mounted = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const initialized = useRef(false);
 
-  const mountWidget = useCallback(() => {
-    const root = rootRef.current;
-    if (!root || mounted.current || !ASSISTANT_ID || !PUBLIC_KEY) return;
+  const initWidget = useCallback(() => {
+    const container = containerRef.current;
+    const Loader = window.WidgetLoader;
+    if (!container || !Loader || initialized.current) return;
+    if (!ASSISTANT_ID || !PUBLIC_KEY) return;
 
-    if (root.querySelector("vapi-widget")) {
-      mounted.current = true;
+    // Avoid double-mount under React Strict Mode / remounts.
+    if (container.childElementCount > 0) {
+      initialized.current = true;
       return;
     }
 
-    const widget = document.createElement("vapi-widget");
-    widget.setAttribute("public-key", PUBLIC_KEY);
-    widget.setAttribute("assistant-id", ASSISTANT_ID);
-    widget.setAttribute("mode", MODE);
-    widget.setAttribute("theme", "light");
-    widget.setAttribute("position", "bottom-right");
-    widget.setAttribute("size", "compact");
-    widget.setAttribute("radius", "large");
-    widget.setAttribute("accent-color", "#0A2540");
-    widget.setAttribute("button-base-color", "#0A2540");
-    widget.setAttribute("button-accent-color", "#FFFFFF");
-    widget.setAttribute("main-label", "Chat with Klaus Way");
-    widget.setAttribute(
-      "empty-chat-message",
-      "Hi! How can we help you today?",
-    );
-    root.appendChild(widget);
-    mounted.current = true;
+    try {
+      new Loader({
+        container,
+        component: "VapiWidget",
+        props: {
+          publicKey: PUBLIC_KEY,
+          assistantId: ASSISTANT_ID,
+          mode: MODE,
+          theme: "light",
+          position: "bottom-right",
+          size: "compact",
+          radius: "large",
+          accentColor: "#0A2540",
+          buttonBaseColor: "#0A2540",
+          buttonAccentColor: "#FFFFFF",
+          mainLabel: "Chat with Klaus Way",
+          emptyChatMessage: "Hi! How can we help you today?",
+        },
+      });
+      initialized.current = true;
+    } catch (error) {
+      console.error("Failed to initialize Vapi chat widget:", error);
+    }
   }, []);
 
   if (!ASSISTANT_ID || !PUBLIC_KEY) return null;
 
   return (
     <>
-      <div ref={rootRef} id="vapi-widget-root" className="contents" />
+      <div ref={containerRef} id="vapi-widget-root" />
       <Script
         src={WIDGET_SCRIPT}
         strategy="afterInteractive"
-        onLoad={mountWidget}
+        onLoad={initWidget}
       />
     </>
   );
