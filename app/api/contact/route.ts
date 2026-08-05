@@ -1,23 +1,62 @@
 import { NextResponse } from "next/server";
+import {
+  checkContactRateLimit,
+  getClientIp,
+  guardContactSubmission,
+  parseContactBody,
+} from "@/lib/contact-security";
 import { sendContactEmail } from "@/lib/email";
+import { verifyRecaptchaV3 } from "@/lib/recaptcha";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const firstName = String(body.firstName ?? "").trim();
-    const lastName = String(body.lastName ?? "").trim();
-    const email = String(body.email ?? "").trim();
-    const phone = String(body.phone ?? "").trim();
-    const message = String(body.message ?? "").trim();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    }
 
-    if (!firstName || !lastName || !email || !phone || !message) {
+    const record = body && typeof body === "object" ? (body as Record<string, unknown>) : {};
+    const recaptchaToken =
+      typeof record.recaptchaToken === "string" ? record.recaptchaToken : undefined;
+
+    const captcha = await verifyRecaptchaV3(recaptchaToken);
+    if (!captcha.ok) {
+      return NextResponse.json({ error: captcha.error }, { status: captcha.status });
+    }
+
+    const payload = parseContactBody(body);
+    const guarded = guardContactSubmission(payload);
+
+    if (!guarded.ok) {
+      if ("silent" in guarded) {
+        // Fake success so bots don't learn which check failed
+        return NextResponse.json({ ok: true });
+      }
       return NextResponse.json(
-        { error: "All fields are required." },
-        { status: 400 },
+        { error: guarded.error },
+        { status: guarded.status },
       );
     }
 
-    await sendContactEmail({ firstName, lastName, email, phone, message });
+    const ip = getClientIp(request);
+    const rate = checkContactRateLimit(ip, guarded.data.email);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many messages. Please try again later.",
+        },
+        {
+          status: 429,
+          headers: rate.retryAfterSec
+            ? { "Retry-After": String(rate.retryAfterSec) }
+            : undefined,
+        },
+      );
+    }
+
+    await sendContactEmail(guarded.data);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
