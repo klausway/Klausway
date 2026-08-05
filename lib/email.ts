@@ -33,7 +33,7 @@ export async function sendContactEmail(input: ContactEmailInput) {
   const safePhone = sanitizeHeaderValue(input.phone).slice(0, 40);
   const safeMessage = input.message.replace(/\0/g, "").slice(0, 5000);
 
-  return resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from,
     to,
     replyTo: safeEmail,
@@ -46,4 +46,18 @@ export async function sendContactEmail(input: ContactEmailInput) {
       safeMessage,
     ].join("\n"),
   });
+
+  // Resend returns { data, error } and does not always throw
+  if (error) {
+    console.error("[email] Resend error", error);
+    throw new Error(error.message || "Failed to send email via Resend");
+  }
+
+  if (!data?.id) {
+    console.error("[email] Resend returned no message id", { data, error });
+    throw new Error("Failed to send email via Resend");
+  }
+
+  console.info("[email] sent", { id: data.id, to });
+  return data;
 }

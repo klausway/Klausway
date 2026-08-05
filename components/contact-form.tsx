@@ -44,7 +44,7 @@ export function ContactForm() {
           phone: data.get("phone"),
           message: data.get("message"),
           // Honeypot — leave empty; bots often autofill it
-          companyWebsite: data.get("companyWebsite"),
+          hpField: data.get("hpField"),
           formStartedAt,
           recaptchaToken,
         }),
@@ -83,15 +83,15 @@ export function ContactForm() {
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="relative mt-6 space-y-4">
-          {/* Honeypot — hidden from humans, filled by many bots */}
+          {/* Honeypot — obscure name to avoid browser autofill */}
           <div
             className="pointer-events-none absolute -left-[9999px] top-0 h-px w-px overflow-hidden opacity-0"
             aria-hidden="true"
           >
             <label>
-              Company website
+              Leave blank
               <input
-                name="companyWebsite"
+                name="hpField"
                 type="text"
                 tabIndex={-1}
                 autoComplete="off"

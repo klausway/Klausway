@@ -56,12 +56,13 @@ export type ContactPayload = {
   email: string;
   phone: string;
   message: string;
-  companyWebsite: string;
+  /** Honeypot — must stay empty. Obscure name reduces browser autofill. */
+  hpField: string;
   formStartedAt: number | null;
 };
 
 export type ContactGuardResult =
-  | { ok: true; data: Omit<ContactPayload, "companyWebsite" | "formStartedAt"> }
+  | { ok: true; data: Omit<ContactPayload, "hpField" | "formStartedAt"> }
   | { ok: false; status: number; error: string }
   /** Silent drop — respond 200 without sending mail (bot traps). */
   | { ok: false; silent: true };
@@ -83,7 +84,8 @@ export function parseContactBody(body: unknown): ContactPayload {
     email: String(record.email ?? "").trim(),
     phone: String(record.phone ?? "").trim(),
     message: String(record.message ?? "").trim(),
-    companyWebsite: String(record.companyWebsite ?? "").trim(),
+    // Accept legacy honeypot name too (older clients)
+    hpField: String(record.hpField ?? record.companyWebsite ?? "").trim(),
     formStartedAt,
   };
 }
@@ -93,17 +95,20 @@ export function parseContactBody(body: unknown): ContactPayload {
  */
 export function guardContactSubmission(payload: ContactPayload): ContactGuardResult {
   // Honeypot — bots often fill every field
-  if (payload.companyWebsite) {
+  if (payload.hpField) {
+    console.warn("[contact] honeypot tripped");
     return { ok: false, silent: true };
   }
 
   // Instant submit (scripts) — missing or too-fast timestamp
   const started = payload.formStartedAt;
   if (started == null || started <= 0) {
+    console.warn("[contact] missing formStartedAt");
     return { ok: false, silent: true };
   }
   const dwell = Date.now() - started;
   if (dwell < MIN_DWELL_MS) {
+    console.warn("[contact] submit too fast", { dwell });
     return { ok: false, silent: true };
   }
   // Reject absurd future / ancient timestamps (clock skew allowance ~1 day)
