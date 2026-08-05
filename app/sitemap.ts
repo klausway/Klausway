@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { resourcePosts } from "@/lib/blog";
+import { featuredProducts } from "@/lib/featured-products";
 import { portfolioProjects } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { absoluteUrl } from "@/lib/seo";
@@ -8,6 +9,7 @@ const staticPaths = [
   routes.home,
   routes.about,
   routes.apps,
+  routes.products,
   routes.resources,
   routes.pricing,
   routes.portfolio,
@@ -40,5 +42,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...pages, ...posts, ...projects];
+  const products: MetadataRoute.Sitemap = featuredProducts.map((product) => ({
+    url: absoluteUrl(`${routes.products}/${product.id}`),
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [...pages, ...posts, ...projects, ...products];
 }

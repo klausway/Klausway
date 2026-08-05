@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { LayoutShell } from "@/components/layout-shell";
 import { JsonLd } from "@/components/json-ld";
 import { assetPath } from "@/lib/asset-path";
@@ -89,6 +90,7 @@ export default function RootLayout({
         className="min-h-screen bg-background text-foreground antialiased"
         suppressHydrationWarning
       >
+        <GoogleAnalytics />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd(), professionalServiceJsonLd()]} />
         <LayoutShell>{children}</LayoutShell>
       </body>

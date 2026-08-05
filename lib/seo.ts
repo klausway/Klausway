@@ -264,6 +264,37 @@ export function portfolioProjectJsonLd(project: {
   };
 }
 
+export function softwareApplicationJsonLd(product: {
+  id: string;
+  name: string;
+  tagline: string;
+  overview: string;
+  tags: string[];
+  image: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: product.name,
+    description: product.overview || product.tagline,
+    url: absoluteUrl(`${routes.products}/${product.id}`),
+    image: absoluteImageUrl(product.image),
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    keywords: product.tags.join(", "),
+    author: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: absoluteUrl("/"),
+    },
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceCurrency: "USD",
+    },
+  };
+}
+
 export function professionalServiceJsonLd() {
   return {
     "@context": "https://schema.org",
