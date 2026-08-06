@@ -3,7 +3,7 @@ import { brand } from "@/lib/brand";
 import { assetPath } from "@/lib/asset-path";
 import { routes } from "@/lib/navigation";
 
-const DEFAULT_SITE_URL = "https://kotchamon-20.github.io/Klausway";
+const DEFAULT_SITE_URL = "https://www.klausway.com";
 
 export const siteConfig = {
   name: brand.name,
@@ -162,6 +162,9 @@ export function organizationJsonLd() {
       areaServed: "US",
       availableLanguage: ["English"],
     },
+    sameAs: [
+      "https://www.linkedin.com/company/klaus-way-technology",
+    ],
   };
 }
 
@@ -195,11 +198,26 @@ export function breadcrumbJsonLd(
   };
 }
 
+export function resourceTypeKeywords(type?: string | null): string[] {
+  const base = [...siteConfig.keywords];
+  switch (type) {
+    case "guide":
+      return [...base, "how-to guide", "business process guide", "IT playbook"];
+    case "news":
+      return [...base, "industry news", "technology news"];
+    case "case-study":
+      return [...base, "case study", "customer success", "digital transformation"];
+    default:
+      return [...base, "IT insights", "operations modernization"];
+  }
+}
+
 export function blogPostingJsonLd(post: {
   slug: string;
   title: string;
   excerpt: string;
   date: string;
+  updatedAt?: string;
   coverImage?: string | null;
   type?: string;
 }) {
@@ -210,7 +228,8 @@ export function blogPostingJsonLd(post: {
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updatedAt ?? post.date,
+    keywords: resourceTypeKeywords(post.type).join(", "),
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": url,

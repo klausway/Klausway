@@ -8,15 +8,17 @@ import {
   ContentDetailShell,
 } from "@/components/content-detail-shell";
 import { RichTextContent } from "@/components/rich-text-content";
+import { RelatedResources } from "@/components/related-resources";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { resourceTypeLabels } from "@/lib/blog";
-import { getResourcePost } from "@/lib/blog-data";
+import { getRelatedResourcePosts, getResourcePost } from "@/lib/blog-data";
 import { routes } from "@/lib/navigation";
 import {
   blogPostingJsonLd,
   breadcrumbJsonLd,
   buildPageMetadata,
+  resourceTypeKeywords,
 } from "@/lib/seo";
 
 type ResourcePostPageProps = {
@@ -37,7 +39,9 @@ export async function generateMetadata({
     path: `${routes.resources}/${post.slug}`,
     image: post.coverImage,
     type: "article",
+    keywords: resourceTypeKeywords(post.type),
     publishedTime: post.date,
+    modifiedTime: post.updatedAt ?? post.date,
   });
 }
 
@@ -47,6 +51,8 @@ export default async function ResourcePostPage({
   const { slug } = await params;
   const post = await getResourcePost(slug);
   if (!post) notFound();
+
+  const related = await getRelatedResourcePosts(post.slug, post.type, 3);
 
   const formattedDate = new Date(post.date).toLocaleDateString("en-US", {
     month: "long",
@@ -97,6 +103,8 @@ export default async function ResourcePostPage({
           />
         </ContentDetailArticle>
       </ContentDetailShell>
+
+      <RelatedResources posts={related} />
 
       <CtaSection
         heading={

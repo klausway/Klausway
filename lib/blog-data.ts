@@ -15,6 +15,7 @@ function mapResourcePost(post: {
   coverImage: string | null;
   galleryImages: string[];
   date: Date;
+  updatedAt?: Date;
 }): ResourcePost & { content: string } {
   return {
     slug: post.slug,
@@ -25,6 +26,7 @@ function mapResourcePost(post: {
     coverImage: post.coverImage,
     galleryImages: post.galleryImages,
     date: post.date.toISOString().slice(0, 10),
+    updatedAt: (post.updatedAt ?? post.date).toISOString().slice(0, 10),
   };
 }
 
@@ -96,6 +98,28 @@ export async function getResourcePost(
     const fallback = staticResourcePosts.find((item) => item.slug === slug);
     return fallback ? staticAsDetail(fallback) : undefined;
   }
+}
+
+/** Related published posts for internal linking on resource detail pages. */
+export async function getRelatedResourcePosts(
+  slug: string,
+  type?: ResourceType,
+  limit = 3,
+): Promise<ResourcePost[]> {
+  const posts = await getPublishedResourcePosts(
+    type ? { type } : undefined,
+  );
+  const sameType = posts.filter((post) => post.slug !== slug);
+  if (sameType.length >= limit) return sameType.slice(0, limit);
+
+  const all = await getPublishedResourcePosts();
+  const seen = new Set(sameType.map((post) => post.slug));
+  for (const post of all) {
+    if (post.slug === slug || seen.has(post.slug)) continue;
+    sameType.push(post);
+    if (sameType.length >= limit) break;
+  }
+  return sameType.slice(0, limit);
 }
 
 /** @deprecated Use getPublishedResourcePosts */

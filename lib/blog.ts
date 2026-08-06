@@ -62,6 +62,8 @@ export type ResourcePost = {
   title: string;
   excerpt: string;
   date: string;
+  /** ISO date when the CMS/curator last updated the post (SEO freshness). */
+  updatedAt?: string;
   type: ResourceType;
   coverImage?: string | null;
   galleryImages?: string[];
