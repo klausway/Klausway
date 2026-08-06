@@ -5,7 +5,7 @@ const conversations = [
   {
     name: "Bruce Wayne",
     channel: "Email",
-    channelColor: "bg-rose-500",
+    channelColor: "bg-red-500",
     preview: "Can you send over a revised quote for the enterprise tier?",
     time: "2m",
     unread: 2,
@@ -30,7 +30,7 @@ const conversations = [
   {
     name: "@hooli_official",
     channel: "Instagram",
-    channelColor: "bg-fuchsia-500",
+    channelColor: "bg-sky-500",
     preview: "📷 sent a photo",
     time: "3h",
     unread: 0,
@@ -41,10 +41,10 @@ export function InboxVisual() {
   return (
     <div className="relative">
       <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 backdrop-blur">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur">
         <div className="grid grid-cols-5">
-          <div className="col-span-2 border-r border-black/[0.08]">
-            <div className="border-b border-black/[0.08] p-3">
+          <div className="col-span-2 border-r border-border">
+            <div className="border-b border-border p-3">
               <div className="text-xs font-semibold">Unified Inbox</div>
               <div className="mt-0.5 text-[10px] text-muted-foreground">
                 4 new messages
@@ -54,12 +54,12 @@ export function InboxVisual() {
               {conversations.map((c, i) => (
                 <div
                   key={i}
-                  className={`flex cursor-pointer items-start gap-2 border-b border-black/[0.08] p-3 transition-colors ${
-                    c.active ? "bg-black/[0.03]" : "hover:bg-black/[0.02]"
+                  className={`flex cursor-pointer items-start gap-2 border-b border-border p-3 transition-colors ${
+                    c.active ? "bg-surface-2" : "hover:bg-card"
                   }`}
                 >
                   <div className="relative">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-[9px] font-semibold text-white">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-sky-500 text-[9px] font-semibold text-white">
                       {c.name
                         .split(" ")
                         .map((w) => w[0])
@@ -95,13 +95,13 @@ export function InboxVisual() {
           </div>
 
           <div className="col-span-3 flex flex-col">
-            <div className="flex items-center justify-between border-b border-black/[0.08] p-3">
+            <div className="flex items-center justify-between border-b border-border p-3">
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-[9px] font-semibold text-white">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-sky-500 text-[9px] font-semibold text-white">
                     BW
                   </div>
-                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-card bg-rose-500" />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-card bg-red-500" />
                 </div>
                 <div>
                   <div className="text-xs font-medium">Bruce Wayne</div>
@@ -111,14 +111,14 @@ export function InboxVisual() {
                   </div>
                 </div>
               </div>
-              <button className="rounded-md border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px]">
+              <button className="rounded-md border border-border bg-surface-2 px-2 py-1 text-[10px]">
                 View deal
               </button>
             </div>
 
             <div className="flex-1 space-y-2 p-3">
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-black/[0.03] px-3 py-2 text-[10px]">
+                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-surface-2 px-3 py-2 text-[10px]">
                   Hi! Just reviewing the package you sent over.
                 </div>
               </div>
@@ -129,7 +129,7 @@ export function InboxVisual() {
                 </div>
               </div>
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-black/[0.03] px-3 py-2 text-[10px]">
+                <div className="max-w-[80%] rounded-2xl rounded-tl-sm bg-surface-2 px-3 py-2 text-[10px]">
                   Can you send over a revised quote for the enterprise tier?
                 </div>
               </div>
@@ -155,8 +155,8 @@ export function InboxVisual() {
               </div>
             </div>
 
-            <div className="border-t border-black/[0.08] p-2">
-              <div className="flex items-center gap-2 rounded-lg border border-black/10 bg-background/60 px-3 py-1.5">
+            <div className="border-t border-border p-2">
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 px-3 py-1.5">
                 <Mail className="h-3 w-3 text-muted-foreground" />
                 <input
                   readOnly

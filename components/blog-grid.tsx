@@ -45,7 +45,7 @@ export function ResourcesGrid({
       <div className="mx-auto max-w-7xl px-6">
         {!hideHeader && (
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-balance text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+            <h2 className="text-balance font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
               Resources
             </h2>
           </Reveal>
@@ -77,12 +77,12 @@ export function ResourcesGrid({
               <Reveal
                 key={post.slug}
                 delay={((i % 3) * 100) as 0 | 100 | 200}
-                className="hover-lift group flex flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
+                className="hover-lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card"
               >
                 <ContentCardCover
                   src={post.coverImage}
                   alt={post.title}
-                  accent="from-brand-500/25 via-card/60 to-violet-500/15"
+                  accent="from-brand-500/25 via-card/60 to-sky-500/15"
                 />
                 <div className="flex flex-1 flex-col p-6">
                   <div className="flex flex-wrap items-center gap-2">
@@ -143,7 +143,7 @@ function FilterChip({
         "rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors",
         active
           ? "bg-foreground text-background"
-          : "bg-black/[0.04] text-muted-foreground hover:bg-black/[0.07] hover:text-foreground",
+          : "bg-surface-2 text-muted-foreground hover:bg-border hover:text-foreground",
       )}
     >
       {label}

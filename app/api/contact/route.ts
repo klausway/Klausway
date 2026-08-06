@@ -5,7 +5,8 @@ import {
   guardContactSubmission,
   parseContactBody,
 } from "@/lib/contact-security";
-import { sendContactEmail } from "@/lib/email";
+import { db } from "@/lib/db";
+import { sendContactEmail, sendLeadConfirmationEmail } from "@/lib/email";
 import { verifyRecaptchaV3 } from "@/lib/recaptcha";
 
 export async function POST(request: Request) {
@@ -56,7 +57,36 @@ export async function POST(request: Request) {
       );
     }
 
-    await sendContactEmail(guarded.data);
+    // Persist first — a saved lead survives an email outage.
+    let persisted = false;
+    try {
+      await db.contactSubmission.create({
+        data: {
+          name: guarded.data.name,
+          email: guarded.data.email,
+          phone: guarded.data.phone || null,
+          message: guarded.data.message,
+          intent: guarded.data.intent || null,
+          source: guarded.data.source || null,
+        },
+      });
+      persisted = true;
+    } catch (dbError) {
+      console.error("[contact] failed to persist lead", dbError);
+    }
+
+    try {
+      await sendContactEmail(guarded.data);
+    } catch (emailError) {
+      // Lead is already saved — don't surface a failure to the visitor.
+      if (!persisted) throw emailError;
+      console.error("[contact] notification email failed (lead saved)", emailError);
+    }
+
+    // Fire-and-forget confirmation to the lead.
+    void sendLeadConfirmationEmail(guarded.data).catch((err) => {
+      console.error("[contact] confirmation email failed", err);
+    });
 
     return NextResponse.json({ ok: true });
   } catch (error) {

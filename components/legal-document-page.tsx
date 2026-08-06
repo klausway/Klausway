@@ -195,9 +195,9 @@ export function LegalDocumentPage({
 
   return (
     <>
-      <header className="relative overflow-hidden border-b border-black/[0.06] pb-16 pt-32">
-        <div className="dot-pattern absolute inset-0 -z-20 opacity-40" />
-        <div className="absolute left-1/2 top-0 -z-10 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-200/40 via-fuchsia-100/40 to-cyan-100/40 blur-3xl" />
+      <header className="relative overflow-hidden border-b border-border pb-16 pt-32">
+        
+        <div className="absolute left-1/2 top-0 -z-10 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-200/40 via-sky-100/40 to-cyan-100/40 blur-3xl" />
         <div className="mx-auto max-w-5xl px-6 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-200 bg-white text-brand-700 shadow-lg shadow-brand-500/10">
             <Icon className="h-7 w-7" aria-hidden />
@@ -205,18 +205,18 @@ export function LegalDocumentPage({
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.24em] text-brand-700">
             Legal center
           </p>
-          <h1 className="mt-3 text-balance text-4xl font-semibold tracking-tight md:text-6xl">
+          <h1 className="mt-3 text-balance font-display text-4xl font-bold tracking-tight md:text-6xl">
             {legalDocument.title}
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-balance text-base leading-7 text-muted-foreground md:text-lg">
             {description}
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white/80 px-4 py-2 shadow-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-4 py-2 shadow-sm">
               <CalendarDays className="h-3.5 w-3.5 text-brand-600" />
               Updated {legalDocument.updated}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white/80 px-4 py-2 shadow-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-4 py-2 shadow-sm">
               <Globe2 className="h-3.5 w-3.5 text-brand-600" />
               Applies to klausway.com
             </span>
@@ -229,7 +229,7 @@ export function LegalDocumentPage({
           <aside className="lg:sticky lg:top-28">
             <nav
               aria-label={`${legalDocument.title} table of contents`}
-              className="rounded-2xl border border-black/[0.08] bg-card p-5 shadow-sm"
+              className="rounded-2xl border border-border bg-card p-5 shadow-sm"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
                 On this page
@@ -285,7 +285,7 @@ export function LegalDocumentPage({
 
           <article className="min-w-0">
             {legalDocument.introduction.length > 0 && (
-              <section className="rounded-3xl border border-black/[0.08] bg-gradient-to-br from-card to-muted/30 p-6 shadow-sm md:p-9">
+              <section className="rounded-3xl border border-border bg-gradient-to-br from-card to-muted/30 p-6 shadow-sm md:p-9">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
                     <Icon className="h-[18px] w-[18px]" />
@@ -303,12 +303,12 @@ export function LegalDocumentPage({
                 <section
                   key={section.id}
                   id={section.id}
-                  className="scroll-mt-28 rounded-3xl border border-black/[0.08] bg-card p-6 shadow-sm md:p-9"
+                  className="scroll-mt-28 rounded-3xl border border-border bg-card p-6 shadow-sm md:p-9"
                 >
                   <h2 className="text-balance text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
                     {section.title}
                   </h2>
-                  <div className="mt-4 border-t border-black/[0.06] pt-2">
+                  <div className="mt-4 border-t border-border pt-2">
                     <LegalBlocks blocks={section.blocks} />
                   </div>
                 </section>
@@ -318,7 +318,7 @@ export function LegalDocumentPage({
             <div className="mt-8 flex justify-end">
               <a
                 href="#legal-content"
-                className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-card px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm transition-colors hover:text-foreground"
               >
                 <ArrowUp className="h-3.5 w-3.5" />
                 Back to top

@@ -41,13 +41,23 @@ export default async function PortfolioPage() {
         title={
           <>
             Our{" "}
-            <span className="text-gradient-animated">Portfolio</span>
+            <span className="text-brand-600">Portfolio</span>
           </>
         }
         description={portfolioPageHeader.subtitle}
       />
       <PortfolioGrid projects={projects} hideHeader />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Have a similar problem?{" "}
+            <span className="underline-signal">We&apos;ve probably built something close.</span>
+          </>
+        }
+        subheading="Tell us what you're wrestling with — chances are one of these systems already solves most of it."
+        primaryLabel="Tell us about it"
+        location="cta_section:portfolio"
+      />
     </>
   );
 }

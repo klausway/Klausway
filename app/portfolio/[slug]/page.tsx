@@ -61,7 +61,17 @@ export default async function PortfolioProjectPage({
         description={project.description}
       />
       <PortfolioDetail project={project} />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Need something{" "}
+            <span className="underline-signal">like this?</span>
+          </>
+        }
+        subheading="We've built it before — tell us how your version needs to work and we'll show you what we'd do."
+        primaryLabel="Start a conversation"
+        location="cta_section:portfolio_detail"
+      />
     </>
   );
 }

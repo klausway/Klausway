@@ -18,7 +18,7 @@ export default async function HomePage() {
       />
       <Hero projects={projects} />
       <HomeProducts projects={projects} />
-      <CtaSection />
+      <CtaSection location="cta_section:home" />
     </>
   );
 }

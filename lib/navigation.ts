@@ -5,7 +5,6 @@ export const routes = {
   products: "/products",
   blog: "/resources",
   resources: "/resources",
-  pricing: "/pricing",
   portfolio: "/portfolio",
   contact: "/contact",
   privacyPolicy: "/privacy-policy",

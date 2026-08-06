@@ -1,11 +1,12 @@
 /** Abuse guards for the public contact form / Resend endpoint. */
 
 const MAX = {
-  firstName: 80,
-  lastName: 80,
+  name: 160,
   email: 254,
   phone: 40,
   message: 5000,
+  intent: 40,
+  source: 80,
 } as const;
 
 /** Bots that fill the honeypot or fire instantly get a fake success (no email). */
@@ -51,11 +52,12 @@ function isValidEmail(email: string): boolean {
 }
 
 export type ContactPayload = {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   message: string;
+  intent: string;
+  source: string;
   /** Honeypot — must stay empty. Obscure name reduces browser autofill. */
   hpField: string;
   formStartedAt: number | null;
@@ -78,12 +80,18 @@ export function parseContactBody(body: unknown): ContactPayload {
     if (Number.isFinite(n)) formStartedAt = n;
   }
 
+  // Accept legacy firstName/lastName clients too
+  const legacyName = `${String(record.firstName ?? "").trim()} ${String(
+    record.lastName ?? "",
+  ).trim()}`.trim();
+
   return {
-    firstName: String(record.firstName ?? "").trim(),
-    lastName: String(record.lastName ?? "").trim(),
+    name: String(record.name ?? "").trim() || legacyName,
     email: String(record.email ?? "").trim(),
     phone: String(record.phone ?? "").trim(),
     message: String(record.message ?? "").trim(),
+    intent: String(record.intent ?? "").trim(),
+    source: String(record.source ?? "").trim(),
     // Accept legacy honeypot name too (older clients)
     hpField: String(record.hpField ?? record.companyWebsite ?? "").trim(),
     formStartedAt,
@@ -116,34 +124,27 @@ export function guardContactSubmission(payload: ContactPayload): ContactGuardRes
     return { ok: false, status: 400, error: "Please reload the page and try again." };
   }
 
-  const firstName = sanitizeHeaderValue(payload.firstName).slice(0, MAX.firstName);
-  const lastName = sanitizeHeaderValue(payload.lastName).slice(0, MAX.lastName);
+  const name = sanitizeHeaderValue(payload.name).slice(0, MAX.name);
   const email = sanitizeHeaderValue(payload.email).toLowerCase().slice(0, MAX.email);
   const phone = sanitizeHeaderValue(payload.phone).slice(0, MAX.phone);
   const message = payload.message.replace(/\0/g, "").slice(0, MAX.message).trim();
+  const intent = sanitizeHeaderValue(payload.intent).slice(0, MAX.intent);
+  const source = sanitizeHeaderValue(payload.source).slice(0, MAX.source);
 
-  if (!firstName || !lastName || !email || !phone || !message) {
-    return { ok: false, status: 400, error: "All fields are required." };
-  }
-
-  if (
-    firstName.length > MAX.firstName ||
-    lastName.length > MAX.lastName ||
-    email.length > MAX.email ||
-    phone.length > MAX.phone ||
-    message.length > MAX.message
-  ) {
-    return { ok: false, status: 400, error: "One or more fields are too long." };
+  if (!name || !email || !message) {
+    return { ok: false, status: 400, error: "Name, email, and message are required." };
   }
 
   if (!isValidEmail(email)) {
     return { ok: false, status: 400, error: "Please enter a valid email address." };
   }
 
-  // Phone: allow digits and common separators; require some digits
-  const digitCount = (phone.match(/\d/g) ?? []).length;
-  if (digitCount < 7 || digitCount > 15) {
-    return { ok: false, status: 400, error: "Please enter a valid phone number." };
+  // Phone is optional; when provided, require a plausible number
+  if (phone) {
+    const digitCount = (phone.match(/\d/g) ?? []).length;
+    if (digitCount < 7 || digitCount > 15) {
+      return { ok: false, status: 400, error: "Please enter a valid phone number." };
+    }
   }
 
   if (message.length < 10) {
@@ -152,7 +153,7 @@ export function guardContactSubmission(payload: ContactPayload): ContactGuardRes
 
   return {
     ok: true,
-    data: { firstName, lastName, email, phone, message },
+    data: { name, email, phone, message, intent, source },
   };
 }
 

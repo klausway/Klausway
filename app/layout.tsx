@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { LayoutShell } from "@/components/layout-shell";
 import { JsonLd } from "@/components/json-ld";
-import { assetPath } from "@/lib/asset-path";
 import {
   absoluteImageUrl,
   absoluteUrl,
@@ -14,14 +14,22 @@ import {
 } from "@/lib/seo";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-display",
+});
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+});
+
 const ogImage = absoluteImageUrl(siteConfig.defaultOgImage);
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${getSiteUrl()}/`),
-  icons: {
-    icon: assetPath("/Logo.jpg"),
-    apple: assetPath("/Logo.jpg"),
-  },
   title: {
     default: siteConfig.title,
     template: `%s · ${siteConfig.name}`,
@@ -85,7 +93,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={siteConfig.language} className="light" suppressHydrationWarning>
+    <html
+      lang={siteConfig.language}
+      className={`light ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
       <body
         className="min-h-screen bg-background text-foreground antialiased"
         suppressHydrationWarning

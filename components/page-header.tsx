@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { AmbientBackground } from "./animation/ambient-background";
 import { Reveal } from "./animation/reveal";
+import { Eyebrow } from "./ui/eyebrow";
 import { cn } from "@/lib/utils";
 
 type PageHeaderProps = {
@@ -12,9 +13,8 @@ type PageHeaderProps = {
 
 export function PageHeader({ eyebrow, title, description, wide }: PageHeaderProps) {
   return (
-    <section className="relative overflow-hidden pt-32 pb-14 md:pb-16">
+    <section className="relative overflow-hidden pt-28 pb-12 md:pt-32 md:pb-14">
       <AmbientBackground variant="section" />
-      <div className="dot-pattern mask-fade-bottom absolute inset-0 -z-10 opacity-30" />
       <div
         className={cn(
           "mx-auto px-6 text-center lg:px-10",
@@ -22,13 +22,8 @@ export function PageHeader({ eyebrow, title, description, wide }: PageHeaderProp
         )}
       >
         <Reveal>
-          {eyebrow && (
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              {eyebrow}
-            </div>
-          )}
-          <h1 className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight md:text-5xl lg:text-6xl">
+          {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+          <h1 className="mt-5 text-balance font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl">
             {title}
           </h1>
           {description && (

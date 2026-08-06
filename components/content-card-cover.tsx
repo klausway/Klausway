@@ -22,7 +22,7 @@ export function ContentCardCover({ src, alt, accent }: ContentCardCoverProps) {
     <div
       className={cn(
         "aspect-[16/10] w-full bg-gradient-to-br",
-        accent ?? "from-brand-500/25 via-card/60 to-fuchsia-500/15",
+        accent ?? "from-brand-500/25 via-card/60 to-sky-500/15",
       )}
       aria-hidden
     />

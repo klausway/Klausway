@@ -72,7 +72,7 @@ export const portfolioProjects: PortfolioProject[] = [
       "A powerful report generation tool that enables users to create completely custom reports tailored to their business needs. The system includes page management for multi-page reports, history tracking for all generated reports, and authentication for secure access.",
     categories: ["Analytics"],
     tags: ["Report Generation", "Data Visualization", "Business Intelligence"],
-    accent: "from-violet-400 to-purple-500",
+    accent: "from-brand-400 to-indigo-500",
     keyFeatures: [
       "Custom report creation and design",
       "Multi-page report management",
@@ -136,7 +136,7 @@ export const portfolioProjects: PortfolioProject[] = [
       "Make sure you know the status of EVERY potential customer of your system. Ensure that every lead follows the correct pipeline to maximize ROI.",
     categories: ["CRM"],
     tags: ["CRM", "Lead Management", "Sales Pipeline"],
-    accent: "from-fuchsia-400 to-pink-500",
+    accent: "from-sky-400 to-cyan-500",
     keyFeatures: [
       "Complete lead status tracking and visibility",
       "Pipeline management for lead progression",
@@ -296,7 +296,7 @@ export const portfolioProjects: PortfolioProject[] = [
       "An AI Agent system utilizing voice recognition and natural language processing technologies to provide automated customer service through voice conversations. The system can understand complex commands and respond naturally, with the ability to learn and improve itself over time.",
     categories: ["AI/ML"],
     tags: ["AI/ML", "Voice Recognition", "Natural Language Processing"],
-    accent: "from-rose-400 to-red-500",
+    accent: "from-teal-400 to-emerald-500",
     keyFeatures: [
       "Advanced voice recognition with multi-language support",
       "Natural language understanding for complex queries",

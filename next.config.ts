@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
   },
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
+    // Static export has no API routes — the contact form falls back to mailto.
+    NEXT_PUBLIC_STATIC_EXPORT: isGitHubPages ? "true" : "",
   },
   images: {
     unoptimized: true,

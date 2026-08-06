@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, Phone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { navItems, routes } from "@/lib/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -38,13 +39,13 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "border-b border-black/[0.08] bg-background/80 backdrop-blur-xl"
+          ? "border-b border-border bg-background/75 backdrop-blur-xl"
           : "bg-transparent",
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href={routes.home} className="flex items-center">
-          <Logo height={36} />
+          <Logo height={34} showText textClassName="font-display text-lg font-bold tracking-tight" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -53,9 +54,9 @@ export function Navbar() {
               key={item.label}
               href={item.href}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm transition-colors hover:bg-black/[0.04] hover:text-foreground",
+                "relative rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-2 hover:text-foreground",
                 isActive(item.href)
-                  ? "text-foreground"
+                  ? "font-medium text-foreground after:absolute after:-bottom-0.5 after:left-3 after:h-0.5 after:w-3 after:bg-signal"
                   : "text-muted-foreground",
               )}
             >
@@ -64,25 +65,22 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-4 lg:flex">
+          <a
+            href="tel:+18604000758"
+            onClick={() => trackEvent("phone_click", { location: "navbar" })}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Phone className="h-3.5 w-3.5" />
+            (860) 400-0758
+          </a>
           <Link
             href={routes.contact}
-            className="group relative inline-flex items-center gap-1.5 overflow-hidden rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:bg-foreground/90 hover:shadow-lg hover:shadow-brand-500/15"
+            onClick={() => trackEvent("cta_click", { location: "navbar" })}
+            className="group inline-flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
           >
-            Contact Us
-            <svg
-              className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+            Book a consultation
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
 
@@ -100,28 +98,37 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-black/[0.08] bg-background/95 backdrop-blur-xl lg:hidden">
+        <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
           <nav className="flex flex-col gap-1 px-6 py-4">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "block rounded-lg px-3 py-2.5 text-sm hover:bg-black/[0.04] hover:text-foreground",
+                  "block rounded-lg px-3 py-3 text-base hover:bg-surface-2 hover:text-foreground",
                   isActive(item.href)
-                    ? "text-foreground"
+                    ? "font-medium text-foreground"
                     : "text-muted-foreground",
                 )}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-black/[0.08] pt-4">
+            <div className="mt-2 flex flex-col gap-2 border-t border-border pt-4">
+              <a
+                href="tel:+18604000758"
+                onClick={() => trackEvent("phone_click", { location: "navbar_mobile" })}
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-3 text-center text-sm text-foreground"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                (860) 400-0758
+              </a>
               <Link
                 href={routes.contact}
-                className="rounded-lg bg-foreground px-3 py-2.5 text-center text-sm font-medium text-background"
+                onClick={() => trackEvent("cta_click", { location: "navbar_mobile" })}
+                className="rounded-lg bg-foreground px-3 py-3 text-center text-sm font-medium text-background"
               >
-                Contact Us
+                Book a consultation
               </Link>
             </div>
           </nav>

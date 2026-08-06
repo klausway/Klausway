@@ -42,7 +42,7 @@ export const serviceCategories: ServiceCategory[] = [
       "User-focused interface design.",
     ],
     icon: LayoutGrid,
-    accent: "from-violet-500 to-purple-600",
+    accent: "from-brand-500 to-indigo-600",
   },
   {
     id: "system-integration",
@@ -81,7 +81,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Comprehensive data governance policies.",
     ],
     icon: BarChart3,
-    accent: "from-fuchsia-500 to-pink-600",
+    accent: "from-sky-500 to-cyan-600",
   },
   {
     id: "cloud-services",
@@ -105,25 +105,25 @@ export const whyChooseUs = [
       "We prioritize agile development to get your solutions to market faster without compromising quality.",
   },
   {
-    title: "24/7 Support",
+    title: "Built and Run by the Same People",
     description:
-      "Our dedicated team provides continuous support to ensure your operations run smoothly at all times.",
+      "You talk directly to the team that designs, ships, and operates your system — no handoffs, no ticket queues.",
   },
   {
-    title: "Secure Solutions",
+    title: "Proven in Production",
     description:
-      "Security is embedded into every layer of our development process, adhering to enterprise-grade standards.",
+      "Seven of our products run real businesses today — CRM, dispatch, payments, compliance, and voice AI.",
   },
 ] as const;
 
 /** Standalone apps & solutions — each sold separately (e.g. CRM is one app). */
 export const featuredSolutions = [
   { label: "CRM", id: "custom-apps", color: "from-blue-400 to-cyan-400" },
-  { label: "Voice AI Agent", id: "automation-ai", color: "from-violet-400 to-purple-400" },
+  { label: "Voice AI Agent", id: "automation-ai", color: "from-brand-400 to-indigo-400" },
   { label: "Report Generator", id: "data-analytics", color: "from-amber-400 to-orange-400" },
-  { label: "E-Signing Portal", id: "custom-apps", color: "from-fuchsia-400 to-pink-400" },
+  { label: "E-Signing Portal", id: "custom-apps", color: "from-sky-400 to-cyan-400" },
   { label: "QuickBooks Payment", id: "system-integration", color: "from-emerald-400 to-teal-400" },
-  { label: "GPS Fleet Tracking", id: "custom-apps", color: "from-rose-400 to-red-400" },
+  { label: "GPS Fleet Tracking", id: "custom-apps", color: "from-teal-400 to-emerald-400" },
 ] as const;
 
 export const servicesPageHeader = {

@@ -19,7 +19,7 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <Reveal>
-              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
                 {ourStory.title}
               </h2>
               <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
@@ -30,10 +30,10 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
             </Reveal>
 
             <Reveal delay={100}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-black/10 bg-gradient-to-br from-brand-500/10 via-card/40 to-fuchsia-500/10">
-                <div className="absolute inset-0 dot-pattern opacity-40" />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-brand-500/10 via-card/40 to-sky-500/10">
+                <div className="absolute inset-0 opacity-40" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-2xl border border-black/10 bg-background/60 px-8 py-6 text-center backdrop-blur">
+                  <div className="rounded-2xl border border-border bg-background/60 px-8 py-6 text-center backdrop-blur">
                     <div className="text-sm font-semibold uppercase tracking-wider text-brand-600">
                       Team collaboration
                     </div>
@@ -48,16 +48,16 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
         </div>
       </section>
 
-      <section className="relative border-t border-black/[0.08] py-24">
+      <section className="relative border-t border-border py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-6 md:grid-cols-2">
             {missionVision.map((item, i) => (
               <Reveal
                 key={item.title}
                 delay={(i * 100) as 0 | 100}
-                className="hover-lift rounded-2xl border border-black/[0.08] bg-card/40 p-8 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
+                className="hover-lift rounded-2xl border border-border bg-card p-8 backdrop-blur transition-all hover:border-border-strong hover:bg-card"
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 text-white shadow-lg">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 text-white shadow-lg">
                   <item.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-xl font-semibold tracking-tight">
@@ -72,10 +72,10 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
         </div>
       </section>
 
-      <section id="values" className="relative border-t border-black/[0.08] py-24">
+      <section id="values" className="relative border-t border-border py-24">
         <div className="mx-auto max-w-7xl px-6">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
               Our Values
             </h2>
           </Reveal>
@@ -85,9 +85,9 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
               <Reveal
                 key={value.title}
                 delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift rounded-2xl border border-black/[0.08] bg-card/40 p-6 text-center backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
+                className="hover-lift rounded-2xl border border-border bg-card p-6 text-center backdrop-blur transition-all hover:border-border-strong hover:bg-card"
               >
-                <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-black/[0.03] text-brand-600">
+                <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-surface-2 text-brand-600">
                   <value.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold">{value.title}</h3>
@@ -100,10 +100,10 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
         </div>
       </section>
 
-      <section id="team" className="relative border-t border-black/[0.08] py-24">
+      <section id="team" className="relative border-t border-border py-24">
         <div className="mx-auto max-w-7xl px-6">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
               Meet Our Team
             </h2>
             <p className="mt-4 text-muted-foreground">
@@ -116,7 +116,7 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
               <Reveal
                 key={member.slug}
                 delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift group overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/8"
+                className="hover-lift group overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
               >
                 <TeamMemberPhoto member={member} className="rounded-none" />
                 <div className="p-5 text-center">

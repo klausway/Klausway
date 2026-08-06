@@ -11,7 +11,7 @@ const schedule = [
     time: "13:00",
     name: "Demo · Hooli Inc.",
     loc: "Online · Zoom",
-    badge: "bg-fuchsia-400",
+    badge: "bg-sky-400",
   },
   {
     time: "15:30",
@@ -54,13 +54,13 @@ export function MobileVisual() {
               Good morning{" "}
               <span className="font-semibold text-zinc-950">Sarah</span> 👋
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-[9px] font-semibold text-white shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-sky-500 text-[9px] font-semibold text-white shadow-sm">
               SM
             </div>
           </div>
 
           {/* Revenue card */}
-          <div className="mx-3.5 mt-3.5 rounded-2xl bg-gradient-to-br from-violet-100 via-fuchsia-50 to-indigo-50 p-3.5">
+          <div className="mx-3.5 mt-3.5 rounded-2xl bg-gradient-to-br from-brand-100 via-sky-50 to-indigo-50 p-3.5">
             <div className="text-[9px] font-medium text-zinc-500">
               Today&rsquo;s revenue
             </div>
@@ -83,7 +83,7 @@ export function MobileVisual() {
               <div className="text-[11px] font-semibold text-zinc-900">
                 Today&rsquo;s schedule
               </div>
-              <div className="text-[9px] font-medium text-violet-500">
+              <div className="text-[9px] font-medium text-brand-500">
                 View all
               </div>
             </div>
@@ -134,12 +134,12 @@ export function MobileVisual() {
                 <div
                   key={nav}
                   className={`flex flex-col items-center gap-0.5 ${
-                    i === 0 ? "text-violet-500" : "text-zinc-400"
+                    i === 0 ? "text-brand-500" : "text-zinc-400"
                   }`}
                 >
                   <div
                     className={`h-3 w-3 rounded-[3px] ${
-                      i === 0 ? "bg-violet-500" : "bg-zinc-300"
+                      i === 0 ? "bg-brand-500" : "bg-zinc-300"
                     }`}
                   />
                   <span className="text-[8px] font-medium">{nav}</span>

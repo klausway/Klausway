@@ -98,7 +98,17 @@ export default async function ResourcePostPage({
         </ContentDetailArticle>
       </ContentDetailShell>
 
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Reading about it is free.{" "}
+            <span className="underline-signal">So is asking us.</span>
+          </>
+        }
+        subheading="Skip the research rabbit hole — describe your situation and we'll tell you what we'd actually do."
+        primaryLabel="Ask us directly"
+        location="cta_section:resource_detail"
+      />
     </>
   );
 }

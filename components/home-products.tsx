@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
+import { SectionHeading } from "./ui/section-heading";
+import { BrowserFrame } from "./ui/browser-frame";
 import { PipelineVisual } from "./feature-visuals/pipeline-visual";
 import { AiCopilotVisual } from "./feature-visuals/ai-copilot-visual";
 import { AutomationVisual } from "./feature-visuals/automation-visual";
@@ -12,13 +14,42 @@ import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
+/* Real product screenshots where a project maps to shipped software;
+   hand-built visuals remain only as fallback for the rest. */
+const imageMap: Record<string, { src: string; url: string; alt: string }> = {
+  crm: {
+    src: "/products/klaus-connect.png",
+    url: "Klaus Connect — CRM",
+    alt: "Klaus Connect CRM dashboard",
+  },
+  "lead-pipeline": {
+    src: "/products/klaus-connect-2.png",
+    url: "Klaus Connect — Pipeline",
+    alt: "Klaus Connect lead pipeline view",
+  },
+  "voice-ai-agent": {
+    src: "/products/dineassist.png",
+    url: "DineAssist — Voice AI",
+    alt: "DineAssist AI calling CRM",
+  },
+  "quickbooks-payment": {
+    src: "/products/qb-payments.png",
+    url: "QB Online Payments",
+    alt: "QuickBooks online payment links",
+  },
+  "detailed-reporting": {
+    src: "/products/spendledger.png",
+    url: "SpendLedger — Reports",
+    alt: "SpendLedger reporting dashboard",
+  },
+  "report-generator": {
+    src: "/products/spendledger-2.png",
+    url: "SpendLedger — Reports",
+    alt: "SpendLedger generated report view",
+  },
+};
+
 const visualMap: Record<string, ComponentType> = {
-  crm: PipelineVisual,
-  "lead-pipeline": PipelineVisual,
-  "voice-ai-agent": AiCopilotVisual,
-  "quickbooks-payment": AnalyticsVisual,
-  "report-generator": AnalyticsVisual,
-  "detailed-reporting": AnalyticsVisual,
   "upload-file": InboxVisual,
   "customer-e-signing": InboxVisual,
   "inventory-management": AutomationVisual,
@@ -31,39 +62,34 @@ type HomeProductsProps = {
 
 export function HomeProducts({ projects }: HomeProductsProps) {
   return (
-    <section id="products" className="relative py-24">
+    <section id="products" className="relative border-y border-border bg-card py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <Reveal className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-            Our Products
-          </div>
-          <h2 className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-            Custom-built systems
-            <br />
-            <span className="text-gradient-animated">for every part of your business</span>
-          </h2>
-          <p className="mt-5 text-balance text-lg text-muted-foreground">
-            Each application is designed, built, and deployed as its own standalone
-            solution — from CRM and reporting to payments, inventory, and AI.
-          </p>
-        </Reveal>
+        <SectionHeading
+          align="left"
+          eyebrow="What we build"
+          title={
+            <>
+              Custom-built systems for{" "}
+              <span className="text-brand-600">every part of your business</span>
+            </>
+          }
+          description="Each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to payments, inventory, and AI."
+          aside={
+            <Link
+              href={routes.portfolio}
+              className="group inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+            >
+              View full portfolio
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          }
+        />
 
-        <div className="mt-20 space-y-32">
+        <div className="mt-20 space-y-24">
           {projects.map((project, i) => (
             <ProductRow key={project.id} project={project} reverse={i % 2 === 1} />
           ))}
         </div>
-
-        <Reveal className="mt-20 text-center">
-          <Link
-            href={routes.portfolio}
-            className="group inline-flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-6 py-3 text-sm font-semibold backdrop-blur transition-all hover:border-black/15 hover:bg-black/[0.06]"
-          >
-            View full portfolio
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </Reveal>
       </div>
     </section>
   );
@@ -75,6 +101,7 @@ type ProductRowProps = {
 };
 
 function ProductRow({ project, reverse }: ProductRowProps) {
+  const image = imageMap[project.id];
   const Visual = visualMap[project.id] ?? AnalyticsVisual;
   const highlights = project.keyFeatures.slice(0, 4);
 
@@ -91,13 +118,13 @@ function ProductRow({ project, reverse }: ProductRowProps) {
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-black/10 bg-black/[0.03] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+              className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
             >
               {tag}
             </span>
           ))}
         </div>
-        <h3 className="mt-4 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
+        <h3 className="mt-4 text-balance font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
           {project.title}
         </h3>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -109,14 +136,14 @@ function ProductRow({ project, reverse }: ProductRowProps) {
               key={feature}
               className="flex items-start gap-2.5 text-sm text-foreground/90"
             >
-              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-lime-600" />
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
               {feature}
             </li>
           ))}
         </ul>
         <Link
           href={`${routes.portfolio}/${project.id}`}
-          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-600"
+          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
         >
           Learn more about {project.title}
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
@@ -126,11 +153,15 @@ function ProductRow({ project, reverse }: ProductRowProps) {
       <Reveal as="div" delay={200} className="relative">
         <div
           className={cn(
-            "absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br opacity-20 blur-2xl",
+            "absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br opacity-10 blur-2xl",
             project.accent,
           )}
         />
-        <Visual />
+        {image ? (
+          <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+        ) : (
+          <Visual />
+        )}
       </Reveal>
     </div>
   );

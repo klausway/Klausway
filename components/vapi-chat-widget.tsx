@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Script from "next/script";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Official Vapi Web Widget (chat).
@@ -24,6 +25,21 @@ const MODE = process.env.NEXT_PUBLIC_VAPI_MODE || "chat";
 export function VapiChatWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
+  const openTracked = useRef(false);
+
+  // The widget exposes no open event — a delegated click on its container is
+  // the pragmatic proxy. Track only the first open per page view.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const onClick = () => {
+      if (openTracked.current) return;
+      openTracked.current = true;
+      trackEvent("vapi_open", { mode: MODE });
+    };
+    container.addEventListener("click", onClick);
+    return () => container.removeEventListener("click", onClick);
+  }, []);
 
   const initWidget = useCallback(() => {
     const container = containerRef.current;

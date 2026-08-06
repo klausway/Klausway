@@ -27,13 +27,23 @@ export default function AppsPage() {
         title={
           <>
             Our{" "}
-            <span className="text-gradient-animated">Services</span>
+            <span className="text-brand-600">Services</span>
           </>
         }
         description={servicesPageHeader.subtitle}
       />
       <ServicesSection showHeader={false} />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Not sure which service{" "}
+            <span className="underline-signal">you need?</span>
+          </>
+        }
+        subheading="That's normal — most projects touch a few. Describe the problem and we'll map out the simplest path."
+        primaryLabel="Describe your problem"
+        location="cta_section:services"
+      />
     </>
   );
 }

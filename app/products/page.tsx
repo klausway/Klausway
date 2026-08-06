@@ -27,13 +27,23 @@ export default function ProductsPage() {
         title={
           <>
             Our{" "}
-            <span className="text-gradient-animated">Products</span>
+            <span className="text-brand-600">Products</span>
           </>
         }
         description={productsPageHeader.subtitle}
       />
       <FeaturedProductsSection />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            See one you&apos;d like{" "}
+            <span className="underline-signal">to try?</span>
+          </>
+        }
+        subheading="Every product here is running in production today. Book a demo and we'll walk you through it on a live screen share."
+        primaryLabel="Book a demo"
+        location="cta_section:products"
+      />
     </>
   );
 }

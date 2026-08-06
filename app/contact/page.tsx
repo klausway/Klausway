@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { Reveal } from "@/components/animation/reveal";
+import { BookingEmbed } from "@/components/booking-embed";
 import { ContactForm } from "@/components/contact-form";
-import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { routes } from "@/lib/navigation";
 import {
@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = buildPageMetadata({
   title: "Contact",
   description:
-    "Ready to transform your IT infrastructure? Get in touch with Klaus Way.",
+    "Tell us what's slowing you down. We reply within one business day.",
   path: routes.contact,
 });
 
@@ -51,6 +51,8 @@ const contactCards = [
   },
 ];
 
+const hasBooking = Boolean(process.env.NEXT_PUBLIC_CAL_LINK);
+
 export default function ContactPage() {
   return (
     <>
@@ -65,7 +67,7 @@ export default function ContactPage() {
             "@type": "ContactPage",
             name: `Contact ${siteConfig.name}`,
             description:
-              "Ready to transform your IT infrastructure? Get in touch with Klaus Way.",
+              "Tell us what's slowing you down. We reply within one business day.",
             url: absoluteUrl(routes.contact),
             mainEntity: {
               "@type": "Organization",
@@ -77,14 +79,14 @@ export default function ContactPage() {
         ]}
       />
       <PageHeader
-        eyebrow="Klaus Way"
+        eyebrow="Contact"
         title={
           <>
-            Get In{" "}
-            <span className="text-gradient-animated">Touch</span>
+            Tell us what&apos;s{" "}
+            <span className="text-brand-600">slowing you down</span>
           </>
         }
-        description="Ready to transform your IT infrastructure? Let's start a conversation."
+        description="We reply within one business day — and you'll hear back from the people who actually build the software."
       />
 
       <section id="contact" className="relative scroll-mt-28 pb-24">
@@ -94,12 +96,12 @@ export default function ContactPage() {
               <Reveal
                 key={item.title}
                 delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift rounded-2xl border border-black/[0.08] bg-card/40 p-6 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60"
+                className="hover-lift rounded-2xl border border-border bg-card p-6 shadow-card transition-colors hover:border-border-strong"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/15 text-brand-600">
                   <item.icon className="h-5 w-5" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                <h3 className="mt-4 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {item.title}
                 </h3>
                 {item.href ? (
@@ -124,14 +126,14 @@ export default function ContactPage() {
             <ContactForm />
 
             <Reveal delay={100} className="flex flex-col">
-              <div className="flex-1 rounded-2xl border border-black/10 bg-gradient-to-br from-brand-500/10 via-card/40 to-fuchsia-500/5 p-6 backdrop-blur md:p-8">
-                <h2 className="text-2xl font-semibold tracking-tight">
+              <div className="flex-1 rounded-2xl border border-border bg-card p-6 shadow-card md:p-8">
+                <h2 className="font-display text-2xl font-bold tracking-tight">
                   Our Location
                 </h2>
                 <p className="mt-4 text-sm font-medium">
                   29 Northridge Drive, North Windham, CT 06256
                 </p>
-                <div className="mt-6 aspect-[4/3] overflow-hidden rounded-xl border border-black/10 bg-background/40">
+                <div className="mt-6 aspect-[4/3] overflow-hidden rounded-xl border border-border bg-surface-2">
                   <iframe
                     title="Klaus Way office location"
                     src="https://maps.google.com/maps?q=29+Northridge+Drive+North+Windham+CT+06256&output=embed"
@@ -142,19 +144,21 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-black/[0.08] bg-card/40 p-6 backdrop-blur">
-                <h3 className="text-lg font-semibold">Schedule a Visit</h3>
+              <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-card">
+                <h3 className="font-display text-lg font-bold">
+                  {hasBooking ? "Book a call" : "Schedule a Visit"}
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Please call ahead or book an appointment online to ensure
-                  someone from our team is available to meet with you.
+                  {hasBooking
+                    ? "Pick a time that works and we'll call you — no back-and-forth."
+                    : "Please call ahead so someone from our team is available to meet with you."}
                 </p>
+                <BookingEmbed className="mt-4" />
               </div>
             </Reveal>
           </div>
         </div>
       </section>
-
-      <CtaSection />
     </>
   );
 }

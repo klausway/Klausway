@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "./animation/reveal";
+import { Eyebrow } from "./ui/eyebrow";
 import { ContentCardCover } from "./content-card-cover";
 import {
   portfolioCategories,
@@ -31,13 +32,10 @@ export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridPro
       <div className="mx-auto max-w-7xl px-6">
         {!hideHeader && (
           <Reveal className="mx-auto max-w-3xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              Portfolio
-            </div>
-            <h2 className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+            <Eyebrow>Portfolio</Eyebrow>
+            <h2 className="mt-5 text-balance font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
               Successful projects across{" "}
-              <span className="text-gradient-animated">every industry</span>
+              <span className="text-brand-600">every industry</span>
             </h2>
           </Reveal>
         )}
@@ -64,7 +62,7 @@ export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridPro
               key={project.id}
               id={project.id}
               delay={((i % 3) * 100) as 0 | 100 | 200 | 300 | 400}
-              className="scroll-mt-28 hover-lift group flex flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-card/40 backdrop-blur transition-all hover:border-black/10 hover:bg-card/60 hover:shadow-xl hover:shadow-black/8"
+              className="scroll-mt-28 hover-lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
             >
               <ContentCardCover
                 src={project.coverImage}
@@ -90,7 +88,7 @@ export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridPro
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-md bg-black/[0.03] px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                      className="rounded-md bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
                     >
                       {tag}
                     </span>
@@ -129,7 +127,7 @@ function FilterPill({
         "rounded-full border px-3 py-1 text-xs font-medium transition-all",
         active
           ? "border-brand-400/40 bg-brand-500/15 text-brand-700"
-          : "border-black/10 bg-black/[0.03] text-muted-foreground hover:border-black/15 hover:text-foreground",
+          : "border-border bg-surface-2 text-muted-foreground hover:border-border-strong hover:text-foreground",
       )}
     >
       {label}

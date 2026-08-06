@@ -59,7 +59,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
         description={product.tagline}
       />
       <ProductDetail product={product} />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Want a walkthrough of{" "}
+            <span className="underline-signal">{product.name}?</span>
+          </>
+        }
+        subheading="30 minutes, screen share, real data. We'll show you exactly how it would work for your business."
+        primaryLabel="Book a demo"
+        primaryHref={`${routes.contact}?product=${product.id}&intent=demo`}
+        secondaryLabel="See the other products"
+        secondaryHref={routes.products}
+        location={`cta_section:product:${product.id}`}
+      />
     </>
   );
 }

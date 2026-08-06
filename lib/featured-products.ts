@@ -200,7 +200,7 @@ export const featuredProducts: FeaturedProduct[] = [
     tags: ["AI", "Analytics", "PostgreSQL"],
     image: "/products/klr-ai.png",
     imageAlt: "KLR AI chat interface",
-    accent: "from-violet-400 to-purple-400",
+    accent: "from-brand-400 to-indigo-400",
     overview:
       "KLR AI puts a chat box in front of your operational database. Managers ask questions in plain English — \"how many jobs did we run last week?\", \"what's outstanding in Hartford?\" — and get answers computed from live data instead of waiting on someone to build a report. Every query is translated to read-only SQL and guarded, so the system can answer anything but change nothing. An admin console tunes the semantic mappings so the AI speaks your business's vocabulary.",
     benefits: [
@@ -296,7 +296,7 @@ export const featuredProducts: FeaturedProduct[] = [
     tags: ["Compliance", "Dashboards", "AI"],
     image: "/products/complico.png",
     imageAlt: "CompliCo compliance dashboard",
-    accent: "from-fuchsia-400 to-pink-400",
+    accent: "from-sky-400 to-cyan-400",
     overview:
       "CompliCo keeps a business audit-ready without anyone maintaining a spreadsheet of expiry dates. It tracks compliance records across companies, employees, vehicles, and subcontractors, and surfaces a live dashboard of what has expired, what is due in thirty days, and what is due in ninety. Documents can be uploaded and read automatically — AI extraction pulls the issue and expiry dates off the certificate — and an advisor flags requirement gaps against the regulations that apply to you.",
     benefits: [

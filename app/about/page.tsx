@@ -32,13 +32,23 @@ export default async function AboutPage() {
         title={
           <>
             About{" "}
-            <span className="text-gradient-animated">Us</span>
+            <span className="text-brand-600">Us</span>
           </>
         }
         description={aboutPageHeader.subtitle}
       />
       <AboutSection teamMembers={teamMembers} />
-      <CtaSection />
+      <CtaSection
+        heading={
+          <>
+            Meet the team{" "}
+            <span className="underline-signal">on a call</span>
+          </>
+        }
+        subheading="The people you talk to are the same people who design, build, and run your system. No handoffs, no account managers."
+        primaryLabel="Book a free consult"
+        location="cta_section:about"
+      />
     </>
   );
 }

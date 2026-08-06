@@ -19,6 +19,12 @@ enum ResourceType {
   CASE_STUDY
 }
 
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
 model AdminUser {
   id           String    @id @default(cuid())
   email        String    @unique
@@ -61,6 +67,18 @@ model PortfolioProject {
   published      Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        String     @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String     @db.Text
+  source    String? // e.g. "contact", "product:dineassist"
+  intent    String? // "demo" | "consult" | "custom" | "other"
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
 }
 
 model PageContent {

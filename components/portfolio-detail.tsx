@@ -44,7 +44,7 @@ export function PortfolioDetail({ project }: PortfolioDetailProps) {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-black/10 bg-black/[0.03] px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                    className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
                   >
                     {tag}
                   </span>
@@ -94,7 +94,7 @@ function DetailBlock({
   return (
     <Reveal
       delay={delay}
-      className="h-full rounded-3xl border border-black/10 bg-card/30 p-6 backdrop-blur-sm md:p-8"
+      className="h-full rounded-3xl border border-border bg-card p-6 backdrop-blur-sm md:p-8"
     >
       <h2 className="text-lg font-semibold tracking-tight md:text-xl">{title}</h2>
       <ul className="mt-5 space-y-3.5">
@@ -106,7 +106,7 @@ function DetailBlock({
             <CircleCheck
               className={cn(
                 "mt-0.5 h-4 w-4 shrink-0",
-                checkmark ? "text-lime-600" : "text-brand-600",
+                checkmark ? "text-signal-ink" : "text-brand-600",
               )}
             />
             {item}

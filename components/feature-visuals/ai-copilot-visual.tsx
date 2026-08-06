@@ -4,10 +4,10 @@ import { Typewriter } from "@/components/animation/typewriter";
 export function AiCopilotVisual() {
   return (
     <div className="relative">
-      <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-fuchsia-500/15 to-brand-500/5 blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-black/10 bg-card/60 backdrop-blur">
-        <div className="flex items-center gap-2 border-b border-black/[0.08] bg-gradient-to-r from-brand-500/10 to-fuchsia-500/10 px-4 py-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-400 to-fuchsia-500 text-white">
+      <div className="absolute -inset-x-4 -inset-y-2 -z-10 rounded-3xl bg-gradient-to-br from-sky-500/15 to-brand-500/5 blur-2xl" />
+      <div className="overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur">
+        <div className="flex items-center gap-2 border-b border-border bg-gradient-to-r from-brand-500/10 to-sky-500/10 px-4 py-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-400 to-sky-500 text-white">
             <Sparkles className="h-3.5 w-3.5" />
           </div>
           <div>
@@ -35,11 +35,11 @@ export function AiCopilotVisual() {
           </div>
 
           <div className="flex items-start gap-2">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-fuchsia-500 text-white">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-400 to-sky-500 text-white">
               <Sparkles className="h-3 w-3" />
             </div>
             <div className="flex-1 space-y-2">
-              <div className="rounded-2xl rounded-tl-sm border border-black/[0.08] bg-background/60 p-3">
+              <div className="rounded-2xl rounded-tl-sm border border-border bg-background/60 p-3">
                 <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-brand-600">
                   Suggested email draft
                 </div>
@@ -47,7 +47,7 @@ export function AiCopilotVisual() {
                   <div className="text-muted-foreground">
                     Subject: Following up on the Wayne Tech proposal
                   </div>
-                  <div className="border-t border-black/[0.08] pt-1.5">
+                  <div className="border-t border-border pt-1.5">
                     Hi Bruce,
                   </div>
                   <div>
@@ -62,7 +62,7 @@ export function AiCopilotVisual() {
                   <button className="rounded-md bg-foreground px-2 py-1 text-[10px] font-medium text-background">
                     Send email
                   </button>
-                  <button className="rounded-md border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px] text-foreground">
+                  <button className="rounded-md border border-border bg-surface-2 px-2 py-1 text-[10px] text-foreground">
                     Edit
                   </button>
                   <button className="ml-auto rounded-md p-1 text-muted-foreground">
@@ -85,14 +85,14 @@ export function AiCopilotVisual() {
           </div>
         </div>
 
-        <div className="border-t border-black/[0.08] p-3">
-          <div className="flex items-center gap-2 rounded-lg border border-black/10 bg-background/60 px-3 py-2">
+        <div className="border-t border-border p-3">
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 px-3 py-2">
             <input
               readOnly
               placeholder="Ask AI Copilot anything..."
               className="flex-1 bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/60"
             />
-            <button className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-brand-400 to-fuchsia-500 text-white">
+            <button className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-brand-400 to-sky-500 text-white">
               <Send className="h-3 w-3" />
             </button>
           </div>

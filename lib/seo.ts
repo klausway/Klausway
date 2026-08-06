@@ -23,7 +23,8 @@ export const siteConfig = {
     postalCode: "06256",
     addressCountry: "US",
   },
-  defaultOgImage: "/Logo.jpg",
+  defaultOgImage: "/og.png",
+  logoImage: "/Logo.jpg",
   keywords: [
     "Klaus Way",
     "IT consulting",
@@ -135,7 +136,7 @@ export function buildPageMetadata({
 }
 
 export function organizationJsonLd() {
-  const logo = absoluteImageUrl(siteConfig.defaultOgImage);
+  const logo = absoluteImageUrl(siteConfig.logoImage);
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -226,7 +227,7 @@ export function blogPostingJsonLd(post: {
       name: siteConfig.name,
       logo: {
         "@type": "ImageObject",
-        url: absoluteImageUrl(siteConfig.defaultOgImage),
+        url: absoluteImageUrl(siteConfig.logoImage),
       },
     },
   };
@@ -302,7 +303,7 @@ export function professionalServiceJsonLd() {
     name: siteConfig.name,
     description: siteConfig.description,
     url: absoluteUrl("/"),
-    image: absoluteImageUrl(siteConfig.defaultOgImage),
+    image: absoluteImageUrl(siteConfig.logoImage),
     email: siteConfig.email,
     telephone: siteConfig.phone,
     address: {

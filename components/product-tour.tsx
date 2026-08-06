@@ -56,7 +56,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
             type="button"
             onClick={() => go(index - 1)}
             aria-label="Previous screen"
-            className="rounded-full border border-black/10 bg-black/[0.03] p-2 transition-colors hover:border-black/20 hover:bg-black/[0.06]"
+            className="rounded-full border border-border bg-surface-2 p-2 transition-colors hover:border-black/20 hover:bg-surface-2"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
@@ -67,7 +67,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
             type="button"
             onClick={() => go(index + 1)}
             aria-label="Next screen"
-            className="rounded-full border border-black/10 bg-black/[0.03] p-2 transition-colors hover:border-black/20 hover:bg-black/[0.06]"
+            className="rounded-full border border-border bg-surface-2 p-2 transition-colors hover:border-black/20 hover:bg-surface-2"
           >
             <ArrowRight className="h-4 w-4" />
           </button>
@@ -85,7 +85,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
           type="button"
           onClick={() => setZoomed(true)}
           aria-label={`View ${step.title} full size`}
-          className="group block w-full overflow-hidden rounded-2xl border border-black/10 bg-card/40 shadow-xl"
+          className="group block w-full overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -98,7 +98,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
             View full size
           </span>
         </button>
-        <figcaption className="mt-4 rounded-2xl border border-black/10 bg-black/[0.02] p-5">
+        <figcaption className="mt-4 rounded-2xl border border-border bg-card p-5">
           <p className="text-sm font-semibold">{step.title}</p>
           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
             {step.caption}
@@ -119,7 +119,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
                 "relative shrink-0 overflow-hidden rounded-xl border transition-all",
                 i === index
                   ? "border-brand-400/70 ring-2 ring-brand-400/30"
-                  : "border-black/10 opacity-70 hover:opacity-100",
+                  : "border-border opacity-70 hover:opacity-100",
               )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

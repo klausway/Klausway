@@ -1,8 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, CircleCheck } from "lucide-react";
-import { ShowcaseDashboardAll } from "./showcase-dashboard-all";
+import { ArrowRight, CircleCheck } from "lucide-react";
+import { HeroShowcase } from "./hero-showcase";
 import { AmbientBackground } from "./animation/ambient-background";
+import { TrackedLink } from "./tracked-link";
+import { ButtonArrow, buttonVariants } from "./ui/button";
 import type { PortfolioProject } from "@/lib/portfolio";
+import { featuredProducts } from "@/lib/featured-products";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -15,58 +18,60 @@ export function Hero({ projects = [] }: HeroProps) {
     <section className="relative pt-32 pb-24">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <AmbientBackground variant="hero" />
-        <div className="dot-pattern mask-fade-bottom absolute inset-0 -z-10 opacity-40" />
       </div>
 
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-4xl text-center">
           <Link
-            href={routes.portfolio}
-            className="group inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur transition-all hover:scale-[1.02] hover:border-black/15 hover:bg-black/[0.06] hover:text-foreground animate-fade-up"
+            href={routes.products}
+            className="group inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 transition-colors hover:text-brand-700 animate-fade-up"
           >
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inset-0 rounded-full bg-lime-400/70 animate-ping-soft" />
-              <span className="relative h-1.5 w-1.5 rounded-full bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]" />
+              <span className="absolute inset-0 bg-signal/70 animate-ping-soft" />
+              <span className="relative h-1.5 w-1.5 bg-signal" />
             </span>
-            Powering what&apos;s next for the business
+            {featuredProducts.length} products in production — see them
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
           </Link>
 
           <h1
-            className="mt-8 text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-fade-up-stagger"
+            className="mt-8 text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-fade-up-stagger"
             style={{ animationDelay: "100ms" }}
           >
-            Custom applications
+            Software built around
             <br />
-            <span className="text-gradient-animated">built for how you work</span>
+            how your business{" "}
+            <span className="underline-signal text-brand-600">actually runs</span>
           </h1>
 
           <p
             className="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl animate-fade-up-stagger"
             style={{ animationDelay: "250ms" }}
           >
-            Standalone systems for CRM, reporting, payments, inventory, e-signing,
-            fleet tracking, and AI — each tailored to your business, not bundled
-            into one generic platform.
+            We started by building CRMs for roofing companies. Today our team
+            designs, ships, and runs complete systems — CRM, dispatch, payments,
+            compliance, and voice AI — for businesses that outgrew spreadsheets
+            and one-size-fits-all tools.
           </p>
 
           <div
             className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row animate-fade-up-stagger"
             style={{ animationDelay: "400ms" }}
           >
-            <Link
+            <TrackedLink
               href={routes.contact}
-              className="group inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3.5 text-sm font-semibold text-background transition-all hover:scale-[1.03] hover:shadow-2xl hover:shadow-brand-500/20 active:scale-100"
+              event="cta_click"
+              eventParams={{ location: "hero" }}
+              className={buttonVariants({ variant: "primary", size: "lg" })}
             >
-              Get a Free Consultation
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
+              Book a free 30-minute consult
+              <ButtonArrow />
+            </TrackedLink>
             <Link
               href="#products"
-              className="group inline-flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition-all hover:border-black/15 hover:bg-black/[0.06]"
+              className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
-              <Sparkles className="h-4 w-4 text-brand-600 transition-transform group-hover:rotate-12" />
-              Explore our products
+              See what we build
             </Link>
           </div>
 
@@ -75,26 +80,26 @@ export function Hero({ projects = [] }: HeroProps) {
             style={{ animationDelay: "550ms" }}
           >
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
-              {projects.length} standalone systems
+              <CircleCheck className="h-3.5 w-3.5 text-signal-ink" />
+              {featuredProducts.length} products in production
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
-              24/7 expert support
+              <CircleCheck className="h-3.5 w-3.5 text-signal-ink" />
+              Direct line to the people who build it
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <CircleCheck className="h-3.5 w-3.5 text-lime-600" />
-              Enterprise-grade security
+              <CircleCheck className="h-3.5 w-3.5 text-signal-ink" />
+              North Windham, CT — (860) 400-0758
             </span>
           </div>
         </div>
 
         <div
-          className="relative mt-20 overflow-visible animate-fade-up-stagger"
+          className="relative mt-24 animate-fade-up-stagger"
           style={{ animationDelay: "700ms" }}
         >
           <div className="absolute -inset-x-20 -top-10 -bottom-10 -z-10 bg-radial-glow blur-3xl" />
-          <ShowcaseDashboardAll />
+          <HeroShowcase />
         </div>
 
         <ProductGridLinks projects={projects} />
@@ -105,12 +110,12 @@ export function Hero({ projects = [] }: HeroProps) {
 
 function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
   return (
-    <div className="mx-auto mt-20 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="mx-auto mt-24 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
       {projects.map((project, i) => (
         <Link
           key={project.id}
           href={`#${project.id}`}
-          className="hover-lift group relative overflow-hidden rounded-xl border border-black/[0.08] bg-black/[0.02] px-3 py-3 transition-all hover:border-black/10 hover:bg-black/[0.04] animate-fade-up-stagger"
+          className="hover-lift group relative overflow-hidden rounded-xl border border-border bg-card px-3 py-3 transition-colors hover:border-border-strong animate-fade-up-stagger"
           style={{ animationDelay: `${i * 40}ms` }}
         >
           <span
@@ -119,7 +124,7 @@ function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
               project.accent,
             )}
           />
-          <span className="line-clamp-2 text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+          <span className="line-clamp-2 font-mono text-[11px] font-medium text-muted-foreground transition-colors group-hover:text-foreground">
             {project.title}
           </span>
         </Link>
