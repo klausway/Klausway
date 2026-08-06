@@ -46,7 +46,7 @@ export default async function PortfolioPage() {
         }
         description={portfolioPageHeader.subtitle}
       />
-      <PortfolioGrid projects={projects} hideHeader />
+      <PortfolioGrid projects={projects} />
       <CtaSection
         heading={
           <>

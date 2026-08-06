@@ -1,108 +1,30 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
-import { Eyebrow } from "./ui/eyebrow";
-import { ContentCardCover } from "./content-card-cover";
+import { BrowserFrame } from "./ui/browser-frame";
 import {
-  portfolioCategories,
-  type PortfolioCategory,
-  type PortfolioProject,
-} from "@/lib/portfolio";
+  getPortfolioScreenshot,
+  getPortfolioVisual,
+} from "./portfolio-media";
+import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type PortfolioGridProps = {
   projects: PortfolioProject[];
-  hideHeader?: boolean;
 };
 
-export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridProps) {
-  const [active, setActive] = useState<PortfolioCategory | "All">("All");
-
-  const filtered =
-    active === "All"
-      ? projects
-      : projects.filter((p) => p.categories.includes(active));
-
+export function PortfolioGrid({ projects }: PortfolioGridProps) {
   return (
-    <section className="relative py-24">
+    <section className="relative py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-6">
-        {!hideHeader && (
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <Eyebrow>Portfolio</Eyebrow>
-            <h2 className="mt-5 text-balance font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl">
-              Successful projects across{" "}
-              <span className="text-brand-600">every industry</span>
-            </h2>
-          </Reveal>
-        )}
-
-        <Reveal as="div" delay={100} className="mt-10 flex flex-wrap justify-center gap-2">
-          <FilterPill
-            label="All"
-            active={active === "All"}
-            onClick={() => setActive("All")}
-          />
-          {portfolioCategories.map((cat) => (
-            <FilterPill
-              key={cat}
-              label={cat}
-              active={active === cat}
-              onClick={() => setActive(cat)}
-            />
-          ))}
-        </Reveal>
-
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((project, i) => (
-            <Reveal
+        <div className="space-y-24">
+          {projects.map((project, i) => (
+            <ProjectRow
               key={project.id}
-              id={project.id}
-              delay={((i % 3) * 100) as 0 | 100 | 200 | 300 | 400}
-              className="scroll-mt-28 hover-lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
-            >
-              <ContentCardCover
-                src={project.coverImage}
-                alt={project.title}
-                accent={project.accent}
-              />
-              {!project.coverImage ? (
-                <div
-                  className={cn(
-                    "h-1 w-full bg-gradient-to-r",
-                    project.accent,
-                  )}
-                />
-              ) : null}
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-lg font-semibold tracking-tight">
-                  {project.title}
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {project.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-md bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <Link
-                  href={`${routes.portfolio}/${project.id}`}
-                  className="group/link mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-600"
-                >
-                  View Project
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
-                </Link>
-              </div>
-            </Reveal>
+              project={project}
+              reverse={i % 2 === 1}
+            />
           ))}
         </div>
       </div>
@@ -110,27 +32,101 @@ export function PortfolioGrid({ projects, hideHeader = false }: PortfolioGridPro
   );
 }
 
-function FilterPill({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+type ProjectRowProps = {
+  project: PortfolioProject;
+  reverse: boolean;
+};
+
+function ProjectRow({ project, reverse }: ProjectRowProps) {
+  const image =
+    getPortfolioScreenshot(project.id) ??
+    (project.coverImage
+      ? {
+          src: project.coverImage,
+          url: project.title,
+          alt: `${project.title} screenshot`,
+        }
+      : undefined);
+  const Visual = getPortfolioVisual(project.id);
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <div
+      id={project.id}
       className={cn(
-        "rounded-full border px-3 py-1 text-xs font-medium transition-all",
-        active
-          ? "border-brand-400/40 bg-brand-500/15 text-brand-700"
-          : "border-border bg-surface-2 text-muted-foreground hover:border-border-strong hover:text-foreground",
+        "scroll-mt-28 grid items-center gap-10 lg:grid-cols-2 lg:gap-16",
+        reverse && "lg:[&>div:first-child]:order-2",
       )}
     >
-      {label}
-    </button>
+      <Reveal as="div" delay={100}>
+        <div className="flex flex-wrap gap-2">
+          {project.categories.map((category) => (
+            <span
+              key={category}
+              className="rounded-md border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+            >
+              {category}
+            </span>
+          ))}
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md border border-border bg-surface-2 px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+        <h2 className="mt-4 text-balance font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+          {project.title}
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+          {project.overview}
+        </p>
+        <ul className="mt-6 space-y-2.5">
+          {project.keyFeatures.map((feature) => (
+            <li
+              key={feature}
+              className="flex items-start gap-2.5 text-sm text-foreground/90"
+            >
+              <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-signal-ink" />
+              {feature}
+            </li>
+          ))}
+        </ul>
+        <Link
+          href={`${routes.portfolio}/${project.id}`}
+          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+        >
+          View full project
+          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
+        </Link>
+      </Reveal>
+
+      <Reveal as="div" delay={200} className="relative">
+        <div
+          className={cn(
+            "absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br opacity-10 blur-2xl",
+            project.accent,
+          )}
+        />
+        {image ? (
+          <Link
+            href={`${routes.portfolio}/${project.id}`}
+            aria-label={`View ${project.title}`}
+            className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
+          >
+            <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+            {(project.galleryImages?.length ?? 0) > 0 ? (
+              <span className="pointer-events-none absolute bottom-4 left-4 rounded-md bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
+                {(project.galleryImages?.length ?? 0) + 1} screens — see the
+                gallery
+              </span>
+            ) : null}
+          </Link>
+        ) : (
+          <Visual />
+        )}
+      </Reveal>
+    </div>
   );
 }

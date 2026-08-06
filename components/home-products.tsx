@@ -1,50 +1,15 @@
 import Link from "next/link";
-import type { ComponentType } from "react";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { SectionHeading } from "./ui/section-heading";
 import { BrowserFrame } from "./ui/browser-frame";
-import { AnalyticsVisual } from "./feature-visuals/analytics-visual";
-import { FileUploadVisual } from "./feature-visuals/file-upload-visual";
-import { EsignVisual } from "./feature-visuals/esign-visual";
-import { InventoryVisual } from "./feature-visuals/inventory-visual";
-import { TrackingVisual } from "./feature-visuals/tracking-visual";
-import { VoiceAiVisual } from "./feature-visuals/voice-ai-visual";
-import { ReportGeneratorVisual } from "./feature-visuals/report-generator-visual";
-import { DetailedReportingVisual } from "./feature-visuals/detailed-reporting-visual";
+import {
+  getPortfolioScreenshot,
+  getPortfolioVisual,
+} from "./portfolio-media";
 import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
-
-/* Real product screenshots where a project maps to shipped software;
-   hand-built visuals remain only as fallback for the rest. */
-const imageMap: Record<string, { src: string; url: string; alt: string }> = {
-  crm: {
-    src: "/products/klaus-connect.png",
-    url: "Klaus Connect — CRM",
-    alt: "Klaus Connect CRM dashboard",
-  },
-  "lead-pipeline": {
-    src: "/products/klaus-connect-2.png",
-    url: "Klaus Connect — Pipeline",
-    alt: "Klaus Connect lead pipeline view",
-  },
-  "quickbooks-payment": {
-    src: "/products/qb-payments.png",
-    url: "QB Online Payments",
-    alt: "QuickBooks online payment links",
-  },
-};
-
-const visualMap: Record<string, ComponentType> = {
-  "upload-file": FileUploadVisual,
-  "customer-e-signing": EsignVisual,
-  "inventory-management": InventoryVisual,
-  "vehicle-tracking": TrackingVisual,
-  "voice-ai-agent": VoiceAiVisual,
-  "report-generator": ReportGeneratorVisual,
-  "detailed-reporting": DetailedReportingVisual,
-};
 
 type HomeProductsProps = {
   projects: PortfolioProject[];
@@ -91,8 +56,16 @@ type ProductRowProps = {
 };
 
 function ProductRow({ project, reverse }: ProductRowProps) {
-  const image = imageMap[project.id];
-  const Visual = visualMap[project.id] ?? AnalyticsVisual;
+  const image =
+    getPortfolioScreenshot(project.id) ??
+    (project.coverImage
+      ? {
+          src: project.coverImage,
+          url: project.title,
+          alt: `${project.title} screenshot`,
+        }
+      : undefined);
+  const Visual = getPortfolioVisual(project.id);
   const highlights = project.keyFeatures.slice(0, 4);
 
   return (
