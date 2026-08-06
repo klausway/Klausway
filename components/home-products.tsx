@@ -4,12 +4,14 @@ import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { SectionHeading } from "./ui/section-heading";
 import { BrowserFrame } from "./ui/browser-frame";
-import { PipelineVisual } from "./feature-visuals/pipeline-visual";
-import { AiCopilotVisual } from "./feature-visuals/ai-copilot-visual";
-import { AutomationVisual } from "./feature-visuals/automation-visual";
 import { AnalyticsVisual } from "./feature-visuals/analytics-visual";
-import { InboxVisual } from "./feature-visuals/inbox-visual";
-import { MobileVisual } from "./feature-visuals/mobile-visual";
+import { FileUploadVisual } from "./feature-visuals/file-upload-visual";
+import { EsignVisual } from "./feature-visuals/esign-visual";
+import { InventoryVisual } from "./feature-visuals/inventory-visual";
+import { TrackingVisual } from "./feature-visuals/tracking-visual";
+import { VoiceAiVisual } from "./feature-visuals/voice-ai-visual";
+import { ReportGeneratorVisual } from "./feature-visuals/report-generator-visual";
+import { DetailedReportingVisual } from "./feature-visuals/detailed-reporting-visual";
 import type { PortfolioProject } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
@@ -27,33 +29,21 @@ const imageMap: Record<string, { src: string; url: string; alt: string }> = {
     url: "Klaus Connect — Pipeline",
     alt: "Klaus Connect lead pipeline view",
   },
-  "voice-ai-agent": {
-    src: "/products/dineassist.png",
-    url: "DineAssist — Voice AI",
-    alt: "DineAssist AI calling CRM",
-  },
   "quickbooks-payment": {
     src: "/products/qb-payments.png",
     url: "QB Online Payments",
     alt: "QuickBooks online payment links",
   },
-  "detailed-reporting": {
-    src: "/products/spendledger.png",
-    url: "SpendLedger — Reports",
-    alt: "SpendLedger reporting dashboard",
-  },
-  "report-generator": {
-    src: "/products/spendledger-2.png",
-    url: "SpendLedger — Reports",
-    alt: "SpendLedger generated report view",
-  },
 };
 
 const visualMap: Record<string, ComponentType> = {
-  "upload-file": InboxVisual,
-  "customer-e-signing": InboxVisual,
-  "inventory-management": AutomationVisual,
-  "vehicle-tracking": MobileVisual,
+  "upload-file": FileUploadVisual,
+  "customer-e-signing": EsignVisual,
+  "inventory-management": InventoryVisual,
+  "vehicle-tracking": TrackingVisual,
+  "voice-ai-agent": VoiceAiVisual,
+  "report-generator": ReportGeneratorVisual,
+  "detailed-reporting": DetailedReportingVisual,
 };
 
 type HomeProductsProps = {

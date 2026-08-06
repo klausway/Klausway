@@ -1,0 +1,657 @@
+{
+  "name": "Klausway — Daily Article Curator",
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "nodes": [
+    {
+      "id": "sticky-overview",
+      "name": "Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {
+        "content": "## Klausway — Daily Article Curator\n1. Fetches industry news (GNews + Google News RSS)\n2. Dedupes against `n8n_article_candidates`\n3. AI rewrites one original Klaus Way article\n4. Cover image: source og:image, else AI-generated → S3\n5. Emails Jim for Approve / Skip\n6. On approve → inserts into `BlogPost` (published)",
+        "height": 280,
+        "width": 420,
+        "color": 4
+      }
+    },
+    {
+      "id": "schedule",
+      "name": "Daily 8AM ET",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [480, 304],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "triggerAtHour": 8,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "manual",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [480, 512],
+      "parameters": {}
+    },
+    {
+      "id": "fetch-gnews",
+      "name": "Fetch GNews",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 304],
+      "parameters": {
+        "url": "https://gnews.io/api/v4/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "FileMaker OR \"legacy systems\" OR \"business automation\" OR \"system integration\" OR \"AI for small business\" OR \"process automation\""
+            },
+            { "name": "lang", "value": "en" },
+            { "name": "max", "value": "20" },
+            { "name": "apikey", "value": "8074486fec12316674bf450d569e1bf0" }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "fetch-rss",
+      "name": "Fetch Google News RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [720, 512],
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=FileMaker%20OR%20%22legacy%20systems%22%20OR%20%22business%20automation%22%20OR%20%22system%20integration%22&hl=en-US&gl=US&ceid=US:en",
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "normalize",
+      "name": "Normalize Candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 400],
+      "parameters": {
+        "jsCode": "const out = [];\nconst seen = new Set();\n\nfunction add(url, title, description, image, source) {\n  if (!url || !title) return;\n  const clean = String(url).trim();\n  if (!clean.startsWith('http') || seen.has(clean)) return;\n  seen.add(clean);\n  out.push({\n    url: clean,\n    title: String(title).trim().slice(0, 300),\n    description: String(description || '').trim().slice(0, 800),\n    image: image ? String(image) : '',\n    source: source || 'unknown',\n  });\n}\n\n// GNews branch (may be empty on error)\ntry {\n  const g = $('Fetch GNews').first().json || {};\n  for (const a of (g.articles || [])) {\n    add(a.url, a.title, a.description || a.content, a.image, 'gnews');\n  }\n} catch (e) {}\n\n// RSS items arrive as individual items into this node from Merge — also try direct\nfor (const item of $input.all()) {\n  const j = item.json || {};\n  if (j.link || j.url) {\n    add(j.link || j.url, j.title, j.contentSnippet || j.content || j.description, j.enclosure?.url || '', 'google-news-rss');\n  }\n  if (Array.isArray(j.articles)) {\n    for (const a of j.articles) add(a.url, a.title, a.description, a.image, 'gnews');\n  }\n}\n\nif (!out.length) {\n  return [{ json: { empty: true, candidates: [], message: 'No articles fetched' } }];\n}\n\nreturn [{ json: { empty: false, candidates: out.slice(0, 30) } }];"
+      }
+    },
+    {
+      "id": "load-used",
+      "name": "Load Used URLs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1200, 400],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT url FROM n8n_article_candidates;",
+        "options": {}
+      }
+    },
+    {
+      "id": "filter-unused",
+      "name": "Filter Unused",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1440, 400],
+      "parameters": {
+        "jsCode": "const used = new Set($input.all().map(i => String(i.json.url || '')).filter(Boolean));\nconst candidates = $('Normalize Candidates').first().json.candidates || [];\nconst fresh = candidates.filter(c => !used.has(c.url)).slice(0, 12);\n\nif (!fresh.length) {\n  return [{ json: { empty: true, message: 'All candidates already used', candidates: [] } }];\n}\n\nreturn [{ json: { empty: false, candidates: fresh } }];"
+      }
+    },
+    {
+      "id": "if-has-candidates",
+      "name": "Has Candidates?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1680, 400],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.empty }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "openai-rewrite",
+      "name": "AI Pick & Rewrite",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1920, 304],
+      "credentials": {
+        "openAiApi": {
+          "id": "wksEFndmlSjEMyop",
+          "name": "OpenAi account"
+        }
+      },
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1",
+          "cachedResultName": "gpt-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the content editor for Klaus Way (klausway.com), a consultancy that modernizes FileMaker/legacy systems, builds custom apps, and automates business operations with AI and integrations.\n\nPick ONE best source article from the candidate list and rewrite it as an ORIGINAL Klaus Way resource article. Do NOT copy wording. Write in a clear, practical, non-hype voice.\n\nReturn ONLY valid JSON (no markdown fences) with this shape:\n{\n  \"sourceUrl\": \"https://...\",\n  \"sourceTitle\": \"original title\",\n  \"sourceImage\": \"https://... or empty string\",\n  \"title\": \"Klaus Way article title\",\n  \"slug\": \"kebab-case-slug-max-80-chars\",\n  \"excerpt\": \"1-2 sentence summary under 280 chars\",\n  \"type\": \"ARTICLE\" | \"GUIDE\" | \"NEWS\" | \"CASE_STUDY\",\n  \"contentHtml\": \"<p>...</p> HTML body, 4-7 short paragraphs, optional <h2>/<ul>. End with a paragraph: Inspired by / Source: <a href=\\\"SOURCE\\\">original title</a>\",\n  \"imagePrompt\": \"A clean professional cover image prompt for this article, no text overlays\"\n}"
+            },
+            {
+              "role": "user",
+              "content": "=Today is {{ $now.toISO() }}.\n\nCandidates JSON:\n{{ JSON.stringify($json.candidates) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.5
+        }
+      }
+    },
+    {
+      "id": "parse-rewrite",
+      "name": "Parse Rewrite",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2160, 304],
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nlet text = raw.message?.content || raw.text || raw.output || raw.content || '';\nif (typeof text !== 'string') text = JSON.stringify(text);\ntext = text.trim().replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```$/i, '').trim();\n\nlet article;\ntry {\n  article = JSON.parse(text);\n} catch (e) {\n  throw new Error('AI did not return valid JSON: ' + text.slice(0, 400));\n}\n\nfunction slugify(s) {\n  return String(s || '')\n    .toLowerCase()\n    .replace(/[^a-z0-9]+/g, '-')\n    .replace(/^-+|-+$/g, '')\n    .slice(0, 80) || ('article-' + Date.now());\n}\n\nfunction cuid() {\n  return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);\n}\n\nconst typeMap = {\n  ARTICLE: 'ARTICLE', GUIDE: 'GUIDE', NEWS: 'NEWS', CASE_STUDY: 'CASE_STUDY',\n  article: 'ARTICLE', guide: 'GUIDE', news: 'NEWS', 'case-study': 'CASE_STUDY',\n};\n\nconst slug = slugify(article.slug || article.title);\nconst sourceImage = String(article.sourceImage || '').trim();\nconst candidates = $('Filter Unused').first().json.candidates || [];\nconst matched = candidates.find(c => c.url === article.sourceUrl) || {};\nconst coverCandidate = sourceImage || matched.image || '';\n\nreturn [{\n  json: {\n    id: cuid(),\n    candidateId: cuid(),\n    sourceUrl: article.sourceUrl,\n    sourceTitle: article.sourceTitle || matched.title || article.title,\n    title: String(article.title || '').trim(),\n    slug,\n    excerpt: String(article.excerpt || '').trim().slice(0, 500),\n    type: typeMap[article.type] || 'ARTICLE',\n    contentHtml: String(article.contentHtml || '').trim(),\n    imagePrompt: String(article.imagePrompt || `Professional editorial cover for: ${article.title}`).trim(),\n    coverCandidate,\n    hasSourceImage: Boolean(coverCandidate && coverCandidate.startsWith('http')),\n  }\n}];"
+      }
+    },
+    {
+      "id": "if-source-image",
+      "name": "Has Source Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2400, 304],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.hasSourceImage }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "download-source-image",
+      "name": "Download Source Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2640, 192],
+      "parameters": {
+        "url": "={{ $json.coverCandidate }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "check-download",
+      "name": "Source Download OK?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, 192],
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst article = $('Parse Rewrite').first().json;\nconst hasBinary = Boolean(item.binary && item.binary.data);\n\nif (hasBinary) {\n  return [{\n    json: { ...article, imageSource: 'source' },\n    binary: item.binary,\n  }];\n}\n\n// Fall through to AI generation by returning a flag without binary\nreturn [{ json: { ...article, imageSource: 'needs-ai', hasSourceImage: false } }];"
+      }
+    },
+    {
+      "id": "if-need-ai-image",
+      "name": "Need AI Image?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3120, 192],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c3",
+              "leftValue": "={{ $json.imageSource }}",
+              "rightValue": "needs-ai",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "generate-ai-image",
+      "name": "Generate AI Image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [2640, 448],
+      "credentials": {
+        "openAiApi": {
+          "id": "wksEFndmlSjEMyop",
+          "name": "OpenAi account"
+        }
+      },
+      "parameters": {
+        "resource": "image",
+        "operation": "generate",
+        "model": "dall-e-3",
+        "prompt": "={{ $('Parse Rewrite').item.json.imagePrompt }}",
+        "options": {
+          "size": "1792x1024",
+          "quality": "standard",
+          "style": "natural"
+        }
+      }
+    },
+    {
+      "id": "download-ai-image",
+      "name": "Download AI Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2880, 448],
+      "parameters": {
+        "url": "={{ $json.url || $json.data?.[0]?.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "id": "prep-ai-binary",
+      "name": "Prep AI Binary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3120, 448],
+      "parameters": {
+        "jsCode": "const article = $('Parse Rewrite').first().json;\nconst item = $input.first();\nreturn [{\n  json: { ...article, imageSource: 'ai' },\n  binary: item.binary,\n}];"
+      }
+    },
+    {
+      "id": "merge-images",
+      "name": "Merge Image Paths",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [3360, 304],
+      "parameters": {
+        "mode": "chooseBranch",
+        "chooseBranchMode": "waitForAll",
+        "output": "specifiedInput",
+        "numberInputs": 2,
+        "useDataOfInput": 1
+      }
+    },
+    {
+      "id": "upload-s3",
+      "name": "Upload Cover to S3",
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [3600, 304],
+      "credentials": {
+        "s3": {
+          "id": "lKCJPUMFpj7HybRC",
+          "name": "Klausway Website S3"
+        }
+      },
+      "parameters": {
+        "operation": "upload",
+        "bucketName": "kw-doc",
+        "fileName": "=klausway_website/resources/{{ $json.slug }}-{{ Date.now() }}.jpg",
+        "binaryData": true,
+        "binaryPropertyName": "data",
+        "additionalFields": {
+          "acl": "publicRead"
+        }
+      }
+    },
+    {
+      "id": "build-payload",
+      "name": "Build Publish Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3840, 304],
+      "parameters": {
+        "jsCode": "const article = $('Parse Rewrite').first().json;\nconst s3 = $input.first().json;\n\n// n8n S3 upload returns Key / key / Location depending on version\nconst key = s3.Key || s3.key || s3.fileName || `klausway_website/resources/${article.slug}.jpg`;\nconst coverImage = s3.Location\n  || s3.location\n  || `https://kw-doc.s3.us-east-1.amazonaws.com/${String(key).replace(/^\\/+/, '')}`;\n\nreturn [{\n  json: {\n    ...article,\n    coverImage,\n    s3Key: key,\n  }\n}];"
+      }
+    },
+    {
+      "id": "save-candidate",
+      "name": "Save Candidate Proposed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4080, 304],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO n8n_article_candidates (id, url, title, slug, status, source_feed, cover_image, created_at, updated_at)\nVALUES (\n  '{{ $json.candidateId }}',\n  '{{ $json.sourceUrl.replace(/'/g, \"''\") }}',\n  '{{ $json.title.replace(/'/g, \"''\") }}',\n  '{{ $json.slug }}',\n  'proposed',\n  'daily-curator',\n  '{{ ($json.coverImage || \"\").replace(/'/g, \"''\") }}',\n  NOW(),\n  NOW()\n)\nON CONFLICT (url) DO UPDATE SET\n  title = EXCLUDED.title,\n  slug = EXCLUDED.slug,\n  status = 'proposed',\n  cover_image = EXCLUDED.cover_image,\n  updated_at = NOW()\nRETURNING id, url, slug, status;",
+        "options": {}
+      }
+    },
+    {
+      "id": "approval-email",
+      "name": "Email Jim for Approval",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [4320, 304],
+      "credentials": {
+        "smtp": {
+          "id": "mTYHf3hI2i3EA8CL",
+          "name": "no-reply@klauslarsen.com"
+        }
+      },
+      "webhookId": "klausway-daily-article-approval",
+      "parameters": {
+        "operation": "sendAndWait",
+        "fromEmail": "no-reply@klauslarsen.com",
+        "toEmail": "jim.t@klauslarsen.com",
+        "subject": "=Klaus Way article for review: {{ $('Build Publish Payload').item.json.title }}",
+        "message": "=<div style=\"font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#111827;max-width:680px\">\n  <p style=\"font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b7280;margin:0 0 8px\">Klaus Way · Daily Article Curator</p>\n  <h2 style=\"margin:0 0 12px\">{{ $('Build Publish Payload').item.json.title }}</h2>\n  <p style=\"margin:0 0 16px;color:#4b5563\">{{ $('Build Publish Payload').item.json.excerpt }}</p>\n  <p style=\"margin:0 0 8px\"><strong>Type:</strong> {{ $('Build Publish Payload').item.json.type }} &nbsp;·&nbsp; <strong>Slug:</strong> {{ $('Build Publish Payload').item.json.slug }}</p>\n  <p style=\"margin:0 0 16px\"><strong>Source:</strong> <a href=\"{{ $('Build Publish Payload').item.json.sourceUrl }}\">{{ $('Build Publish Payload').item.json.sourceTitle }}</a></p>\n  <img src=\"{{ $('Build Publish Payload').item.json.coverImage }}\" alt=\"Cover\" style=\"max-width:100%;border-radius:12px;border:1px solid #e5e7eb;margin:0 0 16px\" />\n  <div style=\"padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb\">{{ $('Build Publish Payload').item.json.contentHtml }}</div>\n  <p style=\"margin:20px 0 0;color:#6b7280;font-size:13px\">Approve to publish immediately on klausway.com/resources. Skip to discard this candidate.</p>\n</div>",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Approve & Publish",
+            "denyLabel": "Skip"
+          }
+        },
+        "options": {
+          "responseType": "approval"
+        }
+      }
+    },
+    {
+      "id": "if-approved",
+      "name": "Approved?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [4560, 304],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c4",
+              "leftValue": "={{ $json.data?.approved ?? $json.approved ?? true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "publish-post",
+      "name": "Publish BlogPost",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4800, 192],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ (() => {\n  const a = $('Build Publish Payload').item.json;\n  const esc = (s) => String(s ?? '').replace(/'/g, \"''\");\n  return `INSERT INTO \\\"BlogPost\\\" (id, slug, title, excerpt, content, type, \\\"coverImage\\\", \\\"galleryImages\\\", published, date, \\\"createdAt\\\", \\\"updatedAt\\\")\\nVALUES (\\n  '${esc(a.id)}',\\n  '${esc(a.slug)}',\\n  '${esc(a.title)}',\\n  '${esc(a.excerpt)}',\\n  '${esc(a.contentHtml)}',\\n  '${esc(a.type)}'::\\\"ResourceType\\\",\\n  '${esc(a.coverImage)}',\\n  ARRAY[]::text[],\\n  true,\\n  NOW(),\\n  NOW(),\\n  NOW()\\n)\\nON CONFLICT (slug) DO UPDATE SET\\n  title = EXCLUDED.title,\\n  excerpt = EXCLUDED.excerpt,\\n  content = EXCLUDED.content,\\n  type = EXCLUDED.type,\\n  \\\"coverImage\\\" = EXCLUDED.\\\"coverImage\\\",\\n  published = true,\\n  \\\"updatedAt\\\" = NOW()\\nRETURNING id, slug, title, published;`;\n})() }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "mark-published",
+      "name": "Mark Candidate Published",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [5040, 192],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE n8n_article_candidates\nSET status = 'published', updated_at = NOW()\nWHERE url = '{{ $('Build Publish Payload').item.json.sourceUrl.replace(/'/g, \"''\") }}'\nRETURNING id, url, status;",
+        "options": {}
+      }
+    },
+    {
+      "id": "mark-skipped",
+      "name": "Mark Candidate Skipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [4800, 448],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE n8n_article_candidates\nSET status = 'skipped', updated_at = NOW()\nWHERE url = '{{ $('Build Publish Payload').item.json.sourceUrl.replace(/'/g, \"''\") }}'\nRETURNING id, url, status;",
+        "options": {}
+      }
+    },
+    {
+      "id": "no-candidates",
+      "name": "No Candidates Today",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1920, 560],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "Daily 8AM ET": {
+      "main": [
+        [
+          { "node": "Fetch GNews", "type": "main", "index": 0 },
+          { "node": "Fetch Google News RSS", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Manual Test": {
+      "main": [
+        [
+          { "node": "Fetch GNews", "type": "main", "index": 0 },
+          { "node": "Fetch Google News RSS", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch GNews": {
+      "main": [
+        [{ "node": "Normalize Candidates", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Google News RSS": {
+      "main": [
+        [{ "node": "Normalize Candidates", "type": "main", "index": 0 }]
+      ]
+    },
+    "Normalize Candidates": {
+      "main": [
+        [{ "node": "Load Used URLs", "type": "main", "index": 0 }]
+      ]
+    },
+    "Load Used URLs": {
+      "main": [
+        [{ "node": "Filter Unused", "type": "main", "index": 0 }]
+      ]
+    },
+    "Filter Unused": {
+      "main": [
+        [{ "node": "Has Candidates?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Has Candidates?": {
+      "main": [
+        [{ "node": "AI Pick & Rewrite", "type": "main", "index": 0 }],
+        [{ "node": "No Candidates Today", "type": "main", "index": 0 }]
+      ]
+    },
+    "AI Pick & Rewrite": {
+      "main": [
+        [{ "node": "Parse Rewrite", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Rewrite": {
+      "main": [
+        [{ "node": "Has Source Image?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Has Source Image?": {
+      "main": [
+        [{ "node": "Download Source Image", "type": "main", "index": 0 }],
+        [{ "node": "Generate AI Image", "type": "main", "index": 0 }]
+      ]
+    },
+    "Download Source Image": {
+      "main": [
+        [{ "node": "Source Download OK?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Source Download OK?": {
+      "main": [
+        [{ "node": "Need AI Image?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Need AI Image?": {
+      "main": [
+        [{ "node": "Generate AI Image", "type": "main", "index": 0 }],
+        [{ "node": "Merge Image Paths", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate AI Image": {
+      "main": [
+        [{ "node": "Download AI Image", "type": "main", "index": 0 }]
+      ]
+    },
+    "Download AI Image": {
+      "main": [
+        [{ "node": "Prep AI Binary", "type": "main", "index": 0 }]
+      ]
+    },
+    "Prep AI Binary": {
+      "main": [
+        [{ "node": "Merge Image Paths", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge Image Paths": {
+      "main": [
+        [{ "node": "Upload Cover to S3", "type": "main", "index": 0 }]
+      ]
+    },
+    "Upload Cover to S3": {
+      "main": [
+        [{ "node": "Build Publish Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Publish Payload": {
+      "main": [
+        [{ "node": "Save Candidate Proposed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Save Candidate Proposed": {
+      "main": [
+        [{ "node": "Email Jim for Approval", "type": "main", "index": 0 }]
+      ]
+    },
+    "Email Jim for Approval": {
+      "main": [
+        [{ "node": "Approved?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Approved?": {
+      "main": [
+        [{ "node": "Publish BlogPost", "type": "main", "index": 0 }],
+        [{ "node": "Mark Candidate Skipped", "type": "main", "index": 0 }]
+      ]
+    },
+    "Publish BlogPost": {
+      "main": [
+        [{ "node": "Mark Candidate Published", "type": "main", "index": 0 }]
+      ]
+    }
+  }
+}
