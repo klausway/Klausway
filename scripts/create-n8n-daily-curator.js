@@ -5,18 +5,28 @@
 const fs = require("fs");
 const path = require("path");
 
-const N8N_URL = (process.env.n8n_url || process.env.N8N_URL || "").replace(
-  /\/$/,
-  "",
-);
+const N8N_URL = (
+  process.env.n8n_url ||
+  process.env.N8N_URL ||
+  process.env.N8N_BASE_URL ||
+  ""
+)
+  .replace(/^"|"$/g, "")
+  .replace(/\/$/, "");
 const API_KEY = (
   process.env.n8n_api_key ||
   process.env.N8N_API_KEY ||
   ""
 ).replace(/^"|"$/g, "");
+const GNEWS_API_KEY = (process.env.GNEWS_API_KEY || "").replace(/^"|"$/g, "");
 
 if (!N8N_URL || !API_KEY) {
-  console.error("Missing n8n_url / n8n_api_key");
+  console.error("Missing n8n_url (or N8N_BASE_URL) / n8n_api_key");
+  process.exit(1);
+}
+
+if (!GNEWS_API_KEY) {
+  console.error("Missing GNEWS_API_KEY (see .env.example)");
   process.exit(1);
 }
 
@@ -87,7 +97,7 @@ const workflow = {
             },
             { name: "lang", value: "en" },
             { name: "max", value: "20" },
-            { name: "apikey", value: "8074486fec12316674bf450d569e1bf0" },
+            { name: "apikey", value: GNEWS_API_KEY },
           ],
         },
         options: { timeout: 30000 },

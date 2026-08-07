@@ -42,7 +42,12 @@ export function HomeProducts({ projects }: HomeProductsProps) {
 
         <div className="mt-20 space-y-24">
           {projects.map((project, i) => (
-            <ProductRow key={project.id} project={project} reverse={i % 2 === 1} />
+            <ProductRow
+              key={project.id}
+              project={project}
+              index={i}
+              reverse={i % 2 === 1}
+            />
           ))}
         </div>
       </div>
@@ -52,10 +57,11 @@ export function HomeProducts({ projects }: HomeProductsProps) {
 
 type ProductRowProps = {
   project: PortfolioProject;
+  index: number;
   reverse: boolean;
 };
 
-function ProductRow({ project, reverse }: ProductRowProps) {
+function ProductRow({ project, index, reverse }: ProductRowProps) {
   const image =
     getPortfolioScreenshot(project.id) ??
     (project.coverImage
@@ -77,7 +83,11 @@ function ProductRow({ project, reverse }: ProductRowProps) {
       )}
     >
       <Reveal as="div" delay={100}>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-xs font-semibold tracking-widest text-brand-600">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span aria-hidden className="mr-1 h-px w-6 bg-border-strong" />
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -114,17 +124,27 @@ function ProductRow({ project, reverse }: ProductRowProps) {
       </Reveal>
 
       <Reveal as="div" delay={200} className="relative">
-        <div
-          className={cn(
-            "absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br opacity-10 blur-2xl",
-            project.accent,
-          )}
-        />
-        {image ? (
-          <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
-        ) : (
-          <Visual />
-        )}
+        <div className="relative overflow-hidden rounded-3xl border border-border p-4 sm:p-6">
+          <div
+            className={cn(
+              "absolute inset-0 bg-gradient-to-br opacity-[0.08]",
+              project.accent,
+            )}
+          />
+          <div
+            className={cn(
+              "absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-br opacity-20 blur-3xl",
+              project.accent,
+            )}
+          />
+          <div className="relative">
+            {image ? (
+              <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+            ) : (
+              <Visual />
+            )}
+          </div>
+        </div>
       </Reveal>
     </div>
   );

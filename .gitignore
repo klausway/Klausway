@@ -30,6 +30,9 @@ yarn-error.log*
 # local CMS uploads
 /public/uploads
 
+# n8n API responses written by scripts/create-n8n-daily-curator.js
+/scripts/*.created.json
+
 # vercel
 .vercel
 

@@ -12,7 +12,7 @@
       "typeVersion": 1,
       "position": [0, 0],
       "parameters": {
-        "content": "## Klausway — Daily Article Curator\n1. Fetches industry news (GNews + Google News RSS)\n2. Dedupes against `n8n_article_candidates`\n3. AI rewrites one original Klaus Way article\n4. Cover image: source og:image, else AI-generated → S3\n5. Emails Jim for Approve / Skip\n6. On approve → inserts into `BlogPost` (published)",
+        "content": "## Klausway — Daily Article Curator\n1. Fetches industry news (GNews + Google News RSS)\n2. Dedupes against `n8n_article_candidates`\n3. AI rewrites one original Klaus Way article\n4. Cover image: source og:image, else AI-generated → S3\n5. Emails Jim for Approve / Skip\n6. On approve → inserts into `BlogPost` (published)\n\n**Setup:** the `Fetch GNews` node reads `$env.GNEWS_API_KEY`, so set `GNEWS_API_KEY` on the n8n instance before running.",
         "height": 280,
         "width": 420,
         "color": 4
@@ -61,7 +61,7 @@
             },
             { "name": "lang", "value": "en" },
             { "name": "max", "value": "20" },
-            { "name": "apikey", "value": "8074486fec12316674bf450d569e1bf0" }
+            { "name": "apikey", "value": "={{ $env.GNEWS_API_KEY }}" }
           ]
         },
         "options": {

@@ -76,6 +76,70 @@ export async function sendContactEmail(input: ContactEmailInput) {
   return data;
 }
 
+export type CallSummaryInput = {
+  callId: string;
+  startedAt: string;
+  endedReason: string;
+  duration: string;
+  customer: string;
+  assistant: string;
+  summary: string;
+  transcript: string;
+  recordingUrl: string;
+};
+
+/** End-of-call report from the Vapi voice assistant. */
+export async function sendCallSummaryEmail(input: CallSummaryInput) {
+  const from = process.env.NOTIFICATION_FROM;
+  // `||` not `??` — .env.example ships these blank, and "" is not nullish.
+  const to =
+    process.env.CALL_NOTIFY_TO || process.env.CONTACT_TO || "support@klausway.com";
+
+  if (!from) {
+    throw new Error("Email service is not configured");
+  }
+
+  const resend = getResendClient();
+  const caller = sanitizeHeaderValue(input.customer).slice(0, 160);
+  const started = input.startedAt
+    ? new Date(input.startedAt).toLocaleString("en-US", { timeZone: "America/New_York" })
+    : "—";
+
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    subject: `Voice call from ${caller || "a website visitor"} (${input.duration})`,
+    text: [
+      `Caller: ${caller || "—"}`,
+      `Started: ${started} ET`,
+      `Duration: ${input.duration}`,
+      `Ended because: ${input.endedReason}`,
+      `Assistant: ${sanitizeHeaderValue(input.assistant).slice(0, 160)}`,
+      `Call ID: ${sanitizeHeaderValue(input.callId).slice(0, 80)}`,
+      input.recordingUrl ? `Recording: ${input.recordingUrl}` : "",
+      "",
+      input.summary ? `Summary:\n${input.summary}\n` : "",
+      "Transcript:",
+      input.transcript || "(no transcript captured)",
+    ]
+      .filter((line) => line !== "")
+      .join("\n"),
+  });
+
+  if (error) {
+    console.error("[email] Resend error", error);
+    throw new Error(error.message || "Failed to send email via Resend");
+  }
+
+  if (!data?.id) {
+    console.error("[email] Resend returned no message id", { data, error });
+    throw new Error("Failed to send email via Resend");
+  }
+
+  console.info("[email] call summary sent", { id: data.id, to });
+  return data;
+}
+
 /** Confirmation to the lead. Fire-and-forget — never fail the request on error. */
 export async function sendLeadConfirmationEmail(input: {
   name: string;
