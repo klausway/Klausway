@@ -3,6 +3,7 @@ import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { SectionHeading } from "./ui/section-heading";
 import { BrowserFrame } from "./ui/browser-frame";
+import { ProductSiteCta } from "./product-site-cta";
 import {
   getPortfolioScreenshot,
   getPortfolioVisual,
@@ -28,7 +29,7 @@ export function HomeProducts({ projects }: HomeProductsProps) {
               <span className="text-brand-600">every part of your business</span>
             </>
           }
-          description="Each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to payments, inventory, and AI."
+          description="Led by Klaus Connect, each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to payments, inventory, and AI."
           aside={
             <Link
               href={routes.portfolio}
@@ -114,13 +115,18 @@ function ProductRow({ project, index, reverse }: ProductRowProps) {
             </li>
           ))}
         </ul>
-        <Link
-          href={`${routes.portfolio}/${project.id}`}
-          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
-        >
-          Learn more about {project.title}
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
-        </Link>
+        <ProductSiteCta
+          name={project.title}
+          productId={project.id}
+          productUrl={project.productUrl}
+          fallbackHref={`${routes.portfolio}/${project.id}`}
+          fallbackLabel={
+            project.productUrl
+              ? "See the build story"
+              : `Learn more about ${project.title}`
+          }
+          location="home_products"
+        />
       </Reveal>
 
       <Reveal as="div" delay={200} className="relative">
@@ -139,7 +145,19 @@ function ProductRow({ project, index, reverse }: ProductRowProps) {
           />
           <div className="relative">
             {image ? (
-              <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+              project.productUrl ? (
+                <a
+                  href={project.productUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${project.title}`}
+                  className="block"
+                >
+                  <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+                </a>
+              ) : (
+                <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+              )
             ) : (
               <Visual />
             )}

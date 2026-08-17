@@ -36,6 +36,19 @@ function mapPortfolioProject(project: {
   };
 }
 
+/** Overlay product-site links (and public product names) from static data onto CMS rows. */
+function withProductSite(project: PortfolioProject): PortfolioProject {
+  const published = staticPortfolioProjects.find((item) => item.id === project.id);
+  if (!published?.productUrl) return project;
+  return {
+    ...project,
+    productUrl: published.productUrl,
+    title: published.title,
+    description: published.description,
+    overview: published.overview,
+  };
+}
+
 /** When DATABASE_URL is set, the database is the source of truth (CMS edits). */
 export async function getPublishedPortfolioProjects(): Promise<PortfolioProject[]> {
   if (!process.env.DATABASE_URL) {
@@ -47,7 +60,7 @@ export async function getPublishedPortfolioProjects(): Promise<PortfolioProject[
       where: { published: true },
       orderBy: { title: "asc" },
     });
-    return projects.map((project) => mapPortfolioProject(project));
+    return projects.map((project) => withProductSite(mapPortfolioProject(project)));
   } catch (error) {
     console.error("[portfolio-data] getPublishedPortfolioProjects", error);
     return staticPortfolioProjects;
@@ -65,7 +78,7 @@ export async function getPortfolioProject(
     const project = await db.portfolioProject.findFirst({
       where: { slug, published: true },
     });
-    return project ? mapPortfolioProject(project) : undefined;
+    return project ? withProductSite(mapPortfolioProject(project)) : undefined;
   } catch (error) {
     console.error("[portfolio-data] getPortfolioProject", error);
     return staticPortfolioProjects.find((item) => item.id === slug);

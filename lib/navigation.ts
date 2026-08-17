@@ -11,6 +11,9 @@ export const routes = {
   termsOfService: "/terms-of-service",
 } as const;
 
+/** Flagship product marketing site (separate from klausway.com). */
+export const klausConnectUrl = "https://www.klaus-connect.com";
+
 export type RouteKey = keyof typeof routes;
 
 export const navItems = [
@@ -37,6 +40,7 @@ export const footerLinks = {
     { label: "Voice AI Agent", href: `${routes.apps}#automation-ai` },
   ],
   company: [
+    { label: "Klaus Connect", href: klausConnectUrl },
     { label: "Home", href: routes.home },
     { label: "About Us", href: routes.about },
     { label: "Resources", href: routes.resources },

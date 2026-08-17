@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 import { sanitizeHeaderValue } from "@/lib/contact-security";
+import { klausConnectUrl, routes } from "@/lib/navigation";
+import { getSiteUrl } from "@/lib/seo";
 
 type ContactEmailInput = {
   name: string;
@@ -116,14 +118,12 @@ export async function sendCallSummaryEmail(input: CallSummaryInput) {
       `Ended because: ${input.endedReason}`,
       `Assistant: ${sanitizeHeaderValue(input.assistant).slice(0, 160)}`,
       `Call ID: ${sanitizeHeaderValue(input.callId).slice(0, 80)}`,
-      input.recordingUrl ? `Recording: ${input.recordingUrl}` : "",
+      ...(input.recordingUrl ? [`Recording: ${input.recordingUrl}`] : []),
       "",
-      input.summary ? `Summary:\n${input.summary}\n` : "",
+      ...(input.summary ? [`Summary:\n${input.summary}\n`] : []),
       "Transcript:",
       input.transcript || "(no transcript captured)",
-    ]
-      .filter((line) => line !== "")
-      .join("\n"),
+    ].join("\n"),
   });
 
   if (error) {
@@ -144,6 +144,8 @@ export async function sendCallSummaryEmail(input: CallSummaryInput) {
 export async function sendLeadConfirmationEmail(input: {
   name: string;
   email: string;
+  intent?: string;
+  source?: string;
 }) {
   const from = process.env.NOTIFICATION_FROM;
   if (!from) return;
@@ -151,6 +153,9 @@ export async function sendLeadConfirmationEmail(input: {
   const resend = getResendClient();
   const firstName = sanitizeHeaderValue(input.name).split(" ")[0] || "there";
   const safeEmail = sanitizeHeaderValue(input.email).slice(0, 254);
+  const productsUrl = `${getSiteUrl().replace(/\/$/, "")}${routes.products}/`;
+  const connectLead =
+    input.source?.includes("klaus-connect") || input.intent === "demo";
 
   const { error } = await resend.emails.send({
     from,
@@ -164,8 +169,21 @@ export async function sendLeadConfirmationEmail(input: {
       "",
       "If it's urgent, call us at (860) 400-0758.",
       "",
-      "In the meantime, you can see the software we build and run:",
-      "https://klausway.com/products/",
+      ...(connectLead
+        ? [
+            "You asked about Klaus Connect — here’s the product site:",
+            klausConnectUrl,
+            "",
+            "See the rest of what we build and run:",
+            productsUrl,
+          ]
+        : [
+            "In the meantime, our flagship product is Klaus Connect:",
+            klausConnectUrl,
+            "",
+            "Browse everything we build and run:",
+            productsUrl,
+          ]),
       "",
       "— The Klaus Way team",
       "29 Northridge Drive, North Windham, CT 06256",

@@ -1,4 +1,6 @@
 import { BrowserFrame } from "./ui/browser-frame";
+import { TrackedLink } from "./tracked-link";
+import { klausConnectUrl } from "@/lib/navigation";
 
 /**
  * Real product screenshots layered like a desk of shipped work — replaces the
@@ -7,13 +9,23 @@ import { BrowserFrame } from "./ui/browser-frame";
 export function HeroShowcase() {
   return (
     <div className="relative mx-auto max-w-5xl">
-      <BrowserFrame
-        src="/products/klaus-connect.png"
-        alt="Klaus Connect CRM — pipeline and activity dashboard"
-        url="Klaus Connect — CRM"
-        priority
-        className="relative z-10"
-      />
+      <TrackedLink
+        href={klausConnectUrl}
+        external
+        target="_blank"
+        rel="noopener noreferrer"
+        event="cta_click"
+        eventParams={{ location: "hero_showcase", product: "klaus-connect" }}
+        className="relative z-10 block"
+        aria-label="Visit Klaus Connect"
+      >
+        <BrowserFrame
+          src="/products/klaus-connect.png"
+          alt="Klaus Connect CRM — pipeline and activity dashboard"
+          url="klaus-connect.com"
+          priority
+        />
+      </TrackedLink>
       <div
         className="absolute -left-6 -bottom-10 z-20 hidden w-[38%] -rotate-1 animate-fade-up-stagger md:block lg:-left-14"
         style={{ animationDelay: "950ms" }}

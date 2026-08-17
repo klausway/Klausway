@@ -1,4 +1,4 @@
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, ExternalLink } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { ContentDetailMedia } from "./content-detail-media";
 import {
@@ -7,8 +7,9 @@ import {
   ContentDetailShell,
 } from "./content-detail-shell";
 import { RichTextContent } from "./rich-text-content";
+import { TrackedLink } from "./tracked-link";
 import type { PortfolioProject } from "@/lib/portfolio";
-import { routes } from "@/lib/navigation";
+import { klausConnectUrl, routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type PortfolioDetailProps = {
@@ -64,6 +65,27 @@ export function PortfolioDetail({ project }: PortfolioDetailProps) {
           html={project.overview}
           className="prose-lg md:prose-xl prose-p:leading-[1.85]"
         />
+        {project.productUrl ? (
+          <TrackedLink
+            href={project.productUrl}
+            external
+            target="_blank"
+            rel="noopener noreferrer"
+            event="cta_click"
+            eventParams={{
+              location: "portfolio_detail",
+              product: project.id,
+              type: "product_site",
+            }}
+            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
+          >
+            Visit{" "}
+            {project.productUrl.replace(/\/$/, "") === klausConnectUrl
+              ? "Klaus Connect"
+              : project.title}
+            <ExternalLink className="h-4 w-4" />
+          </TrackedLink>
+        ) : null}
       </ContentDetailArticle>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">

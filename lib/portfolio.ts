@@ -1,3 +1,5 @@
+import { klausConnectUrl } from "@/lib/navigation";
+
 export type PortfolioCategory =
   | "AI/ML"
   | "Analytics"
@@ -19,6 +21,8 @@ export type PortfolioProject = {
   useCases: string[];
   coverImage?: string | null;
   galleryImages?: string[];
+  /** Public product site. When set, list/detail CTAs link out instead of competing with that site. */
+  productUrl?: string;
 };
 
 export const portfolioCategories: PortfolioCategory[] = [
@@ -33,19 +37,20 @@ export const portfolioCategories: PortfolioCategory[] = [
 export const portfolioProjects: PortfolioProject[] = [
   {
     id: "crm",
-    title: "CRM",
+    title: "Klaus Connect",
     description:
-      "Full-cycle CRM for contacts, addresses, products, tasks, and the handoff from sales to operations.",
+      "Klaus Way’s flagship platform — customers, quotes, jobs, scheduling, and teams in one system.",
     overview:
-      "Built for a Connecticut home-services operator drowning in spreadsheets and three disconnected tools. We shipped a single CRM that owns contacts, job addresses with map pins, product catalogs, and a task studio for the office. Sales and production work from the same customer record — no re-keying, no lost notes. The dashboard surfaces pipeline health and open work so managers see the week without asking for a status meeting.",
+      "Klaus Connect started as the CRM we built for a Connecticut home-services operator drowning in spreadsheets and disconnected tools. It now runs the full customer lifecycle — contacts, quoting, production, and payment — as a standalone product at klaus-connect.com.",
     categories: ["CRM"],
-    tags: ["CRM", "Contact Management", "Task Management"],
+    tags: ["Klaus Connect", "CRM", "Contact Management", "Task Management"],
     accent: "from-cyan-400 to-blue-500",
     coverImage: "/products/klaus-connect.png",
     galleryImages: [
       "/products/klaus-connect-2.png",
       "/products/klaus-connect-3.png",
     ],
+    productUrl: klausConnectUrl,
     keyFeatures: [
       "Centralized dashboard for business overview and analytics",
       "Address management with interactive map integration",
@@ -138,7 +143,7 @@ export const portfolioProjects: PortfolioProject[] = [
     description:
       "End-to-end lead status, stage gates, and conversion tracking so every prospect has an owner and a next step.",
     overview:
-      "A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook. We built a lead-to-customer pipeline with mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
+      "This lead pipeline is part of Klaus Connect. A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook — so we built mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
     categories: ["CRM"],
     tags: ["CRM", "Lead Management", "Sales Pipeline"],
     accent: "from-sky-400 to-cyan-500",
@@ -147,6 +152,7 @@ export const portfolioProjects: PortfolioProject[] = [
       "/products/klaus-connect.png",
       "/products/klaus-connect-3.png",
     ],
+    productUrl: klausConnectUrl,
     keyFeatures: [
       "Complete lead status tracking and visibility",
       "Pipeline management for lead progression",

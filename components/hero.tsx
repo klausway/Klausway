@@ -6,7 +6,7 @@ import { TrackedLink } from "./tracked-link";
 import { ButtonArrow, buttonVariants } from "./ui/button";
 import type { PortfolioProject } from "@/lib/portfolio";
 import { featuredProducts } from "@/lib/featured-products";
-import { routes } from "@/lib/navigation";
+import { klausConnectUrl, routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type HeroProps = {
@@ -22,17 +22,22 @@ export function Hero({ projects = [] }: HeroProps) {
 
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-4xl text-center">
-          <Link
-            href={routes.products}
+          <TrackedLink
+            href={klausConnectUrl}
+            external
+            target="_blank"
+            rel="noopener noreferrer"
+            event="cta_click"
+            eventParams={{ location: "hero_eyebrow", product: "klaus-connect" }}
             className="group inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 transition-colors hover:text-brand-700 animate-fade-up"
           >
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 bg-signal/70 animate-ping-soft" />
               <span className="relative h-1.5 w-1.5 bg-signal" />
             </span>
-            {featuredProducts.length} products in production — see them
+            Flagship product — Klaus Connect
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </TrackedLink>
 
           <h1
             className="mt-8 text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-fade-up-stagger"
@@ -67,12 +72,17 @@ export function Hero({ projects = [] }: HeroProps) {
               Book a free 30-minute consult
               <ButtonArrow />
             </TrackedLink>
-            <Link
-              href="#products"
+            <TrackedLink
+              href={klausConnectUrl}
+              external
+              target="_blank"
+              rel="noopener noreferrer"
+              event="cta_click"
+              eventParams={{ location: "hero", product: "klaus-connect" }}
               className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
-              See what we build
-            </Link>
+              Visit Klaus Connect
+            </TrackedLink>
           </div>
 
           <div
@@ -111,24 +121,47 @@ export function Hero({ projects = [] }: HeroProps) {
 function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
   return (
     <div className="mx-auto mt-24 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-      {projects.map((project, i) => (
-        <Link
-          key={project.id}
-          href={`#${project.id}`}
-          className="hover-lift group relative overflow-hidden rounded-xl border border-border bg-card px-3 py-3 transition-colors hover:border-border-strong animate-fade-up-stagger"
-          style={{ animationDelay: `${i * 40}ms` }}
-        >
-          <span
-            className={cn(
-              "absolute inset-x-0 -bottom-px h-px bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100",
-              project.accent,
-            )}
-          />
-          <span className="line-clamp-2 font-mono text-[11px] font-medium text-muted-foreground transition-colors group-hover:text-foreground">
-            {project.title}
-          </span>
-        </Link>
-      ))}
+      {projects.map((project, i) => {
+        const className =
+          "hover-lift group relative overflow-hidden rounded-xl border border-border bg-card px-3 py-3 transition-colors hover:border-border-strong animate-fade-up-stagger";
+        const inner = (
+          <>
+            <span
+              className={cn(
+                "absolute inset-x-0 -bottom-px h-px bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100",
+                project.accent,
+              )}
+            />
+            <span className="line-clamp-2 font-mono text-[11px] font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+              {project.title}
+            </span>
+          </>
+        );
+        if (project.productUrl) {
+          return (
+            <a
+              key={project.id}
+              href={project.productUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={className}
+              style={{ animationDelay: `${i * 40}ms` }}
+            >
+              {inner}
+            </a>
+          );
+        }
+        return (
+          <Link
+            key={project.id}
+            href={`#${project.id}`}
+            className={className}
+            style={{ animationDelay: `${i * 40}ms` }}
+          >
+            {inner}
+          </Link>
+        );
+      })}
     </div>
   );
 }

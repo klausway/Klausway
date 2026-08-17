@@ -16,12 +16,12 @@ export type PortfolioScreenshot = {
 export const portfolioImageMap: Record<string, PortfolioScreenshot> = {
   crm: {
     src: "/products/klaus-connect.png",
-    url: "Klaus Connect — CRM",
+    url: "klaus-connect.com",
     alt: "Klaus Connect CRM dashboard",
   },
   "lead-pipeline": {
     src: "/products/klaus-connect-2.png",
-    url: "Klaus Connect — Pipeline",
+    url: "klaus-connect.com",
     alt: "Klaus Connect lead pipeline view",
   },
   "quickbooks-payment": {

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, CircleCheck, Images } from "lucide-react";
+import { CircleCheck, Images } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { BrowserFrame } from "./ui/browser-frame";
+import { ProductSiteCta } from "./product-site-cta";
 import { featuredProducts, type FeaturedProduct } from "@/lib/featured-products";
 import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
@@ -63,13 +64,14 @@ function ProductRow({ product, reverse }: ProductRowProps) {
             </li>
           ))}
         </ul>
-        <Link
-          href={`${routes.products}/${product.id}`}
-          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-600"
-        >
-          Explore {product.name}
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
-        </Link>
+        <ProductSiteCta
+          name={product.name}
+          productId={product.id}
+          productUrl={product.productUrl}
+          fallbackHref={`${routes.products}/${product.id}`}
+          fallbackLabel={product.productUrl ? "Take the product tour" : `Explore ${product.name}`}
+          location="products_list"
+        />
       </Reveal>
 
       <Reveal as="div" delay={200} className="relative">
@@ -79,22 +81,42 @@ function ProductRow({ product, reverse }: ProductRowProps) {
             product.accent,
           )}
         />
-        <Link
-          href={`${routes.products}/${product.id}`}
-          aria-label={`Explore ${product.name}`}
-          className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
-        >
-          <BrowserFrame
-            src={product.image}
-            alt={product.imageAlt}
-            url={product.name}
-          />
-          <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100" />
-          <span className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
-            <Images className="h-3.5 w-3.5" />
-            {product.tour.length} screens — take the tour
-          </span>
-        </Link>
+        {product.productUrl ? (
+          <a
+            href={product.productUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${product.name}`}
+            className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
+          >
+            <BrowserFrame
+              src={product.image}
+              alt={product.imageAlt}
+              url={new URL(product.productUrl).hostname}
+            />
+            <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100" />
+            <span className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
+              Visit {new URL(product.productUrl).hostname}
+            </span>
+          </a>
+        ) : (
+          <Link
+            href={`${routes.products}/${product.id}`}
+            aria-label={`Explore ${product.name}`}
+            className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
+          >
+            <BrowserFrame
+              src={product.image}
+              alt={product.imageAlt}
+              url={product.name}
+            />
+            <span className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100" />
+            <span className="pointer-events-none absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
+              <Images className="h-3.5 w-3.5" />
+              {product.tour.length} screens — take the tour
+            </span>
+          </Link>
+        )}
       </Reveal>
     </div>
   );

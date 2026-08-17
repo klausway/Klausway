@@ -42,12 +42,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const products: MetadataRoute.Sitemap = featuredProducts.map((product) => ({
-    url: absoluteUrl(`${routes.products}/${product.id}`),
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
+  const products: MetadataRoute.Sitemap = featuredProducts
+    .filter((product) => !product.productUrl)
+    .map((product) => ({
+      url: absoluteUrl(`${routes.products}/${product.id}`),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }));
 
   return [...pages, ...posts, ...projects, ...products];
 }

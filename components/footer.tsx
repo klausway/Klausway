@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./logo";
 import { TrackedLink } from "./tracked-link";
-import { footerLinks, routes } from "@/lib/navigation";
+import { footerLinks, klausConnectUrl, routes } from "@/lib/navigation";
 import { brand } from "@/lib/brand";
 
 const cols = [
@@ -27,6 +27,14 @@ export function Footer() {
               CRM, dispatch, payments, compliance, and AI — built and run by the
               people you talk to.
             </p>
+            <a
+              href={klausConnectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex text-sm font-medium text-signal transition-colors hover:text-ink-foreground"
+            >
+              Visit Klaus Connect →
+            </a>
             <div className="mt-6 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-signal" />
               <span className="text-xs text-[#9CA1AF]">
@@ -42,16 +50,30 @@ export function Footer() {
                 {col.title}
               </div>
               <ul className="mt-4 space-y-2.5">
-                {col.items.map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      href={item.href}
-                      className="text-sm text-[#9CA1AF] transition-colors hover:text-ink-foreground"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
+                {col.items.map((item) => {
+                  const external = item.href.startsWith("http");
+                  return (
+                    <li key={item.label}>
+                      {external ? (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-[#9CA1AF] transition-colors hover:text-ink-foreground"
+                        >
+                          {item.label} ↗
+                        </a>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="text-sm text-[#9CA1AF] transition-colors hover:text-ink-foreground"
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

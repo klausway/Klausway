@@ -27,6 +27,7 @@ export const siteConfig = {
   logoImage: "/Logo.jpg",
   keywords: [
     "Klaus Way",
+    "Klaus Connect",
     "IT consulting",
     "custom software",
     "CRM",
@@ -71,6 +72,8 @@ type BuildPageMetadataOptions = {
   type?: "website" | "article";
   keywords?: string[];
   noIndex?: boolean;
+  /** When set, this page points SEO at another URL (e.g. a dedicated product site). */
+  canonicalUrl?: string;
   publishedTime?: string;
   modifiedTime?: string;
   authors?: string[];
@@ -84,11 +87,12 @@ export function buildPageMetadata({
   type = "website",
   keywords,
   noIndex = false,
+  canonicalUrl,
   publishedTime,
   modifiedTime,
   authors,
 }: BuildPageMetadataOptions): Metadata {
-  const url = absoluteUrl(path);
+  const url = canonicalUrl ?? absoluteUrl(path);
   const ogImage = absoluteImageUrl(image);
   const fullTitle =
     title === siteConfig.title ? title : `${title} · ${siteConfig.name}`;
@@ -164,6 +168,7 @@ export function organizationJsonLd() {
     },
     sameAs: [
       "https://www.linkedin.com/company/klaus-way-technology",
+      "https://www.klaus-connect.com",
     ],
   };
 }
@@ -291,13 +296,14 @@ export function softwareApplicationJsonLd(product: {
   overview: string;
   tags: string[];
   image: string;
+  productUrl?: string;
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: product.name,
     description: product.overview || product.tagline,
-    url: absoluteUrl(`${routes.products}/${product.id}`),
+    url: product.productUrl || absoluteUrl(`${routes.products}/${product.id}`),
     image: absoluteImageUrl(product.image),
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, CircleCheck } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { BrowserFrame } from "./ui/browser-frame";
+import { ProductSiteCta } from "./product-site-cta";
 import {
   getPortfolioScreenshot,
   getPortfolioVisual,
@@ -93,13 +94,14 @@ function ProjectRow({ project, reverse }: ProjectRowProps) {
             </li>
           ))}
         </ul>
-        <Link
-          href={`${routes.portfolio}/${project.id}`}
-          className="group/link mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
-        >
-          View full project
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-0.5" />
-        </Link>
+        <ProductSiteCta
+          name={project.title}
+          productId={project.id}
+          productUrl={project.productUrl}
+          fallbackHref={`${routes.portfolio}/${project.id}`}
+          fallbackLabel="View full project"
+          location="portfolio_grid"
+        />
       </Reveal>
 
       <Reveal as="div" delay={200} className="relative">
@@ -110,19 +112,34 @@ function ProjectRow({ project, reverse }: ProjectRowProps) {
           )}
         />
         {image ? (
-          <Link
-            href={`${routes.portfolio}/${project.id}`}
-            aria-label={`View ${project.title}`}
-            className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
-          >
-            <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
-            {(project.galleryImages?.length ?? 0) > 0 ? (
+          project.productUrl ? (
+            <a
+              href={project.productUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Visit ${project.title}`}
+              className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
+            >
+              <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
               <span className="pointer-events-none absolute bottom-4 left-4 rounded-md bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
-                {(project.galleryImages?.length ?? 0) + 1} screens — see the
-                gallery
+                Visit {new URL(project.productUrl).hostname}
               </span>
-            ) : null}
-          </Link>
+            </a>
+          ) : (
+            <Link
+              href={`${routes.portfolio}/${project.id}`}
+              aria-label={`View ${project.title}`}
+              className="group/shot relative block transition-transform duration-300 hover:-translate-y-1"
+            >
+              <BrowserFrame src={image.src} alt={image.alt} url={image.url} />
+              {(project.galleryImages?.length ?? 0) > 0 ? (
+                <span className="pointer-events-none absolute bottom-4 left-4 rounded-md bg-black/65 px-3 py-1.5 text-xs font-medium text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover/shot:opacity-100">
+                  {(project.galleryImages?.length ?? 0) + 1} screens — see the
+                  gallery
+                </span>
+              ) : null}
+            </Link>
+          )
         ) : (
           <Visual />
         )}

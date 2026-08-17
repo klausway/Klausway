@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, Phone, X } from "lucide-react";
+import { ArrowRight, ExternalLink, Menu, Phone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
-import { navItems, routes } from "@/lib/navigation";
+import { klausConnectUrl, navItems, routes } from "@/lib/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 export function Navbar() {
@@ -67,6 +67,18 @@ export function Navbar() {
 
         <div className="hidden items-center gap-4 lg:flex">
           <a
+            href={klausConnectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() =>
+              trackEvent("cta_click", { location: "navbar", product: "klaus-connect" })
+            }
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+          >
+            Klaus Connect
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+          <a
             href="tel:+18604000758"
             onClick={() => trackEvent("phone_click", { location: "navbar" })}
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -115,6 +127,21 @@ export function Navbar() {
               </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-border pt-4">
+              <a
+                href={klausConnectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("cta_click", {
+                    location: "navbar_mobile",
+                    product: "klaus-connect",
+                  })
+                }
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-3 text-center text-sm font-medium text-brand-600"
+              >
+                Klaus Connect
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
               <a
                 href="tel:+18604000758"
                 onClick={() => trackEvent("phone_click", { location: "navbar_mobile" })}

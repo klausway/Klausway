@@ -10,6 +10,7 @@ export const ourStory = {
   paragraphs: [
     "Klaus Way started with a simple idea: businesses shouldn't have to fight their technology to grow. Under Klausway Technology, we began by building customizable CRM systems for roofing companies—an industry that needed better tools to manage customers, leads, sales, and projects without unnecessary complexity. By bringing everything into one intuitive platform, we helped teams spend less time on admin work and more time building their businesses.",
     "As we worked closely with our clients, it became clear that the challenges we were solving weren't unique to roofing. Companies across industries were facing the same inefficiencies, outdated systems, and disconnected tools. That realization led to the next chapter.",
+    "That work became Klaus Connect — our flagship all-in-one business platform for customers, quotes, jobs, scheduling, and teams. It now has its own home at klaus-connect.com, while Klaus Way continues to design, build, and run products and custom systems for companies that need more than one-size-fits-all software.",
     "Klaus Way emerged with a broader mission: to create smart, flexible technology that helps businesses of all kinds work better. Today, we design and support solutions that adapt to how companies actually operate—scaling with them as they grow, and evolving as their needs change.",
     "Our story is still being written, but our focus remains the same: building technology that works for people, not the other way around.",
   ],

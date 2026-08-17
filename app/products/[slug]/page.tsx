@@ -32,6 +32,7 @@ export async function generateMetadata({
     description: product.tagline,
     path: `${routes.products}/${product.id}`,
     image: product.image,
+    canonicalUrl: product.productUrl,
   });
 }
 
@@ -54,9 +55,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <PageHeader
         wide
-        eyebrow="Klaus Way Products"
+        eyebrow={product.productUrl ? "Klaus Way · Flagship product" : "Klaus Way Products"}
         title={product.name}
-        description={product.tagline}
+        description={
+          product.productUrl
+            ? `${product.tagline} The full product site is ${new URL(product.productUrl).hostname}.`
+            : product.tagline
+        }
       />
       <ProductDetail product={product} />
       <CtaSection
@@ -67,10 +72,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </>
         }
         subheading="30 minutes, screen share, real data. We'll show you exactly how it would work for your business."
-        primaryLabel="Book a demo"
-        primaryHref={`${routes.contact}?product=${product.id}&intent=demo`}
-        secondaryLabel="See the other products"
-        secondaryHref={routes.products}
+        primaryLabel={product.productUrl ? `Visit ${product.name}` : "Book a demo"}
+        primaryHref={
+          product.productUrl ??
+          `${routes.contact}?product=${product.id}&intent=demo`
+        }
+        secondaryLabel={product.productUrl ? "Book a demo" : "See the other products"}
+        secondaryHref={
+          product.productUrl
+            ? `${routes.contact}?product=${product.id}&intent=demo`
+            : routes.products
+        }
         location={`cta_section:product:${product.id}`}
       />
     </>

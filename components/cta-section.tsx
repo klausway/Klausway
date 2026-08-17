@@ -58,6 +58,9 @@ export function CtaSection({
               href={primaryHref}
               event="cta_click"
               eventParams={{ location, label: primaryLabel }}
+              external={primaryHref.startsWith("http")}
+              target={primaryHref.startsWith("http") ? "_blank" : undefined}
+              rel={primaryHref.startsWith("http") ? "noopener noreferrer" : undefined}
               className={buttonVariants({ variant: "onDark" })}
             >
               {primaryLabel}
@@ -67,6 +70,9 @@ export function CtaSection({
               href={secondaryHref}
               event="cta_click"
               eventParams={{ location, label: secondaryLabel }}
+              external={secondaryHref.startsWith("http")}
+              target={secondaryHref.startsWith("http") ? "_blank" : undefined}
+              rel={secondaryHref.startsWith("http") ? "noopener noreferrer" : undefined}
               className={buttonVariants({
                 variant: "secondary",
                 className:

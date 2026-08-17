@@ -1,12 +1,13 @@
 import { Reveal } from "./animation/reveal";
 import { TeamMemberPhoto } from "./team-member-photo";
+import { TrackedLink } from "./tracked-link";
 import {
-  aboutPageHeader,
   missionVision,
   ourStory,
   values,
   type TeamMember,
 } from "@/lib/about";
+import { klausConnectUrl } from "@/lib/navigation";
 
 type AboutSectionProps = {
   teamMembers: TeamMember[];
@@ -27,6 +28,17 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
                   <p key={paragraph.slice(0, 40)}>{paragraph}</p>
                 ))}
               </div>
+              <TrackedLink
+                href={klausConnectUrl}
+                external
+                target="_blank"
+                rel="noopener noreferrer"
+                event="cta_click"
+                eventParams={{ location: "about_story", product: "klaus-connect" }}
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+              >
+                Visit Klaus Connect →
+              </TrackedLink>
             </Reveal>
 
             <Reveal delay={100}>
@@ -35,10 +47,10 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="rounded-2xl border border-border bg-background/60 px-8 py-6 text-center backdrop-blur">
                     <div className="text-sm font-semibold uppercase tracking-wider text-brand-600">
-                      Team collaboration
+                      Flagship product
                     </div>
                     <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-                      {aboutPageHeader.subtitle}
+                      Klaus Connect — sell, deliver, and decide in one system.
                     </p>
                   </div>
                 </div>

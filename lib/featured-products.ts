@@ -1,3 +1,5 @@
+import { klausConnectUrl } from "@/lib/navigation";
+
 /** One step in a product's guided screenshot tour. */
 export type ProductTourStep = {
   image: string;
@@ -23,12 +25,14 @@ export type FeaturedProduct = {
   tour: ProductTourStep[];
   /** Live, publicly reachable demo. Leave unset to show the "Request a demo" CTA. */
   demoUrl?: string;
+  /** Canonical public product site. When set, CTAs link out instead of staying on klausway.com. */
+  productUrl?: string;
 };
 
 export const productsPageHeader = {
   title: "Our Products",
   subtitle:
-    "Real, working software we design, build, and run — from AI-powered assistants to full-cycle business platforms.",
+    "Real, working software we design, build, and run — led by Klaus Connect, our all-in-one business platform, plus AI assistants, dispatch, payments, and more.",
 } as const;
 
 export const featuredProducts: FeaturedProduct[] = [
@@ -36,6 +40,7 @@ export const featuredProducts: FeaturedProduct[] = [
     id: "klaus-connect",
     name: "Klaus Connect",
     tagline: "Full-cycle CRM — from lead to payment in one platform",
+    productUrl: klausConnectUrl,
     description:
       "A complete business operations suite that connects sales, operations, and finance. Klaus Connect covers the entire customer lifecycle: lead capture, dynamic quoting, project delivery, scheduling, reporting, and integrated payments — with a customer portal, admin console, and mobile app built around the same core.",
     features: [
@@ -49,7 +54,7 @@ export const featuredProducts: FeaturedProduct[] = [
     imageAlt: "Klaus Connect CRM dashboard",
     accent: "from-blue-400 to-cyan-400",
     overview:
-      "Klaus Connect replaces the patchwork of spreadsheets, calendars, and disconnected tools that most service businesses run on. Sales works leads and builds estimates, operations schedules and delivers the job, and finance invoices and collects — all against the same records, so nobody re-keys data and nothing falls through the cracks. It ships with a customer portal, a back-office admin console, real-time reporting, and a mobile app for crews in the field.",
+      "Klaus Connect is Klaus Way’s flagship business platform — CRM, quotes, jobs, scheduling, inventory, and reporting in one system. Feature tours, live product demos, and trial signup live on the Klaus Connect site.",
     benefits: [
       "One record per customer from first call through final payment",
       "No re-keying between sales, operations, and accounting",

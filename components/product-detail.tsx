@@ -52,30 +52,37 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <DemoCta product={product} />
       </ContentDetailArticle>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        <DetailBlock title="Key Features" items={product.features} delay={200} />
-        <DetailBlock title="Benefits" items={product.benefits} delay={300} />
-        <DetailBlock title="Use Cases" items={product.useCases} delay={400} checkmark />
-      </div>
+      {product.productUrl ? null : (
+        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <DetailBlock title="Key Features" items={product.features} delay={200} />
+          <DetailBlock title="Benefits" items={product.benefits} delay={300} />
+          <DetailBlock title="Use Cases" items={product.useCases} delay={400} checkmark />
+        </div>
+      )}
     </ContentDetailShell>
   );
 }
 
 function DemoCta({ product }: { product: FeaturedProduct }) {
   const demoContactHref = `${routes.contact}?product=${product.id}&intent=demo`;
+  const outboundUrl = product.productUrl ?? product.demoUrl;
+  const outboundLabel = product.productUrl
+    ? `Visit ${product.name}`
+    : "Try the live demo";
+  const outboundType = product.productUrl ? "product_site" : "live_demo";
   return (
     <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-border pt-8">
-      {product.demoUrl ? (
+      {outboundUrl ? (
         <TrackedLink
-          href={product.demoUrl}
+          href={outboundUrl}
           external
           target="_blank"
           rel="noopener noreferrer"
-          event="demo_request"
-          eventParams={{ product: product.id, type: "live_demo" }}
+          event="cta_click"
+          eventParams={{ product: product.id, type: outboundType }}
           className="group inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
         >
-          Try the live demo
+          {outboundLabel}
           <ExternalLink className="h-4 w-4" />
         </TrackedLink>
       ) : null}
@@ -85,7 +92,7 @@ function DemoCta({ product }: { product: FeaturedProduct }) {
         eventParams={{ product: product.id, type: "contact" }}
         className="group inline-flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-6 py-3 text-sm font-semibold transition-colors hover:border-border-strong"
       >
-        {product.demoUrl ? "Talk to us about " : "Request a demo of "}
+        {outboundUrl ? "Talk to us about " : "Request a demo of "}
         {product.name}
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </TrackedLink>
