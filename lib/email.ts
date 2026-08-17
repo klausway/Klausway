@@ -17,6 +17,10 @@ const intentLabels: Record<string, string> = {
   consult: "Consultation request",
   custom: "Custom software inquiry",
   other: "Inquiry",
+  trial: "Free trial request",
+  pricing: "Pricing inquiry",
+  sales: "Sales inquiry",
+  general: "General inquiry",
 };
 
 function getResendClient() {
@@ -56,7 +60,7 @@ export async function sendContactEmail(input: ContactEmailInput) {
       `Name: ${fullName}`,
       `Email: ${safeEmail}`,
       `Phone: ${safePhone || "—"}`,
-      `Intent: ${input.intent || "—"}`,
+      `Intent: ${intentLabels[input.intent] ?? (input.intent || "—")}`,
       `Source: ${safeSource || "—"}`,
       "",
       safeMessage,

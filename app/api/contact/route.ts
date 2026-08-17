@@ -3,6 +3,7 @@ import {
   checkContactRateLimit,
   getClientIp,
   guardContactSubmission,
+  isContactIngestAuthorized,
   parseContactBody,
 } from "@/lib/contact-security";
 import { db } from "@/lib/db";
@@ -22,13 +23,16 @@ export async function POST(request: Request) {
     const recaptchaToken =
       typeof record.recaptchaToken === "string" ? record.recaptchaToken : undefined;
 
-    const captcha = await verifyRecaptchaV3(recaptchaToken);
-    if (!captcha.ok) {
-      return NextResponse.json({ error: captcha.error }, { status: captcha.status });
+    const ingest = isContactIngestAuthorized(request);
+    if (!ingest) {
+      const captcha = await verifyRecaptchaV3(recaptchaToken);
+      if (!captcha.ok) {
+        return NextResponse.json({ error: captcha.error }, { status: captcha.status });
+      }
     }
 
     const payload = parseContactBody(body);
-    const guarded = guardContactSubmission(payload);
+    const guarded = guardContactSubmission(payload, { trustedIngest: ingest });
 
     if (!guarded.ok) {
       if ("silent" in guarded) {
