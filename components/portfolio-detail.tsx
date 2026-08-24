@@ -9,7 +9,7 @@ import {
 import { RichTextContent } from "./rich-text-content";
 import { TrackedLink } from "./tracked-link";
 import type { PortfolioProject } from "@/lib/portfolio";
-import { klausConnectUrl, routes } from "@/lib/navigation";
+import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type PortfolioDetailProps = {
@@ -79,10 +79,7 @@ export function PortfolioDetail({ project }: PortfolioDetailProps) {
             }}
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
           >
-            Visit{" "}
-            {project.productUrl.replace(/\/$/, "") === klausConnectUrl
-              ? "Klaus Connect"
-              : project.title}
+            Visit {project.title}
             <ExternalLink className="h-4 w-4" />
           </TrackedLink>
         ) : null}

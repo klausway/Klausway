@@ -1,16 +1,8 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { TrackedLink } from "./tracked-link";
-import { klausConnectUrl } from "@/lib/navigation";
 
 const linkClass =
   "group/link inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700";
-
-function siteLabel(productUrl: string, fallbackName: string) {
-  if (productUrl.replace(/\/$/, "") === klausConnectUrl.replace(/\/$/, "")) {
-    return "Klaus Connect";
-  }
-  return fallbackName;
-}
 
 type ProductSiteCtaProps = {
   name: string;
@@ -30,7 +22,7 @@ export function ProductSiteCta({
   fallbackLabel,
   location,
 }: ProductSiteCtaProps) {
-  const outboundLabel = productUrl ? `Visit ${siteLabel(productUrl, name)}` : fallbackLabel;
+  const outboundLabel = productUrl ? `Visit ${name}` : fallbackLabel;
   return (
     <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
       {productUrl ? (

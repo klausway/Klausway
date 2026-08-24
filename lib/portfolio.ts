@@ -1,5 +1,3 @@
-import { klausConnectUrl } from "@/lib/navigation";
-
 export type PortfolioCategory =
   | "AI/ML"
   | "Analytics"
@@ -37,20 +35,19 @@ export const portfolioCategories: PortfolioCategory[] = [
 export const portfolioProjects: PortfolioProject[] = [
   {
     id: "crm",
-    title: "Klaus Connect",
+    title: "Klaus Connect — Klaus Larsen Roofing",
     description:
-      "Klaus Way’s flagship platform — customers, quotes, jobs, scheduling, and teams in one system.",
+      "Exclusive CRM built for Klaus Larsen Roofing — customers, quotes, jobs, scheduling, and crews in one system.",
     overview:
-      "Klaus Connect started as the CRM we built for a Connecticut home-services operator drowning in spreadsheets and disconnected tools. It now runs the full customer lifecycle — contacts, quoting, production, and payment — as a standalone product at klaus-connect.com.",
+      "Klaus Connect is a custom operating system we built exclusively for Klaus Larsen Roofing. It runs their full customer lifecycle — contacts, quoting, production, and payment — and is not sold as a public product. The public platform that grew from this work is Worknex.",
     categories: ["CRM"],
-    tags: ["Klaus Connect", "CRM", "Contact Management", "Task Management"],
+    tags: ["Exclusive", "CRM", "Roofing", "Klaus Larsen"],
     accent: "from-cyan-400 to-blue-500",
     coverImage: "/products/klaus-connect.png",
     galleryImages: [
       "/products/klaus-connect-2.png",
       "/products/klaus-connect-3.png",
     ],
-    productUrl: klausConnectUrl,
     keyFeatures: [
       "Centralized dashboard for business overview and analytics",
       "Address management with interactive map integration",
@@ -143,7 +140,7 @@ export const portfolioProjects: PortfolioProject[] = [
     description:
       "End-to-end lead status, stage gates, and conversion tracking so every prospect has an owner and a next step.",
     overview:
-      "This lead pipeline is part of Klaus Connect. A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook — so we built mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
+      "This lead pipeline is part of the exclusive Klaus Larsen Roofing CRM. A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook — so we built mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
     categories: ["CRM"],
     tags: ["CRM", "Lead Management", "Sales Pipeline"],
     accent: "from-sky-400 to-cyan-500",
@@ -152,7 +149,6 @@ export const portfolioProjects: PortfolioProject[] = [
       "/products/klaus-connect.png",
       "/products/klaus-connect-3.png",
     ],
-    productUrl: klausConnectUrl,
     keyFeatures: [
       "Complete lead status tracking and visibility",
       "Pipeline management for lead progression",

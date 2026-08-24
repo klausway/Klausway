@@ -27,7 +27,8 @@ export const siteConfig = {
   logoImage: "/Logo.jpg",
   keywords: [
     "Klaus Way",
-    "Klaus Connect",
+    "Worknex",
+    "ApronConnect",
     "IT consulting",
     "custom software",
     "CRM",
@@ -168,7 +169,8 @@ export function organizationJsonLd() {
     },
     sameAs: [
       "https://www.linkedin.com/company/klaus-way-technology",
-      "https://www.klaus-connect.com",
+      "https://www.work-nex.com",
+      "https://www.apronconnect.com",
     ],
   };
 }

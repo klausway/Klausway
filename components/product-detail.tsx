@@ -52,13 +52,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <DemoCta product={product} />
       </ContentDetailArticle>
 
-      {product.productUrl ? null : (
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          <DetailBlock title="Key Features" items={product.features} delay={200} />
-          <DetailBlock title="Benefits" items={product.benefits} delay={300} />
-          <DetailBlock title="Use Cases" items={product.useCases} delay={400} checkmark />
-        </div>
-      )}
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        <DetailBlock title="Key Features" items={product.features} delay={200} />
+        <DetailBlock title="Benefits" items={product.benefits} delay={300} />
+        <DetailBlock title="Use Cases" items={product.useCases} delay={400} checkmark />
+      </div>
     </ContentDetailShell>
   );
 }

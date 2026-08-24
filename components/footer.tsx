@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./logo";
 import { TrackedLink } from "./tracked-link";
-import { footerLinks, klausConnectUrl, routes } from "@/lib/navigation";
+import { footerLinks, worknexUrl, routes } from "@/lib/navigation";
 import { brand } from "@/lib/brand";
 
 const cols = [
@@ -28,12 +28,12 @@ export function Footer() {
               people you talk to.
             </p>
             <a
-              href={klausConnectUrl}
+              href={worknexUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex text-sm font-medium text-signal transition-colors hover:text-ink-foreground"
             >
-              Visit Klaus Connect →
+              Visit Worknex →
             </a>
             <div className="mt-6 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-signal" />

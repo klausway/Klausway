@@ -6,7 +6,7 @@ import { TrackedLink } from "./tracked-link";
 import { ButtonArrow, buttonVariants } from "./ui/button";
 import type { PortfolioProject } from "@/lib/portfolio";
 import { featuredProducts } from "@/lib/featured-products";
-import { klausConnectUrl, routes } from "@/lib/navigation";
+import { worknexUrl, routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 type HeroProps = {
@@ -23,19 +23,19 @@ export function Hero({ projects = [] }: HeroProps) {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-4xl text-center">
           <TrackedLink
-            href={klausConnectUrl}
+            href={worknexUrl}
             external
             target="_blank"
             rel="noopener noreferrer"
             event="cta_click"
-            eventParams={{ location: "hero_eyebrow", product: "klaus-connect" }}
+            eventParams={{ location: "hero_eyebrow", product: "worknex" }}
             className="group inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 transition-colors hover:text-brand-700 animate-fade-up"
           >
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 bg-signal/70 animate-ping-soft" />
               <span className="relative h-1.5 w-1.5 bg-signal" />
             </span>
-            Flagship product — Klaus Connect
+            Flagship product — Worknex
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
           </TrackedLink>
 
@@ -73,15 +73,15 @@ export function Hero({ projects = [] }: HeroProps) {
               <ButtonArrow />
             </TrackedLink>
             <TrackedLink
-              href={klausConnectUrl}
+              href={worknexUrl}
               external
               target="_blank"
               rel="noopener noreferrer"
               event="cta_click"
-              eventParams={{ location: "hero", product: "klaus-connect" }}
+              eventParams={{ location: "hero", product: "worknex" }}
               className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
-              Visit Klaus Connect
+              Visit Worknex
             </TrackedLink>
           </div>
 

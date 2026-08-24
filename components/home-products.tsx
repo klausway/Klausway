@@ -29,7 +29,7 @@ export function HomeProducts({ projects }: HomeProductsProps) {
               <span className="text-brand-600">every part of your business</span>
             </>
           }
-          description="Led by Klaus Connect, each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to payments, inventory, and AI."
+          description="Led by Worknex, each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to restaurant ordering, payments, inventory, and AI."
           aside={
             <Link
               href={routes.portfolio}

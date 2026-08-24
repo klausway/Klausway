@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { sanitizeHeaderValue } from "@/lib/contact-security";
-import { klausConnectUrl, routes } from "@/lib/navigation";
+import { worknexUrl, routes } from "@/lib/navigation";
 import { getSiteUrl } from "@/lib/seo";
 
 type ContactEmailInput = {
@@ -158,8 +158,11 @@ export async function sendLeadConfirmationEmail(input: {
   const firstName = sanitizeHeaderValue(input.name).split(" ")[0] || "there";
   const safeEmail = sanitizeHeaderValue(input.email).slice(0, 254);
   const productsUrl = `${getSiteUrl().replace(/\/$/, "")}${routes.products}/`;
-  const connectLead =
-    input.source?.includes("klaus-connect") || input.intent === "demo";
+  const flagshipLead =
+    input.source?.includes("worknex") ||
+    input.source?.includes("apronconnect") ||
+    input.source?.includes("klaus-connect") ||
+    input.intent === "demo";
 
   const { error } = await resend.emails.send({
     from,
@@ -173,17 +176,17 @@ export async function sendLeadConfirmationEmail(input: {
       "",
       "If it's urgent, call us at (860) 400-0758.",
       "",
-      ...(connectLead
+      ...(flagshipLead
         ? [
-            "You asked about Klaus Connect — here’s the product site:",
-            klausConnectUrl,
+            "You asked about a product demo — here’s Worknex, our public business platform:",
+            worknexUrl,
             "",
             "See the rest of what we build and run:",
             productsUrl,
           ]
         : [
-            "In the meantime, our flagship product is Klaus Connect:",
-            klausConnectUrl,
+            "In the meantime, our flagship product is Worknex:",
+            worknexUrl,
             "",
             "Browse everything we build and run:",
             productsUrl,

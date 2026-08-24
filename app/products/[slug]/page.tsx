@@ -55,7 +55,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <PageHeader
         wide
-        eyebrow={product.productUrl ? "Klaus Way · Flagship product" : "Klaus Way Products"}
+        eyebrow={
+          product.id === "worknex"
+            ? "Klaus Way · Flagship product"
+            : "Klaus Way Products"
+        }
         title={product.name}
         description={
           product.productUrl

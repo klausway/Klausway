@@ -45,6 +45,16 @@ const nextConfig: NextConfig = {
         destination: "/resources/:slug/",
         permanent: true,
       },
+      {
+        source: "/products/klaus-connect",
+        destination: "/products/worknex/",
+        permanent: true,
+      },
+      {
+        source: "/products/klaus-connect/",
+        destination: "/products/worknex/",
+        permanent: true,
+      },
     ];
   },
 };

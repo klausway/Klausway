@@ -70,7 +70,7 @@ export default async function PortfolioProjectPage({
         }
         subheading="We've built it before — tell us how your version needs to work and we'll show you what we'd do."
         primaryLabel="Start a conversation"
-        secondaryLabel={project.productUrl ? "Visit Klaus Connect" : "See our products"}
+        secondaryLabel={project.productUrl ? `Visit ${project.title}` : "See our products"}
         secondaryHref={project.productUrl ?? routes.products}
         location="cta_section:portfolio_detail"
       />

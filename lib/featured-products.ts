@@ -1,4 +1,4 @@
-import { klausConnectUrl } from "@/lib/navigation";
+import { apronConnectUrl, worknexUrl } from "@/lib/navigation";
 
 /** One step in a product's guided screenshot tour. */
 export type ProductTourStep = {
@@ -32,59 +32,111 @@ export type FeaturedProduct = {
 export const productsPageHeader = {
   title: "Our Products",
   subtitle:
-    "Real, working software we design, build, and run — led by Klaus Connect, our all-in-one business platform, plus AI assistants, dispatch, payments, and more.",
+    "Real, working software we design, build, and run — led by Worknex, our all-in-one business platform, plus ApronConnect for restaurants, AI assistants, dispatch, payments, and more.",
 } as const;
 
 export const featuredProducts: FeaturedProduct[] = [
   {
-    id: "klaus-connect",
-    name: "Klaus Connect",
-    tagline: "Full-cycle CRM — from lead to payment in one platform",
-    productUrl: klausConnectUrl,
+    id: "worknex",
+    name: "Worknex",
+    tagline: "Sell, deliver, and decide in one system",
+    productUrl: worknexUrl,
     description:
-      "A complete business operations suite that connects sales, operations, and finance. Klaus Connect covers the entire customer lifecycle: lead capture, dynamic quoting, project delivery, scheduling, reporting, and integrated payments — with a customer portal, admin console, and mobile app built around the same core.",
+      "Worknex is the public all-in-one business platform from Klaus Way — CRM, quotes, jobs, scheduling, inventory, and teams in one operating system, so nothing slips between tools. Start a free trial or book a demo on work-nex.com.",
     features: [
-      "Lead capture, estimates, and dynamic quoting",
-      "Project delivery, milestone tracking, and dispatcher scheduling",
-      "Back-office admin console with real-time reports",
-      "Customer portal, e-signing, and mobile companion app",
+      "CRM, pipeline, and quotes with full customer history",
+      "Jobs, crew calendars, routes, and inventory in one flow",
+      "Online quotes, contracts, and e-signature",
+      "Live dashboards and reports by branch and period",
     ],
-    tags: ["CRM", "Suite", "Operations"],
-    image: "/products/klaus-connect.png",
-    imageAlt: "Klaus Connect CRM dashboard",
-    accent: "from-blue-400 to-cyan-400",
+    tags: ["CRM", "Operations", "Field service"],
+    image: "/products/worknex.png",
+    imageAlt: "Worknex company scoreboard with live pipeline and revenue",
+    accent: "from-blue-400 to-indigo-400",
     overview:
-      "Klaus Connect is Klaus Way’s flagship business platform — CRM, quotes, jobs, scheduling, inventory, and reporting in one system. Feature tours, live product demos, and trial signup live on the Klaus Connect site.",
+      "Worknex is Klaus Way’s flagship product for any company that sells and delivers work. It started from the systems we built for field-service operators, then became a public platform: one record from first lead through quote, job, schedule, and payment. Feature tours, live demos, and trial signup live on the Worknex site.",
     benefits: [
-      "One record per customer from first call through final payment",
-      "No re-keying between sales, operations, and accounting",
-      "Managers see live pipeline and revenue pacing against goal",
-      "Crews and customers get their own tailored views",
+      "One customer record from first call through final payment",
+      "Sales, production, and finance stop re-keying the same job",
+      "Leaders see live pipeline and revenue pacing against goal",
+      "Crews get a calendar; customers get a quote they can sign online",
     ],
     useCases: [
-      "Home services and contracting businesses running multi-crew operations",
+      "Home services, contracting, and field teams running multi-crew operations",
       "Companies replacing separate CRM, scheduling, and invoicing tools",
       "Teams that need sales and production working from one system",
       "Multi-location operators consolidating reporting",
     ],
     tour: [
       {
-        image: "/products/klaus-connect.png",
-        title: "Company dashboard",
+        image: "/products/worknex.png",
+        title: "Company scoreboard",
         caption:
-          "Live pipeline and revenue pacing — leads, appointments set, jobs run, sold, and installed, each measured against goal with week-over-week trend.",
+          "Filter by location, then week → month → quarter — leads, appointments, jobs, sold, and installed, each measured against goal.",
       },
       {
-        image: "/products/klaus-connect-2.png",
-        title: "Estimates pipeline",
+        image: "/products/worknex-quotes.png",
+        title: "Quotes and e-sign",
         caption:
-          "Every estimate in one filterable list with status, job type, location, and value, so nothing sits idle in the funnel.",
+          "Build a quote, open Sign in App, and let the customer draw and submit — the same path your team uses every day.",
       },
       {
-        image: "/products/klaus-connect-3.png",
+        image: "/products/worknex-3.png",
         title: "Production calendar",
         caption:
           "Scheduled work across crews and departments, colour-coded by service type so operations can see capacity at a glance.",
+      },
+    ],
+  },
+  {
+    id: "apronconnect",
+    name: "ApronConnect",
+    tagline: "Your menu. Ready to order.",
+    productUrl: apronConnectUrl,
+    description:
+      "A branded online storefront for independent restaurants — guests order in a few taps, you keep the relationship, and there is 0% marketplace cut. Pick a theme, publish the menu, and take pickup orders the same night.",
+    features: [
+      "Branded storefront that feels like the dining room, not a marketplace",
+      "Menu, modifiers, and prices the kitchen actually uses",
+      "Built-in themes — type, color, and plating change; checkout stays familiar",
+      "Pickup orders with 0% marketplace commission",
+    ],
+    tags: ["Restaurants", "Online ordering", "Storefront"],
+    image: "/products/apronconnect.png",
+    imageAlt: "ApronConnect branded restaurant storefront and menu",
+    accent: "from-sky-400 to-orange-400",
+    overview:
+      "ApronConnect puts the dining room in the guest’s pocket. Hungry visitors land on a page that looks like the restaurant, tap a dish they recognize, and check out without creating an account they don’t want. Owners update specials in minutes, keep every guest on their own list, and never pay a marketplace tax on the order. Starter is free forever; Growth and Pro add full site control, themes, and a custom domain.",
+    benefits: [
+      "Guests order from your brand — not a crowded third-party marketplace",
+      "Menu updates take minutes, not a designer and a deploy",
+      "You keep the customer relationship and 0% marketplace cut",
+      "Themes match the room: smokehouse, café, fine dining, and more",
+    ],
+    useCases: [
+      "Independent restaurants that want their own branded ordering page",
+      "Kitchens tired of marketplace fees and generic storefronts",
+      "Owners who need to change specials without calling a developer",
+      "Groups that want one ordering flow across several looks",
+    ],
+    tour: [
+      {
+        image: "/products/apronconnect.png",
+        title: "Branded storefront",
+        caption:
+          "Hero, hours, and the dishes they came for — a page that feels like the dining room, then a fast path from craving to pickup.",
+      },
+      {
+        image: "/products/apronconnect-2.png",
+        title: "Live menu — TeeJay's Smokehouse",
+        caption:
+          "Warm, candlelit theme: guests land on the restaurant’s voice, tap a plate, and order without a marketplace account.",
+      },
+      {
+        image: "/products/apronconnect-3.png",
+        title: "Live menu — Verdura Kitchen",
+        caption:
+          "Bright, airy theme: same ordering flow, different room — type, color, and plating change to match the kitchen.",
       },
     ],
   },
