@@ -1,10 +1,11 @@
 import Script from "next/script";
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_MEASUREMENT_ID =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-6KDFEV8EQK";
 
 /**
  * Google Analytics 4 (gtag.js).
- * Set NEXT_PUBLIC_GA_MEASUREMENT_ID (e.g. G-XXXXXXXX) to enable.
+ * Defaults to the Klausway GA4 stream. Override with NEXT_PUBLIC_GA_MEASUREMENT_ID.
  */
 export function GoogleAnalytics() {
   if (!GA_MEASUREMENT_ID) return null;
