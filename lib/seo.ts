@@ -4,6 +4,60 @@ import { assetPath } from "@/lib/asset-path";
 import { routes } from "@/lib/navigation";
 
 const DEFAULT_SITE_URL = "https://www.klausway.com";
+const PRODUCTION_HOST = "www.klausway.com";
+
+function stripTrailingSlash(url: string): string {
+  return url.replace(/\/$/, "");
+}
+
+function isNonPublicHostname(hostname: string): boolean {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "0.0.0.0" ||
+    host === "::1" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local")
+  ) {
+    return true;
+  }
+  return (
+    /^10(?:\.\d{1,3}){3}$/.test(host) ||
+    /^192\.168(?:\.\d{1,3}){2}$/.test(host) ||
+    /^172\.(1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2}$/.test(host) ||
+    /^169\.254(?:\.\d{1,3}){2}$/.test(host)
+  );
+}
+
+/**
+ * Public site origin used for canonical, Open Graph, JSON-LD, and sitemap.
+ * Localhost / private NEXT_PUBLIC_SITE_URL values are ignored so a mis-set
+ * Vercel env cannot ship http://localhost into production metadata.
+ */
+export function getSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (raw) {
+    try {
+      const parsed = new URL(raw.includes("://") ? raw : `https://${raw}`);
+      if (!isNonPublicHostname(parsed.hostname)) {
+        if (
+          parsed.hostname === "klausway.com" ||
+          parsed.hostname === "www.klausway.com"
+        ) {
+          return `https://${PRODUCTION_HOST}`;
+        }
+        const path =
+          parsed.pathname === "/" ? "" : stripTrailingSlash(parsed.pathname);
+        return `${parsed.origin}${path}`;
+      }
+    } catch {
+      // Fall through to the production default.
+    }
+  }
+
+  return DEFAULT_SITE_URL;
+}
 
 export const siteConfig = {
   name: brand.name,
@@ -38,13 +92,6 @@ export const siteConfig = {
     "data analytics",
   ],
 } as const;
-
-export function getSiteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_SITE_URL).replace(
-    /\/$/,
-    "",
-  );
-}
 
 /** Absolute page URL (respects trailingSlash + site URL that may include basePath). */
 export function absoluteUrl(path = "/"): string {
