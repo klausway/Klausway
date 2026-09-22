@@ -10,6 +10,7 @@ const staticPaths = [
   routes.about,
   routes.apps,
   routes.products,
+  routes.integrations,
   routes.resources,
   routes.portfolio,
   routes.contact,

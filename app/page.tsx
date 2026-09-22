@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero";
 import { HomeProducts } from "@/components/home-products";
+import { IntegrationsSection } from "@/components/integrations-section";
 import { ProcessSection } from "@/components/process-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
@@ -19,6 +20,7 @@ export default async function HomePage() {
       />
       <Hero projects={projects} />
       <HomeProducts projects={projects} />
+      <IntegrationsSection />
       <ProcessSection />
       <CtaSection location="cta_section:home" />
     </>

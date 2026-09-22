@@ -3,6 +3,7 @@ export const routes = {
   about: "/about",
   apps: "/apps",
   products: "/products",
+  integrations: "/integrations",
   blog: "/resources",
   resources: "/resources",
   portfolio: "/portfolio",
@@ -27,6 +28,7 @@ export const navItems = [
   { label: "About", href: routes.about },
   { label: "Services", href: routes.apps },
   { label: "Products", href: routes.products },
+  { label: "Integrations", href: routes.integrations },
   { label: "Resources", href: routes.resources },
   { label: "Portfolio", href: routes.portfolio },
   { label: "Contact", href: routes.contact },
@@ -38,6 +40,7 @@ export const footerLinks = {
     { label: "Apps Built for You", href: `${routes.apps}#custom-apps` },
     { label: "System Integration", href: `${routes.apps}#system-integration` },
     { label: "Smart Automation & AI", href: `${routes.apps}#automation-ai` },
+    { label: "Integrations", href: routes.integrations },
   ],
   solutions: [
     { label: "Data & Analytics", href: `${routes.apps}#data-analytics` },

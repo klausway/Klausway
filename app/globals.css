@@ -54,6 +54,23 @@ body {
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
   }
 
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
   .mask-fade-right {
     mask-image: linear-gradient(to right, black 80%, transparent);
     -webkit-mask-image: linear-gradient(to right, black 80%, transparent);
@@ -126,8 +143,123 @@ body {
   .animate-blob-1,
   .animate-blob-2,
   .animate-blob-3,
-  .animate-ping-soft {
+  .animate-ping-soft,
+  .marquee-track,
+  [data-orbit] .orbit-arc,
+  [data-orbit] .orbit-fill,
+  [data-orbit] .orbit-chip,
+  [data-orbit] .orbit-chip-inner,
+  [data-orbit] .orbit-pulse,
+  [data-orbit] .orbit-hub-ring {
     animation: none !important;
+  }
+  .orbit-arc {
+    stroke-dashoffset: 0 !important;
+  }
+  .orbit-fill,
+  .orbit-chip {
+    opacity: 1 !important;
+  }
+}
+
+/* Logo marquee — two duplicated groups per track, so -50% loops seamlessly */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 44s linear infinite;
+}
+.marquee-track[data-direction="reverse"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Integrations orbit — arcs draw in, chips pop and drift, one pulse per cycle */
+.orbit-arc {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.orbit-fill,
+.orbit-chip {
+  opacity: 0;
+}
+.orbit-pulse {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 500px 500px;
+}
+[data-orbit="visible"] .orbit-arc {
+  animation: orbit-draw 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+[data-orbit="visible"] .orbit-fill {
+  animation: fade-up 1.2s ease-out 0.5s forwards;
+}
+[data-orbit="visible"] .orbit-chip {
+  animation: orbit-chip-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+[data-orbit="visible"] .orbit-chip-inner {
+  animation: orbit-float 7s ease-in-out infinite;
+}
+[data-orbit="visible"] .orbit-pulse {
+  animation: orbit-pulse 6s ease-out 1.6s infinite;
+}
+[data-orbit="visible"] .orbit-hub-ring {
+  animation: orbit-hub-ring 3.2s ease-out 1.2s infinite;
+}
+
+@keyframes orbit-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes orbit-chip-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@keyframes orbit-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes orbit-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.18);
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+@keyframes orbit-hub-ring {
+  0% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
   }
 }
 

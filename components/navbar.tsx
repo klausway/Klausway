@@ -44,8 +44,8 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href={routes.home} className="flex items-center">
-          <Logo height={34} showText textClassName="font-display text-lg font-bold tracking-tight" />
+        <Link href={routes.home} className="flex shrink-0 items-center">
+          <Logo height={34} showText textClassName="font-display text-lg font-bold tracking-tight whitespace-nowrap" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
@@ -65,7 +65,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex">
+        <div className="hidden shrink-0 items-center gap-4 lg:flex">
           <a
             href={worknexUrl}
             target="_blank"
@@ -73,7 +73,7 @@ export function Navbar() {
             onClick={() =>
               trackEvent("cta_click", { location: "navbar", product: "worknex" })
             }
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+            className="hidden items-center gap-1.5 whitespace-nowrap text-sm font-medium text-brand-600 transition-colors hover:text-brand-700 xl:inline-flex"
           >
             Worknex
             <ExternalLink className="h-3.5 w-3.5" />
@@ -81,7 +81,7 @@ export function Navbar() {
           <a
             href="tel:+18604000758"
             onClick={() => trackEvent("phone_click", { location: "navbar" })}
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="hidden items-center gap-1.5 whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-foreground xl:inline-flex"
           >
             <Phone className="h-3.5 w-3.5" />
             (860) 400-0758
