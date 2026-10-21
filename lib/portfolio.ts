@@ -39,7 +39,7 @@ export const portfolioProjects: PortfolioProject[] = [
     description:
       "Exclusive CRM built for Klaus Larsen Roofing — customers, quotes, jobs, scheduling, and crews in one system.",
     overview:
-      "Klaus Connect is a custom operating system we built exclusively for Klaus Larsen Roofing. It runs their full customer lifecycle — contacts, quoting, production, and payment — and is not sold as a public product. The public platform that grew from this work is Worknex.",
+      "Klaus Connect started as a custom operating system we built for Klaus Larsen Roofing. It runs their full customer lifecycle — contacts, quoting, production, and payment — and grew into the public Klaus Connect platform at klaus-connect.com.",
     categories: ["CRM"],
     tags: ["Exclusive", "CRM", "Roofing", "Klaus Larsen"],
     accent: "from-cyan-400 to-blue-500",

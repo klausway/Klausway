@@ -1,4 +1,4 @@
-import { apronConnectUrl, worknexUrl } from "@/lib/navigation";
+import { apronConnectUrl, klausConnectUrl } from "@/lib/navigation";
 
 /** One step in a product's guided screenshot tour. */
 export type ProductTourStep = {
@@ -32,17 +32,17 @@ export type FeaturedProduct = {
 export const productsPageHeader = {
   title: "Our Products",
   subtitle:
-    "Real, working software we design, build, and run — led by Worknex, our all-in-one business platform, plus ApronConnect for restaurants, AI assistants, dispatch, payments, and more.",
+    "Real, working software we design, build, and run — led by Klaus Connect, our all-in-one business platform, plus ApronConnect for restaurants, AI assistants, dispatch, payments, and more.",
 } as const;
 
 export const featuredProducts: FeaturedProduct[] = [
   {
-    id: "worknex",
-    name: "Worknex",
+    id: "klaus-connect",
+    name: "Klaus Connect",
     tagline: "Sell, deliver, and decide in one system",
-    productUrl: worknexUrl,
+    productUrl: klausConnectUrl,
     description:
-      "Worknex is the public all-in-one business platform from Klaus Way — CRM, quotes, jobs, scheduling, inventory, and teams in one operating system, so nothing slips between tools. Start a free trial or book a demo on work-nex.com.",
+      "Klaus Connect is the public all-in-one business platform from Klaus Way — CRM, quotes, jobs, scheduling, inventory, and teams in one operating system, so nothing slips between tools. Start a free trial or book a demo on klaus-connect.com.",
     features: [
       "CRM, pipeline, and quotes with full customer history",
       "Jobs, crew calendars, routes, and inventory in one flow",
@@ -50,11 +50,11 @@ export const featuredProducts: FeaturedProduct[] = [
       "Live dashboards and reports by branch and period",
     ],
     tags: ["CRM", "Operations", "Field service"],
-    image: "/products/worknex.png",
-    imageAlt: "Worknex company scoreboard with live pipeline and revenue",
+    image: "/products/klaus-connect-hero.png",
+    imageAlt: "Klaus Connect company scoreboard with live pipeline and revenue",
     accent: "from-blue-400 to-indigo-400",
     overview:
-      "Worknex is Klaus Way’s flagship product for any company that sells and delivers work. It started from the systems we built for field-service operators, then became a public platform: one record from first lead through quote, job, schedule, and payment. Feature tours, live demos, and trial signup live on the Worknex site.",
+      "Klaus Connect is Klaus Way’s flagship product for any company that sells and delivers work. It started from the systems we built for field-service operators, then became a public platform: one record from first lead through quote, job, schedule, and payment. Feature tours, live demos, and trial signup live on the Klaus Connect site.",
     benefits: [
       "One customer record from first call through final payment",
       "Sales, production, and finance stop re-keying the same job",
@@ -69,13 +69,13 @@ export const featuredProducts: FeaturedProduct[] = [
     ],
     tour: [
       {
-        image: "/products/worknex.png",
+        image: "/products/klaus-connect-hero.png",
         title: "Company scoreboard",
         caption:
           "Filter by location, then week → month → quarter — leads, appointments, jobs, sold, and installed, each measured against goal.",
       },
       {
-        image: "/products/worknex-quotes.png",
+        image: "/products/klaus-connect-quotes.png",
         title: "Quotes and e-sign",
         caption:
           "Build a quote, open Sign in App, and let the customer draw and submit — the same path your team uses every day.",

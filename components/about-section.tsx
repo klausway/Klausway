@@ -7,7 +7,7 @@ import {
   values,
   type TeamMember,
 } from "@/lib/about";
-import { worknexUrl } from "@/lib/navigation";
+import { klausConnectUrl } from "@/lib/navigation";
 
 type AboutSectionProps = {
   teamMembers: TeamMember[];
@@ -29,15 +29,15 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
                 ))}
               </div>
               <TrackedLink
-                href={worknexUrl}
+                href={klausConnectUrl}
                 external
                 target="_blank"
                 rel="noopener noreferrer"
                 event="cta_click"
-                eventParams={{ location: "about_story", product: "worknex" }}
+                eventParams={{ location: "about_story", product: "klaus_connect" }}
                 className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
               >
-                Visit Worknex →
+                Visit Klaus Connect →
               </TrackedLink>
             </Reveal>
 
@@ -50,7 +50,7 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
                       Flagship product
                     </div>
                     <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-                      Worknex — sell, deliver, and decide in one system.
+                      Klaus Connect — sell, deliver, and decide in one system.
                     </p>
                   </div>
                 </div>

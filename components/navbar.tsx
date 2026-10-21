@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, ExternalLink, Menu, Phone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
-import { worknexUrl, navItems, routes } from "@/lib/navigation";
+import { klausConnectUrl, navItems, routes } from "@/lib/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 export function Navbar() {
@@ -67,15 +67,15 @@ export function Navbar() {
 
         <div className="hidden shrink-0 items-center gap-4 lg:flex">
           <a
-            href={worknexUrl}
+            href={klausConnectUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() =>
-              trackEvent("cta_click", { location: "navbar", product: "worknex" })
+              trackEvent("cta_click", { location: "navbar", product: "klaus_connect" })
             }
             className="hidden items-center gap-1.5 whitespace-nowrap text-sm font-medium text-brand-600 transition-colors hover:text-brand-700 xl:inline-flex"
           >
-            Worknex
+            Klaus Connect
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
           <a
@@ -128,18 +128,18 @@ export function Navbar() {
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-border pt-4">
               <a
-                href={worknexUrl}
+                href={klausConnectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() =>
                   trackEvent("cta_click", {
                     location: "navbar_mobile",
-                    product: "worknex",
+                    product: "klaus_connect",
                   })
                 }
                 className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-3 text-center text-sm font-medium text-brand-600"
               >
-                Worknex
+                Klaus Connect
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
               <a

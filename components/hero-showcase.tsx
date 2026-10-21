@@ -1,6 +1,6 @@
 import { BrowserFrame } from "./ui/browser-frame";
 import { TrackedLink } from "./tracked-link";
-import { worknexUrl } from "@/lib/navigation";
+import { klausConnectUrl } from "@/lib/navigation";
 
 /**
  * Real product screenshots layered like a desk of shipped work — replaces the
@@ -10,19 +10,19 @@ export function HeroShowcase() {
   return (
     <div className="relative mx-auto max-w-5xl">
       <TrackedLink
-        href={worknexUrl}
+        href={klausConnectUrl}
         external
         target="_blank"
         rel="noopener noreferrer"
         event="cta_click"
-        eventParams={{ location: "hero_showcase", product: "worknex" }}
+        eventParams={{ location: "hero_showcase", product: "klaus_connect" }}
         className="relative z-10 block"
-        aria-label="Visit Worknex"
+        aria-label="Visit Klaus Connect"
       >
         <BrowserFrame
-          src="/products/worknex.png"
-          alt="Worknex — company scoreboard with live pipeline and revenue"
-          url="work-nex.com"
+          src="/products/klaus-connect-hero.png"
+          alt="Klaus Connect — company scoreboard with live pipeline and revenue"
+          url="klaus-connect.com"
           priority
         />
       </TrackedLink>

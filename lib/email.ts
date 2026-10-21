@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { sanitizeHeaderValue } from "@/lib/contact-security";
-import { worknexUrl, routes } from "@/lib/navigation";
+import { klausConnectUrl, routes } from "@/lib/navigation";
 import { getSiteUrl } from "@/lib/seo";
 
 type ContactEmailInput = {
@@ -178,15 +178,15 @@ export async function sendLeadConfirmationEmail(input: {
       "",
       ...(flagshipLead
         ? [
-            "You asked about a product demo — here’s Worknex, our public business platform:",
-            worknexUrl,
+            "You asked about a product demo — here’s Klaus Connect, our public business platform:",
+            klausConnectUrl,
             "",
             "See the rest of what we build and run:",
             productsUrl,
           ]
         : [
-            "In the meantime, our flagship product is Worknex:",
-            worknexUrl,
+            "In the meantime, our flagship product is Klaus Connect:",
+            klausConnectUrl,
             "",
             "Browse everything we build and run:",
             productsUrl,

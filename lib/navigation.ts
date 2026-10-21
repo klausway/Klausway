@@ -13,13 +13,10 @@ export const routes = {
 } as const;
 
 /** Public flagship product — all-in-one business platform sold to any company. */
-export const worknexUrl = "https://www.work-nex.com";
+export const klausConnectUrl = "https://www.klaus-connect.com";
 
 /** Branded online ordering for independent restaurants. */
 export const apronConnectUrl = "https://www.apronconnect.com/en";
-
-/** Exclusive Klaus Larsen Roofing build — not sold as a public product. */
-export const klausConnectUrl = "https://www.klaus-connect.com";
 
 export type RouteKey = keyof typeof routes;
 
@@ -49,7 +46,7 @@ export const footerLinks = {
     { label: "Voice AI Agent", href: `${routes.apps}#automation-ai` },
   ],
   company: [
-    { label: "Worknex", href: worknexUrl },
+    { label: "Klaus Connect", href: klausConnectUrl },
     { label: "ApronConnect", href: apronConnectUrl },
     { label: "Home", href: routes.home },
     { label: "About Us", href: routes.about },
