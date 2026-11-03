@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
+import { parseBio } from "@/lib/team-data";
 
 type RouteContext = {
   params: Promise<{ slug: string }>;
@@ -25,6 +26,7 @@ export async function PUT(request: Request, context: RouteContext) {
         ...(body.image !== undefined
           ? { image: body.image ? String(body.image) : null }
           : {}),
+        ...(body.bio !== undefined ? { bio: parseBio(body.bio) } : {}),
         ...(body.published !== undefined
           ? { published: Boolean(body.published) }
           : {}),

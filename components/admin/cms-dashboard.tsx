@@ -41,6 +41,7 @@ import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { QrCodesPanel } from "@/components/admin/qr-codes-panel";
 import { TeamMemberPhoto } from "@/components/team-member-photo";
 import { portfolioCategories } from "@/lib/portfolio";
+import { TEAM_BIO_HEADING_PREFIX } from "@/lib/about";
 import {
   fromPrismaResourceType,
   resourceTypeLabels,
@@ -96,13 +97,27 @@ type TeamRecord = {
   name: string;
   role: string;
   image?: string | null;
+  bio?: string[];
   initials: string;
   accent: string;
   sortOrder: number;
   published: boolean;
 };
 
+type TeamDraft = Partial<TeamRecord> & { originalSlug?: string; bioText?: string };
+
 type PreviewMode = "card" | "detail";
+
+function bioToText(bio?: string[]) {
+  return (bio ?? []).join("\n\n");
+}
+
+function textToBio(text?: string) {
+  return (text ?? "")
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
 
 function parseLines(value: string) {
   return value.split("\n").map((l) => l.trim()).filter(Boolean);
@@ -128,11 +143,12 @@ const emptyPortfolio = (): Partial<PortfolioRecord> & { originalSlug?: string } 
   published: false,
 });
 
-const emptyTeam = (): Partial<TeamRecord> & { originalSlug?: string } => ({
+const emptyTeam = (): TeamDraft => ({
   slug: "",
   name: "",
   role: "",
   image: null,
+  bioText: "",
   initials: "",
   accent: "from-brand-500 to-violet-600",
   sortOrder: 0,
@@ -178,7 +194,7 @@ export function CmsDashboard() {
 
   const [editingBlog, setEditingBlog] = useState<(Partial<BlogRecord> & { originalSlug?: string }) | null>(null);
   const [editingPortfolio, setEditingPortfolio] = useState<(Partial<PortfolioRecord> & { originalSlug?: string }) | null>(null);
-  const [editingTeam, setEditingTeam] = useState<(Partial<TeamRecord> & { originalSlug?: string }) | null>(null);
+  const [editingTeam, setEditingTeam] = useState<TeamDraft | null>(null);
 
   useEffect(() => {
     const savedToken = sessionStorage.getItem("cms_token");
@@ -502,11 +518,13 @@ export function CmsDashboard() {
         .slice(0, 2)
         .toUpperCase();
     const isNew = !editingTeam.originalSlug;
+    const { bioText, ...teamFields } = editingTeam;
     const payload = {
-      ...editingTeam,
+      ...teamFields,
       slug,
       initials,
       image: editingTeam.image ?? null,
+      bio: textToBio(bioText),
       sortOrder: Number(editingTeam.sortOrder) || 0,
       published: editingTeam.published ?? true,
     };
@@ -1122,6 +1140,7 @@ export function CmsDashboard() {
                 publicPath="/about/#team"
                 tabs={[
                   { id: "basics", label: "Basics", icon: LayoutTemplate },
+                  { id: "bio", label: "Bio", icon: Type },
                   { id: "photo", label: "Photo", icon: ImageIcon },
                   { id: "settings", label: "Settings", icon: Settings2 },
                 ]}
@@ -1198,6 +1217,21 @@ export function CmsDashboard() {
                   </EditorSection>
                 )}
 
+                {teamEditorTab === "bio" && (
+                  <EditorSection
+                    title="Bio"
+                    description="Opens from the Read bio button on the About page team card"
+                  >
+                    <AdminTextarea
+                      label="Bio"
+                      hint={`Separate paragraphs with a blank line. Start a paragraph with "${TEAM_BIO_HEADING_PREFIX}" for a section heading.`}
+                      value={editingTeam.bioText ?? ""}
+                      onChange={(v) => setEditingTeam({ ...editingTeam, bioText: v })}
+                      rows={14}
+                    />
+                  </EditorSection>
+                )}
+
                 {teamEditorTab === "photo" && token ? (
                   <EditorSection
                     title="Portrait photo"
@@ -1255,7 +1289,11 @@ export function CmsDashboard() {
                   coverImage={member.image}
                   onEdit={() => {
                     setTeamEditorTab("basics");
-                    setEditingTeam({ ...member, originalSlug: member.slug });
+                    setEditingTeam({
+                      ...member,
+                      originalSlug: member.slug,
+                      bioText: bioToText(member.bio),
+                    });
                   }}
                   onDelete={() => void deleteTeam(member.slug)}
                 />

@@ -116,6 +116,7 @@ async function main() {
       initials: member.initials,
       accent: member.accent,
       image: member.image ?? null,
+      bio: member.bio ?? [],
       sortOrder: member.sortOrder ?? 0,
       published: true,
     };

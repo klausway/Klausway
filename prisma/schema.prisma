@@ -107,6 +107,8 @@ model TeamMember {
   name      String
   role      String
   image     String?
+  /// Paragraphs; entries starting with "## " are section headings.
+  bio       String[] @default([])
   initials  String
   accent    String   @default("from-brand-500 to-violet-600")
   sortOrder Int      @default(0)

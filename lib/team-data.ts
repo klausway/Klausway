@@ -6,6 +6,7 @@ function mapTeamMember(member: {
   name: string;
   role: string;
   image: string | null;
+  bio: string[];
   initials: string;
   accent: string;
   sortOrder: number;
@@ -15,10 +16,16 @@ function mapTeamMember(member: {
     name: member.name,
     role: member.role,
     image: member.image,
+    bio: member.bio,
     initials: member.initials,
     accent: member.accent,
     sortOrder: member.sortOrder,
   };
+}
+
+export function parseBio(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((entry) => String(entry).trim()).filter(Boolean);
 }
 
 /** When DATABASE_URL is set, the database is the source of truth (CMS edits). */

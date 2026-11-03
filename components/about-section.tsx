@@ -1,5 +1,5 @@
 import { Reveal } from "./animation/reveal";
-import { TeamMemberPhoto } from "./team-member-photo";
+import { TeamGrid } from "./team-grid";
 import { TrackedLink } from "./tracked-link";
 import {
   missionVision,
@@ -123,25 +123,7 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {teamMembers.map((member, i) => (
-              <Reveal
-                key={member.slug}
-                delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-                className="hover-lift group overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
-              >
-                <TeamMemberPhoto member={member} className="rounded-none" />
-                <div className="p-5 text-center">
-                  <h3 className="text-lg font-semibold tracking-tight">
-                    {member.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {member.role}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <TeamGrid members={teamMembers} />
         </div>
       </section>
     </>

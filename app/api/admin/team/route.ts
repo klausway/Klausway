@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
+import { parseBio } from "@/lib/team-data";
 
 function slugify(value: string) {
   return value
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
       "?";
     const accent = String(body.accent ?? "from-brand-500 to-violet-600");
     const image = body.image ? String(body.image) : null;
+    const bio = parseBio(body.bio);
     const published = body.published !== undefined ? Boolean(body.published) : true;
     const sortOrder =
       body.sortOrder !== undefined ? Number(body.sortOrder) || 0 : 0;
@@ -65,6 +67,7 @@ export async function POST(request: Request) {
         initials,
         accent,
         image,
+        bio,
         published,
         sortOrder,
       },

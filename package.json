@@ -19,6 +19,7 @@
     "db:push": "dotenv -e .env -- prisma db push",
     "db:seed": "dotenv -e .env -- tsx prisma/seed.ts",
     "db:seed:overwrite": "dotenv -e .env -- env SEED_OVERWRITE=true tsx prisma/seed.ts",
+    "db:sync:team": "dotenv -e .env -- tsx scripts/sync-team.ts",
     "db:setup:local": "bash scripts/setup-local-db.sh",
     "db:studio": "dotenv -e .env -- prisma studio"
   },
