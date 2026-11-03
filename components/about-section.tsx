@@ -8,6 +8,7 @@ import {
   type TeamMember,
 } from "@/lib/about";
 import { klausConnectUrl } from "@/lib/navigation";
+import { assetPath } from "@/lib/asset-path";
 
 type AboutSectionProps = {
   teamMembers: TeamMember[];
@@ -18,7 +19,7 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
     <>
       <section id="story" className="relative pb-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div className="grid items-start gap-12 lg:grid-cols-2">
             <Reveal>
               <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
                 {ourStory.title}
@@ -41,19 +42,23 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
               </TrackedLink>
             </Reveal>
 
-            <Reveal delay={100}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-brand-500/10 via-card/40 to-sky-500/10">
-                <div className="absolute inset-0 opacity-40" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-2xl border border-border bg-background/60 px-8 py-6 text-center backdrop-blur">
-                    <div className="text-sm font-semibold uppercase tracking-wider text-brand-600">
-                      Flagship product
-                    </div>
-                    <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-                      Klaus Connect — sell, deliver, and decide in one system.
-                    </p>
-                  </div>
-                </div>
+            <Reveal delay={100} className="lg:sticky lg:top-28 lg:mt-14">
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+                <video
+                  className="h-full w-full object-cover"
+                  src={assetPath("/videos/our-story.mp4")}
+                  poster={assetPath("/videos/our-story-poster.jpg")}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label="Klaus Way — Our Story"
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-between gap-4 px-1 text-sm">
+                <p className="font-medium text-foreground">Watch our story</p>
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  1:30 · Sound on
+                </p>
               </div>
             </Reveal>
           </div>
