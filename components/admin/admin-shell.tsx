@@ -2,7 +2,9 @@
 
 import {
   Briefcase,
+  ExternalLink,
   FileText,
+  Inbox,
   KeyRound,
   LayoutDashboard,
   LogOut,
@@ -22,12 +24,22 @@ export type AdminSection =
   | "users"
   | "account";
 
+type NavGroup = "main" | "content" | "marketing" | "settings";
+
+const navGroups: { id: NavGroup; label?: string }[] = [
+  { id: "main" },
+  { id: "content", label: "Content" },
+  { id: "marketing", label: "Marketing" },
+  { id: "settings", label: "Settings" },
+];
+
 const allNavItems: {
   id: AdminSection;
   label: string;
   description: string;
   icon: typeof FileText;
   roles: AdminRole[] | "all";
+  group: NavGroup;
 }[] = [
   {
     id: "overview",
@@ -35,6 +47,7 @@ const allNavItems: {
     description: "Stats & shortcuts",
     icon: LayoutDashboard,
     roles: ["admin"],
+    group: "main",
   },
   {
     id: "resources",
@@ -42,6 +55,7 @@ const allNavItems: {
     description: "Articles, guides & news",
     icon: FileText,
     roles: "all",
+    group: "content",
   },
   {
     id: "portfolio",
@@ -49,13 +63,15 @@ const allNavItems: {
     description: "Projects & case studies",
     icon: Briefcase,
     roles: "all",
+    group: "content",
   },
   {
     id: "our-team",
     label: "Our Team",
-    description: "About page photos",
+    description: "About page photos & bios",
     icon: UserRound,
     roles: "all",
+    group: "content",
   },
   {
     id: "qr-codes",
@@ -63,6 +79,7 @@ const allNavItems: {
     description: "Dynamic print links",
     icon: QrCode,
     roles: ["admin"],
+    group: "marketing",
   },
   {
     id: "users",
@@ -70,6 +87,7 @@ const allNavItems: {
     description: "Roles & accounts",
     icon: Users,
     roles: ["admin"],
+    group: "settings",
   },
   {
     id: "account",
@@ -77,7 +95,13 @@ const allNavItems: {
     description: "Change your password",
     icon: KeyRound,
     roles: "all",
+    group: "settings",
   },
+];
+
+const shortcutLinks = [
+  { label: "Leads", description: "Contact form inbox", href: "/admin/leads/", icon: Inbox, external: false },
+  { label: "View website", description: "Opens in a new tab", href: "/", icon: ExternalLink, external: true },
 ];
 
 export function navItemsForRole(role: AdminRole) {
@@ -111,9 +135,9 @@ export function AdminShell({
   const roleLabel = userRole === "admin" ? "Admin" : "Content";
 
   return (
-    <div className="mx-auto flex h-dvh max-w-[1800px] overflow-hidden">
-      <aside className="hidden h-full w-72 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-muted/60 p-6 lg:flex">
-        <div className="mb-10">
+    <div className="flex h-dvh overflow-hidden">
+      <aside className="hidden h-full w-72 shrink-0 flex-col overflow-y-auto border-r border-black/10 bg-muted/60 px-5 py-6 lg:flex">
+        <div className="mb-8 px-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-600">
             Klaus Way
           </p>
@@ -123,46 +147,93 @@ export function AdminShell({
           </p>
         </div>
 
-        <nav className="space-y-1.5">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = section === item.id;
+        <nav className="space-y-5">
+          {navGroups.map((group) => {
+            const items = navItems.filter((item) => item.group === group.id);
+            if (items.length === 0) return null;
             return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => onSectionChange(item.id)}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors",
-                  active
-                    ? "bg-brand-500/15 text-brand-800 ring-1 ring-brand-400/20"
-                    : "text-muted-foreground hover:bg-black/[0.04] hover:text-foreground",
-                )}
-              >
-                <Icon className={cn("h-4 w-4 shrink-0", active && "text-brand-600")} />
-                <span>
-                  <span className="block text-sm font-medium">{item.label}</span>
-                  <span className="block text-[11px] opacity-70">{item.description}</span>
-                </span>
-              </button>
+              <div key={group.id}>
+                {group.label ? (
+                  <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
+                    {group.label}
+                  </p>
+                ) : null}
+                <div className="space-y-0.5">
+                  {items.map((item) => {
+                    const Icon = item.icon;
+                    const active = section === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => onSectionChange(item.id)}
+                        className={cn(
+                          "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors",
+                          active
+                            ? "bg-brand-500/15 text-brand-800 ring-1 ring-brand-400/20"
+                            : "text-muted-foreground hover:bg-black/[0.04] hover:text-foreground",
+                        )}
+                      >
+                        <Icon className={cn("h-4 w-4 shrink-0", active && "text-brand-600")} />
+                        <span>
+                          <span className="block text-sm font-medium">{item.label}</span>
+                          <span className="block text-[11px] opacity-70">{item.description}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
+
+          <div>
+            <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
+              Shortcuts
+            </p>
+            <div className="space-y-0.5">
+              {shortcutLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-muted-foreground transition-colors hover:bg-black/[0.04] hover:text-foreground"
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span>
+                      <span className="block text-sm font-medium">{link.label}</span>
+                      <span className="block text-[11px] opacity-70">{link.description}</span>
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </nav>
 
-        <div className="mt-auto rounded-xl border border-black/10 bg-black/[0.03] p-4">
-          <p className="truncate text-sm font-medium">{userName}</p>
-          <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
-          <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-brand-600/80">
-            {roleLabel}
-          </p>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="mt-3 inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            Sign out
-          </button>
+        <div className="mt-auto pt-6">
+          <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-background/70 p-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-sm font-semibold text-brand-700">
+              {(userName ?? "?").charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{userName}</p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                {userEmail} · <span className="font-semibold text-brand-600/80">{roleLabel}</span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onLogout}
+              title="Sign out"
+              aria-label="Sign out"
+              className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-black/[0.05] hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -198,8 +269,10 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4 lg:px-8 lg:py-4">
-          {children}
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-4 lg:px-8 lg:py-6">
+          <div className="mx-auto flex w-full max-w-[1500px] min-h-0 flex-1 flex-col">
+            {children}
+          </div>
         </main>
       </div>
     </div>
