@@ -55,6 +55,26 @@ const nextConfig: NextConfig = {
         destination: "/products/klaus-connect/",
         permanent: true,
       },
+      {
+        source: "/portfolio",
+        destination: "/products/",
+        permanent: true,
+      },
+      {
+        source: "/portfolio/",
+        destination: "/products/",
+        permanent: true,
+      },
+      {
+        source: "/portfolio/:slug",
+        destination: "/products/",
+        permanent: true,
+      },
+      {
+        source: "/portfolio/:slug/",
+        destination: "/products/",
+        permanent: true,
+      },
     ];
   },
 };

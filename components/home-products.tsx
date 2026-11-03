@@ -32,10 +32,10 @@ export function HomeProducts({ projects }: HomeProductsProps) {
           description="Led by Klaus Connect, each application is designed, built, and deployed as its own standalone solution — from CRM and reporting to restaurant ordering, payments, inventory, and AI."
           aside={
             <Link
-              href={routes.portfolio}
+              href={routes.products}
               className="group inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
             >
-              View full portfolio
+              View all products
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           }
@@ -119,10 +119,10 @@ function ProductRow({ project, index, reverse }: ProductRowProps) {
           name={project.title}
           productId={project.id}
           productUrl={project.productUrl}
-          fallbackHref={`${routes.portfolio}/${project.id}`}
+          fallbackHref={routes.products}
           fallbackLabel={
             project.productUrl
-              ? "See the build story"
+              ? "See all products"
               : `Learn more about ${project.title}`
           }
           location="home_products"

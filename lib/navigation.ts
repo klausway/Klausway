@@ -27,7 +27,6 @@ export const navItems = [
   { label: "Products", href: routes.products },
   { label: "Integrations", href: routes.integrations },
   { label: "Resources", href: routes.resources },
-  { label: "Portfolio", href: routes.portfolio },
   { label: "Contact", href: routes.contact },
 ] as const;
 
@@ -53,7 +52,6 @@ export const footerLinks = {
     { label: "Resources", href: routes.resources },
     { label: "Our Services", href: routes.apps },
     { label: "Products", href: routes.products },
-    { label: "Portfolio", href: routes.portfolio },
     { label: "Contact", href: routes.contact },
   ],
   contact: [

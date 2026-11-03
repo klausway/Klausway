@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { LayoutShell } from "@/components/layout-shell";
 import { JsonLd } from "@/components/json-ld";
@@ -14,16 +14,28 @@ import {
 } from "@/lib/seo";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-display",
+// Self-hosted via next/font/local — avoids Turbopack failures when Google
+// Fonts returns extensionless /l/font?kit= URLs to next/font/google.
+const inter = localFont({
+  src: "./fonts/inter-latin-wght.woff2",
+  weight: "100 900",
+  style: "normal",
+  variable: "--font-sans",
+  display: "swap",
 });
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const spaceGrotesk = localFont({
+  src: "./fonts/space-grotesk-latin-wght.woff2",
+  weight: "500 700",
+  style: "normal",
+  variable: "--font-display",
+  display: "swap",
+});
+const jetbrainsMono = localFont({
+  src: "./fonts/jetbrains-mono-latin-wght.woff2",
+  weight: "400 500",
+  style: "normal",
   variable: "--font-mono",
+  display: "swap",
 });
 
 const ogImage = absoluteImageUrl(siteConfig.defaultOgImage);

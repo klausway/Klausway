@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublishedResourcePosts } from "@/lib/blog-data";
 import { featuredProducts } from "@/lib/featured-products";
-import { portfolioProjects } from "@/lib/portfolio";
 import { routes } from "@/lib/navigation";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -12,7 +11,6 @@ const staticPaths = [
   routes.products,
   routes.integrations,
   routes.resources,
-  routes.portfolio,
   routes.contact,
   routes.privacyPolicy,
   routes.termsOfService,
@@ -36,13 +34,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const projects: MetadataRoute.Sitemap = portfolioProjects.map((project) => ({
-    url: absoluteUrl(`${routes.portfolio}/${project.id}`),
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
-
   const products: MetadataRoute.Sitemap = featuredProducts
     .filter((product) => !product.productUrl)
     .map((product) => ({
@@ -52,5 +43,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-  return [...pages, ...posts, ...projects, ...products];
+  return [...pages, ...posts, ...products];
 }
