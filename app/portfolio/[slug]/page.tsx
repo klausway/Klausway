@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/page-header";
 import { PortfolioDetail } from "@/components/portfolio-detail";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
+import { portfolioProjects } from "@/lib/portfolio";
 import { getPortfolioProject } from "@/lib/portfolio-data";
 import { routes } from "@/lib/navigation";
 import {
@@ -17,6 +18,10 @@ type PortfolioProjectPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+
+export function generateStaticParams() {
+  return portfolioProjects.map((project) => ({ slug: project.id }));
+}
 
 export async function generateMetadata({
   params,

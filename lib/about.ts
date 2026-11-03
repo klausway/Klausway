@@ -1,8 +1,8 @@
-import { Lightbulb, Target, Eye, Users, Award, Shield } from "lucide-react";
+import { Lightbulb, Users, Award, Shield } from "lucide-react";
 
 export const aboutPageHeader = {
   subtitle:
-    "Building technology that works for people, not the other way around.",
+    "Purpose-built technology for the way your business works. Start with a free consultation.",
 };
 
 export const ourStory = {
@@ -12,24 +12,9 @@ export const ourStory = {
     "As we worked closely with our clients, it became clear that the challenges we were solving weren't unique to roofing. Companies across industries were facing the same inefficiencies, outdated systems, and disconnected tools. That realization led to the next chapter.",
     "The first of those systems was built for Klaus Larsen Roofing. The public product that grew from that work is Klaus Connect — our flagship all-in-one platform for customers, quotes, jobs, scheduling, and teams, at klaus-connect.com. We also build ApronConnect, branded online ordering for independent restaurants. Klaus Way continues to design, build, and run products and custom systems for companies that need more than one-size-fits-all software.",
     "Klaus Way emerged with a broader mission: to create smart, flexible technology that helps businesses of all kinds work better. Today, we design and support solutions that adapt to how companies actually operate—scaling with them as they grow, and evolving as their needs change.",
-    "Our story is still being written, but our focus remains the same: building technology that works for people, not the other way around.",
+    "Our story is still being written, but our focus remains the same: we build, we connect, we simplify — technology that works for people, not the other way around.",
   ],
 };
-
-export const missionVision = [
-  {
-    icon: Target,
-    title: "Our Mission",
-    description:
-      "To empower businesses with innovative IT solutions that drive growth, efficiency, and competitive advantage in the digital age.",
-  },
-  {
-    icon: Eye,
-    title: "Our Vision",
-    description:
-      "To be the most trusted partner for businesses seeking to transform their IT infrastructure and achieve digital excellence.",
-  },
-];
 
 export const values = [
   {

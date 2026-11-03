@@ -11,7 +11,7 @@ import { RichTextContent } from "@/components/rich-text-content";
 import { RelatedResources } from "@/components/related-resources";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
-import { resourceTypeLabels } from "@/lib/blog";
+import { resourcePosts, resourceTypeLabels } from "@/lib/blog";
 import { getRelatedResourcePosts, getResourcePost } from "@/lib/blog-data";
 import { routes } from "@/lib/navigation";
 import {
@@ -26,6 +26,10 @@ type ResourcePostPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+
+export function generateStaticParams() {
+  return resourcePosts.map((post) => ({ slug: post.slug }));
+}
 
 export async function generateMetadata({
   params,

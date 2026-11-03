@@ -40,8 +40,8 @@ export default function AppsPage() {
             <span className="underline-signal">you need?</span>
           </>
         }
-        subheading="That's normal — most projects touch a few. Describe the problem and we'll map out the simplest path."
-        primaryLabel="Describe your problem"
+        subheading="That's normal — most projects touch a few. Describe the problem and we'll map out the simplest path — free consultation, no obligation."
+        primaryLabel="Book a free consult"
         location="cta_section:services"
       />
     </>

@@ -17,9 +17,9 @@ type CtaSectionProps = {
 };
 
 const defaultProofPoints = [
-  "7 products in production",
+  "Products running in production",
   "Direct line to the people who build it",
-  "North Windham, CT — (860) 400-0758",
+  "Free consultation — North Windham, CT — (860) 400-0758",
 ];
 
 export function CtaSection({

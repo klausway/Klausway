@@ -340,7 +340,7 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: "quickbooks-payment",
-    title: "QuickBooks Payment",
+    title: "QB Online Payments",
     description:
       "Payment links and reconciliation wired into QuickBooks so invoices, collections, and books stay in sync.",
     overview:

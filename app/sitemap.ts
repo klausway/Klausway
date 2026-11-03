@@ -4,11 +4,14 @@ import { featuredProducts } from "@/lib/featured-products";
 import { routes } from "@/lib/navigation";
 import { absoluteUrl } from "@/lib/seo";
 
+export const dynamic = "force-static";
+
 const staticPaths = [
   routes.home,
   routes.about,
   routes.apps,
   routes.products,
+  routes.solutions,
   routes.integrations,
   routes.resources,
   routes.contact,

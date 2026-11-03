@@ -3,6 +3,7 @@ export const routes = {
   about: "/about",
   apps: "/apps",
   products: "/products",
+  solutions: "/solutions",
   integrations: "/integrations",
   blog: "/resources",
   resources: "/resources",
@@ -20,15 +21,28 @@ export const apronConnectUrl = "https://www.apronconnect.com/en";
 
 export type RouteKey = keyof typeof routes;
 
-export const navItems = [
+export type NavChild = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+export type NavItem = {
+  label: string;
+  href: string;
+  children?: NavChild[];
+};
+
+export const navItems: NavItem[] = [
   { label: "Home", href: routes.home },
-  { label: "About", href: routes.about },
   { label: "Services", href: routes.apps },
   { label: "Products", href: routes.products },
+  { label: "Solutions", href: routes.solutions },
   { label: "Integrations", href: routes.integrations },
   { label: "Resources", href: routes.resources },
+  { label: "About", href: routes.about },
   { label: "Contact", href: routes.contact },
-] as const;
+];
 
 export const footerLinks = {
   services: [
@@ -39,10 +53,12 @@ export const footerLinks = {
     { label: "Integrations", href: routes.integrations },
   ],
   solutions: [
-    { label: "Data & Analytics", href: `${routes.apps}#data-analytics` },
-    { label: "Cloud Services", href: `${routes.apps}#cloud-services` },
-    { label: "CRM", href: `${routes.apps}#custom-apps` },
-    { label: "Voice AI Agent", href: `${routes.apps}#automation-ai` },
+    { label: "All solutions", href: routes.solutions },
+    { label: "Lead pipeline", href: `${routes.solutions}#lead-pipeline` },
+    { label: "Customer e-signing", href: `${routes.solutions}#customer-e-signing` },
+    { label: "QB Online Payments", href: `${routes.solutions}#quickbooks-payment` },
+    { label: "Voice AI agent", href: `${routes.solutions}#voice-ai-agent` },
+    { label: "Detailed reporting", href: `${routes.solutions}#detailed-reporting` },
   ],
   company: [
     { label: "Klaus Connect", href: klausConnectUrl },
@@ -52,6 +68,7 @@ export const footerLinks = {
     { label: "Resources", href: routes.resources },
     { label: "Our Services", href: routes.apps },
     { label: "Products", href: routes.products },
+    { label: "Solutions", href: routes.solutions },
     { label: "Contact", href: routes.contact },
   ],
   contact: [

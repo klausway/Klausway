@@ -1,4 +1,9 @@
-import { apronConnectUrl, klausConnectUrl } from "@/lib/navigation";
+import {
+  apronConnectUrl,
+  klausConnectUrl,
+  routes,
+  type NavChild,
+} from "@/lib/navigation";
 
 /** One step in a product's guided screenshot tour. */
 export type ProductTourStep = {
@@ -142,7 +147,7 @@ export const featuredProducts: FeaturedProduct[] = [
   },
   {
     id: "dispatcher",
-    name: "Klaus Dispatcher",
+    name: "Dispatcher",
     tagline: "A live scheduling board for who's doing what, when",
     description:
       "A dispatcher and manager scheduling board that shows your whole team's day at a glance. Jobs are grouped by employee on a timeline you can drag to reschedule, resize to adjust, and drag-create right on the board — with role-based permissions deciding who can change what.",
@@ -154,10 +159,10 @@ export const featuredProducts: FeaturedProduct[] = [
     ],
     tags: ["Scheduling", "Dispatch", "Operations"],
     image: "/products/dispatcher.png",
-    imageAlt: "Klaus Dispatcher scheduling board",
+    imageAlt: "Dispatcher scheduling board",
     accent: "from-teal-400 to-emerald-400",
     overview:
-      "Klaus Dispatcher is the scheduling board dispatchers actually live in. Every employee gets a row on a timeline; every job is a block you can drag to reschedule, stretch to re-time, or draw from scratch. Filters narrow the board by department, crew, service type, or search, and a map view puts the same day's work in geographic context so you can route sensibly. Role-based permissions decide who can move what, and cancellations are soft, never destructive.",
+      "Dispatcher is the scheduling board dispatchers actually live in. Every employee gets a row on a timeline; every job is a block you can drag to reschedule, stretch to re-time, or draw from scratch. Filters narrow the board by department, crew, service type, or search, and a map view puts the same day's work in geographic context so you can route sensibly. Role-based permissions decide who can move what, and cancellations are soft, never destructive.",
     benefits: [
       "Reschedule by dragging — no forms, no page reloads",
       "See the entire crew's capacity in one screen",
@@ -239,57 +244,6 @@ export const featuredProducts: FeaturedProduct[] = [
         title: "Reservations",
         caption:
           "Availability checking and the full reservation list, with party size, time, and status for the whole service.",
-      },
-    ],
-  },
-  {
-    id: "klr-ai",
-    name: "KLR AI",
-    tagline: "Ask your operational database anything, in plain English",
-    description:
-      "A manager-facing AI chat interface that turns natural-language questions into safe, read-only queries against a live operational PostgreSQL database. Instead of waiting on reports, managers ask questions and get instant, accurate answers backed by real data.",
-    features: [
-      "Natural-language chat over live operational data",
-      "Read-only, guarded access to the production database",
-      "Semantic mappings tuned to your business vocabulary",
-      "Instant answers without building reports or dashboards",
-    ],
-    tags: ["AI", "Analytics", "PostgreSQL"],
-    image: "/products/klr-ai.png",
-    imageAlt: "KLR AI chat interface",
-    accent: "from-brand-400 to-indigo-400",
-    overview:
-      "KLR AI puts a chat box in front of your operational database. Managers ask questions in plain English — \"how many jobs did we run last week?\", \"what's outstanding in Hartford?\" — and get answers computed from live data instead of waiting on someone to build a report. Every query is translated to read-only SQL and guarded, so the system can answer anything but change nothing. An admin console tunes the semantic mappings so the AI speaks your business's vocabulary.",
-    benefits: [
-      "Answers in seconds instead of report-building backlogs",
-      "Read-only by construction — the AI can never modify data",
-      "Semantic mappings teach it your terminology",
-      "Exports to PDF and Excel for sharing upward",
-    ],
-    useCases: [
-      "Managers who need numbers without waiting on analysts",
-      "Executives asking ad-hoc questions between meetings",
-      "Teams whose reporting needs change faster than dashboards",
-      "Companies with rich operational data and no BI team",
-    ],
-    tour: [
-      {
-        image: "/products/klr-ai.png",
-        title: "Chat interface",
-        caption:
-          "Ask a question in plain English; the assistant queries live operational data and returns the answer, with the conversation saved for reuse.",
-      },
-      {
-        image: "/products/klr-ai-2.png",
-        title: "Search landing",
-        caption:
-          "A focused entry point — type a question about company data and go, no dashboard navigation required.",
-      },
-      {
-        image: "/products/klr-ai-3.png",
-        title: "Admin and training",
-        caption:
-          "Configure the LLM provider, monitor usage and cost, and tune semantic field mappings so answers match your business vocabulary.",
       },
     ],
   },
@@ -389,65 +343,19 @@ export const featuredProducts: FeaturedProduct[] = [
       },
     ],
   },
-  {
-    id: "qb-payments",
-    name: "QB Online Payments",
-    tagline: "Payment links your customers can pay in one click",
-    description:
-      "A payment platform that lets admins generate secure payment links and process card payments through QuickBooks. Customers pay from a clean, branded page — no account needed — while the admin dashboard tracks links, payments, and reports in real time.",
-    features: [
-      "Admin-generated secure payment links",
-      "Card processing through QuickBooks Online",
-      "Branded, no-login customer payment pages",
-      "Payment tracking, reports, and reconciliation",
-    ],
-    tags: ["Payments", "QuickBooks", "Finance"],
-    image: "/products/qb-payments.png",
-    imageAlt: "QB Online Payments admin dashboard",
-    accent: "from-sky-400 to-indigo-400",
-    overview:
-      "QB Online Payments turns getting paid into a link. An admin generates a secure payment link for a customer, the customer opens a clean branded page and pays by card without creating an account, and the payment posts straight into QuickBooks Online. The admin side tracks every link and payment in real time, with a full event log showing exactly what happened to each transaction and financial reports built from the reconciled data.",
-    benefits: [
-      "Customers pay in one click, no account required",
-      "Payments post directly into QuickBooks Online",
-      "Full event log for every payment attempt",
-      "Real-time visibility into what's paid, active, and pending",
-    ],
-    useCases: [
-      "Businesses invoicing customers who want to pay by card",
-      "Companies already running accounting in QuickBooks Online",
-      "Teams needing an audit trail for every payment",
-      "Service businesses collecting deposits and final payments",
-    ],
-    tour: [
-      {
-        image: "/products/qb-payments.png",
-        title: "Payments dashboard",
-        caption:
-          "Total links, paid, active, and pending at a glance, with a live feed of recent payment events as they happen.",
-      },
-      {
-        image: "/products/qb-payments-2.png",
-        title: "Journal entries",
-        caption:
-          "Accounting entries generated from payments, ready to reconcile against QuickBooks.",
-      },
-      {
-        image: "/products/qb-payments-3.png",
-        title: "Financial reports",
-        caption:
-          "Profit and loss and balance sheet views built from the reconciled payment data.",
-      },
-      {
-        image: "/products/qb-payments-4.png",
-        title: "Payment event log",
-        caption:
-          "Every step of every transaction — token validation, processing, confirmation emails — for complete auditability.",
-      },
-    ],
-  },
 ];
 
 export function getFeaturedProduct(id: string): FeaturedProduct | undefined {
   return featuredProducts.find((product) => product.id === id);
+}
+
+/** Navbar Products dropdown — always in-site product pages. */
+export function getProductNavChildren(): NavChild[] {
+  return [
+    { label: "All products", href: routes.products },
+    ...featuredProducts.map((product) => ({
+      label: product.name,
+      href: `${routes.products}/${product.id}`,
+    })),
+  ];
 }

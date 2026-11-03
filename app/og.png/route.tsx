@@ -42,7 +42,7 @@ export function GET() {
             maxWidth: 900,
           }}
         >
-          Software built around how your business actually runs
+          We build. We connect. We simplify.
         </div>
         <div
           style={{
@@ -54,7 +54,7 @@ export function GET() {
         >
           <div style={{ width: 220, height: 8, background: "#A3E635" }} />
           <div style={{ fontSize: 28, color: "#9CA1AF" }}>
-            Custom software · North Windham, CT
+            Free consultation · North Windham, CT
           </div>
         </div>
       </div>

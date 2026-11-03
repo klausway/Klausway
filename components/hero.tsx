@@ -1,19 +1,12 @@
-import Link from "next/link";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { HeroShowcase } from "./hero-showcase";
 import { AmbientBackground } from "./animation/ambient-background";
 import { TrackedLink } from "./tracked-link";
 import { ButtonArrow, buttonVariants } from "./ui/button";
-import type { PortfolioProject } from "@/lib/portfolio";
 import { featuredProducts } from "@/lib/featured-products";
 import { klausConnectUrl, routes } from "@/lib/navigation";
-import { cn } from "@/lib/utils";
 
-type HeroProps = {
-  projects: PortfolioProject[];
-};
-
-export function Hero({ projects = [] }: HeroProps) {
+export function Hero() {
   return (
     <section className="relative pt-32 pb-24">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -22,41 +15,30 @@ export function Hero({ projects = [] }: HeroProps) {
 
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-4xl text-center">
-          <TrackedLink
-            href={klausConnectUrl}
-            external
-            target="_blank"
-            rel="noopener noreferrer"
-            event="cta_click"
-            eventParams={{ location: "hero_eyebrow", product: "klaus_connect" }}
-            className="group inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 transition-colors hover:text-brand-700 animate-fade-up"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inset-0 bg-signal/70 animate-ping-soft" />
-              <span className="relative h-1.5 w-1.5 bg-signal" />
-            </span>
-            Flagship product — Klaus Connect
-            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-          </TrackedLink>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-brand-600 animate-fade-up">
+            Klaus Way
+          </p>
 
           <h1
-            className="mt-8 text-balance font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-fade-up-stagger"
+            className="mt-6 font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-fade-up-stagger"
             style={{ animationDelay: "100ms" }}
           >
-            Software built around
-            <br />
-            how your business{" "}
-            <span className="underline-signal text-brand-600">actually runs</span>
+            <span className="block">We build.</span>
+            <span className="block">We connect.</span>
+            <span className="block underline-signal text-brand-600">
+              We simplify.
+            </span>
           </h1>
 
           <p
-            className="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl animate-fade-up-stagger"
+            className="mx-auto mt-7 max-w-xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl animate-fade-up-stagger"
             style={{ animationDelay: "250ms" }}
           >
-            We started by building CRMs for roofing companies. Today our team
-            designs, ships, and runs complete systems — CRM, dispatch, payments,
-            compliance, and voice AI — for businesses that outgrew spreadsheets
-            and one-size-fits-all tools.
+            Purpose-built technology for the way your business works.
+            <br className="hidden sm:block" />
+            Start with a{" "}
+            <span className="font-medium text-foreground">free consultation</span>
+            .
           </p>
 
           <div
@@ -69,7 +51,7 @@ export function Hero({ projects = [] }: HeroProps) {
               eventParams={{ location: "hero" }}
               className={buttonVariants({ variant: "primary", size: "lg" })}
             >
-              Book a free 30-minute consult
+              Get a free consult
               <ButtonArrow />
             </TrackedLink>
             <TrackedLink
@@ -82,6 +64,7 @@ export function Hero({ projects = [] }: HeroProps) {
               className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
               Visit Klaus Connect
+              <ArrowRight className="h-4 w-4" />
             </TrackedLink>
           </div>
 
@@ -105,63 +88,12 @@ export function Hero({ projects = [] }: HeroProps) {
         </div>
 
         <div
-          className="relative mt-24 animate-fade-up-stagger"
+          className="relative mt-20 animate-fade-up-stagger md:mt-24"
           style={{ animationDelay: "700ms" }}
         >
-          <div className="absolute -inset-x-20 -top-10 -bottom-10 -z-10 bg-radial-glow blur-3xl" />
           <HeroShowcase />
         </div>
-
-        <ProductGridLinks projects={projects} />
       </div>
     </section>
-  );
-}
-
-function ProductGridLinks({ projects }: { projects: PortfolioProject[] }) {
-  return (
-    <div className="mx-auto mt-24 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-      {projects.map((project, i) => {
-        const className =
-          "hover-lift group relative overflow-hidden rounded-xl border border-border bg-card px-3 py-3 transition-colors hover:border-border-strong animate-fade-up-stagger";
-        const inner = (
-          <>
-            <span
-              className={cn(
-                "absolute inset-x-0 -bottom-px h-px bg-gradient-to-r opacity-0 transition-opacity group-hover:opacity-100",
-                project.accent,
-              )}
-            />
-            <span className="line-clamp-2 font-mono text-[11px] font-medium text-muted-foreground transition-colors group-hover:text-foreground">
-              {project.title}
-            </span>
-          </>
-        );
-        if (project.productUrl) {
-          return (
-            <a
-              key={project.id}
-              href={project.productUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={className}
-              style={{ animationDelay: `${i * 40}ms` }}
-            >
-              {inner}
-            </a>
-          );
-        }
-        return (
-          <Link
-            key={project.id}
-            href={`#${project.id}`}
-            className={className}
-            style={{ animationDelay: `${i * 40}ms` }}
-          >
-            {inner}
-          </Link>
-        );
-      })}
-    </div>
   );
 }

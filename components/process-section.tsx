@@ -1,30 +1,9 @@
-import { PhoneCall, PencilRuler, LifeBuoy } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { SectionHeading } from "./ui/section-heading";
 import { TrackedLink } from "./tracked-link";
 import { ButtonArrow, buttonVariants } from "./ui/button";
+import { brand } from "@/lib/brand";
 import { routes } from "@/lib/navigation";
-
-const steps = [
-  {
-    icon: PhoneCall,
-    title: "Tell us how you run",
-    description:
-      "A free 30-minute call. You walk us through how the work actually flows — leads, jobs, crews, invoices — and where it breaks down.",
-  },
-  {
-    icon: PencilRuler,
-    title: "We design and build around it",
-    description:
-      "We map your process into software: screens your team recognizes, automations that remove the busywork, nothing you don't need.",
-  },
-  {
-    icon: LifeBuoy,
-    title: "We run it with you",
-    description:
-      "Hosting, updates, and support come from the same people who built it. When something changes in your business, the software changes too.",
-  },
-];
 
 export function ProcessSection() {
   return (
@@ -34,38 +13,31 @@ export function ProcessSection() {
           eyebrow="How we work"
           title={
             <>
-              From first call to{" "}
-              <span className="text-brand-600">running system</span>
+              {brand.pillars[0].title}. {brand.pillars[1].title}.{" "}
+              <span className="text-brand-600">{brand.pillars[2].title}.</span>
             </>
           }
-          description="No discovery phases that drag on for months. We keep the loop short: understand the business, ship the system, stay accountable for it."
+          description={brand.supportingLine}
         />
 
-        <div className="relative mt-16 grid gap-6 md:grid-cols-3">
-          <div
-            aria-hidden
-            className="absolute top-12 right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-transparent via-border-strong to-transparent md:block"
-          />
-          {steps.map((step, i) => (
+        <div className="relative mx-auto mt-16 max-w-3xl divide-y divide-border border-y border-border">
+          {brand.pillars.map((pillar, i) => (
             <Reveal
-              key={step.title}
+              key={pillar.title}
               delay={((i % 3) * 100) as 0 | 100 | 200}
-              className="hover-lift relative flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-border-strong hover:shadow-card"
+              className="grid gap-3 py-8 sm:grid-cols-[4rem_1fr] sm:gap-8"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-ink-foreground">
-                  <step.icon className="h-5 w-5" />
-                </div>
-                <span className="font-mono text-xs font-semibold tracking-widest text-brand-600">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+              <span className="font-mono text-xs font-semibold tracking-widest text-brand-600">
+                {pillar.number}
+              </span>
+              <div>
+                <h3 className="text-xl font-semibold tracking-tight">
+                  {pillar.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+                  {pillar.description}
+                </p>
               </div>
-              <h3 className="mt-5 text-lg font-semibold tracking-tight">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {step.description}
-              </p>
             </Reveal>
           ))}
         </div>
@@ -77,7 +49,7 @@ export function ProcessSection() {
             eventParams={{ location: "process_section" }}
             className={buttonVariants({ variant: "secondary" })}
           >
-            Start with the free call
+            Start with a free consultation
             <ButtonArrow />
           </TrackedLink>
         </Reveal>

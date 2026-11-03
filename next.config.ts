@@ -56,23 +56,43 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/portfolio",
+        source: "/products/klr-ai",
         destination: "/products/",
+        permanent: true,
+      },
+      {
+        source: "/products/klr-ai/",
+        destination: "/products/",
+        permanent: true,
+      },
+      {
+        source: "/products/qb-payments",
+        destination: "/solutions/",
+        permanent: true,
+      },
+      {
+        source: "/products/qb-payments/",
+        destination: "/solutions/",
+        permanent: true,
+      },
+      {
+        source: "/portfolio",
+        destination: "/solutions/",
         permanent: true,
       },
       {
         source: "/portfolio/",
-        destination: "/products/",
+        destination: "/solutions/",
         permanent: true,
       },
       {
         source: "/portfolio/:slug",
-        destination: "/products/",
+        destination: "/solutions/",
         permanent: true,
       },
       {
         source: "/portfolio/:slug/",
-        destination: "/products/",
+        destination: "/solutions/",
         permanent: true,
       },
     ];

@@ -1,27 +1,24 @@
 import { Hero } from "@/components/hero";
 import { HomeProducts } from "@/components/home-products";
+import { SolutionsSection } from "@/components/solutions-section";
 import { IntegrationsSection } from "@/components/integrations-section";
-import { ProcessSection } from "@/components/process-section";
+import { TrustedBySection } from "@/components/trusted-by-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
-import { getPublishedPortfolioProjects } from "@/lib/portfolio-data";
 import { routes } from "@/lib/navigation";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  const projects = await getPublishedPortfolioProjects();
-
+export default function HomePage() {
   return (
     <>
       <JsonLd
         data={breadcrumbJsonLd([{ name: "Home", path: routes.home }])}
       />
-      <Hero projects={projects} />
-      <HomeProducts projects={projects} />
+      <Hero />
+      <HomeProducts />
+      <SolutionsSection compact limit={6} />
       <IntegrationsSection />
-      <ProcessSection />
+      <TrustedBySection />
       <CtaSection location="cta_section:home" />
     </>
   );

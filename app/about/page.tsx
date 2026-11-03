@@ -28,11 +28,12 @@ export default async function AboutPage() {
         ])}
       />
       <PageHeader
-        eyebrow="Klaus Way"
+        eyebrow="About Klaus Way"
         title={
           <>
-            About{" "}
-            <span className="text-brand-600">Us</span>
+            <span className="block">We build.</span>
+            <span className="block">We connect.</span>
+            <span className="block text-brand-600">We simplify.</span>
           </>
         }
         description={aboutPageHeader.subtitle}

@@ -2,11 +2,11 @@ import { Reveal } from "./animation/reveal";
 import { TeamGrid } from "./team-grid";
 import { TrackedLink } from "./tracked-link";
 import {
-  missionVision,
   ourStory,
   values,
   type TeamMember,
 } from "@/lib/about";
+import { brand } from "@/lib/brand";
 import { klausConnectUrl } from "@/lib/navigation";
 import { assetPath } from "@/lib/asset-path";
 
@@ -67,22 +67,37 @@ export function AboutSection({ teamMembers }: AboutSectionProps) {
 
       <section className="relative border-t border-border py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {missionVision.map((item, i) => (
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-brand-600">
+              What we stand for
+            </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl">
+              We build. We connect.{" "}
+              <span className="text-brand-600">We simplify.</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              {brand.supportingLine}
+            </p>
+          </Reveal>
+
+          <div className="mx-auto mt-14 max-w-3xl divide-y divide-border border-y border-border">
+            {brand.pillars.map((pillar, i) => (
               <Reveal
-                key={item.title}
-                delay={(i * 100) as 0 | 100}
-                className="hover-lift rounded-2xl border border-border bg-card p-8 backdrop-blur transition-all hover:border-border-strong hover:bg-card"
+                key={pillar.title}
+                delay={((i % 3) * 100) as 0 | 100 | 200}
+                className="grid gap-3 py-8 sm:grid-cols-[4rem_1fr] sm:gap-8"
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 text-white shadow-lg">
-                  <item.icon className="h-5 w-5" />
+                <span className="font-mono text-xs font-semibold tracking-widest text-brand-600">
+                  {pillar.number}
+                </span>
+                <div>
+                  <h3 className="text-xl font-semibold tracking-tight">
+                    {pillar.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+                    {pillar.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold tracking-tight">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {item.description}
-                </p>
               </Reveal>
             ))}
           </div>

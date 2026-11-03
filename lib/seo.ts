@@ -62,9 +62,9 @@ export function getSiteUrl(): string {
 export const siteConfig = {
   name: brand.name,
   tagline: brand.tagline,
-  title: `${brand.name} — Strategic IT Solutions for Business Growth`,
+  title: `${brand.name} — We build. We connect. We simplify.`,
   description:
-    "Comprehensive IT solutions designed to drive your business forward. IT consulting, custom apps, system integration, smart automation, data analytics, and cloud services.",
+    "Purpose-built technology for the way your business works. Custom apps, system integration, and practical software — start with a free consultation.",
   locale: "en_US",
   language: "en-US",
   email: "support@klausway.com",
