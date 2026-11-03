@@ -89,6 +89,18 @@ model PageContent {
   updatedAt DateTime @updatedAt
 }
 
+model QrCode {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String
+  destination   String
+  active        Boolean   @default(true)
+  scanCount     Int       @default(0)
+  lastScannedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
 model TeamMember {
   id        String   @id @default(cuid())
   slug      String   @unique

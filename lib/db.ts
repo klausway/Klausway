@@ -18,7 +18,8 @@ function getPrismaClient() {
   if (
     existing &&
     process.env.NODE_ENV !== "production" &&
-    typeof (existing as { teamMember?: unknown }).teamMember === "undefined"
+    (typeof (existing as { teamMember?: unknown }).teamMember === "undefined" ||
+      typeof (existing as { qrCode?: unknown }).qrCode === "undefined")
   ) {
     void existing.$disconnect().catch(() => {});
     globalForPrisma.prisma = undefined;

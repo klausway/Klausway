@@ -6,6 +6,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  QrCode,
   UserRound,
   Users,
 } from "lucide-react";
@@ -17,6 +18,7 @@ export type AdminSection =
   | "resources"
   | "portfolio"
   | "our-team"
+  | "qr-codes"
   | "users"
   | "account";
 
@@ -54,6 +56,13 @@ const allNavItems: {
     description: "About page photos",
     icon: UserRound,
     roles: "all",
+  },
+  {
+    id: "qr-codes",
+    label: "QR Codes",
+    description: "Dynamic print links",
+    icon: QrCode,
+    roles: ["admin"],
   },
   {
     id: "users",

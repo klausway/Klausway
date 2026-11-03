@@ -38,6 +38,7 @@ import {
 import { ImageFields } from "@/components/admin/image-fields";
 import { SingleImageField } from "@/components/admin/single-image-field";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { QrCodesPanel } from "@/components/admin/qr-codes-panel";
 import { TeamMemberPhoto } from "@/components/team-member-photo";
 import { portfolioCategories } from "@/lib/portfolio";
 import {
@@ -1261,6 +1262,10 @@ export function CmsDashboard() {
               ))}
             />
           )
+        )}
+
+        {section === "qr-codes" && isFullAdmin && token && (
+          <QrCodesPanel token={token} notify={notify} />
         )}
 
         {section === "users" && isFullAdmin && (

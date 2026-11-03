@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { blogPosts } from "../lib/blog";
 import { portfolioProjects } from "../lib/portfolio";
 import { teamMembers } from "../lib/about";
+import { defaultQrCodes } from "../lib/qr";
 
 const db = new PrismaClient();
 
@@ -143,9 +144,18 @@ async function main() {
     }
   }
 
+  let qrCreated = 0;
+  for (const code of defaultQrCodes) {
+    const existing = await db.qrCode.findUnique({ where: { slug: code.slug } });
+    if (existing) continue;
+    await db.qrCode.create({ data: { ...code } });
+    qrCreated += 1;
+  }
+
   console.log(
     [
       `Seed complete (overwrite=${overwrite}).`,
+      `QR codes: +${qrCreated} created (existing destinations are never overwritten).`,
       `Blog: +${blogCreated} created, ${blogUpdated} updated (${blogPosts.length} static).`,
       `Portfolio: +${portfolioCreated} created, ${portfolioUpdated} updated (${portfolioProjects.length} static).`,
       `Team: +${teamCreated} created, ${teamUpdated} updated (${teamMembers.length} static).`,
