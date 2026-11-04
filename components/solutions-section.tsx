@@ -37,14 +37,14 @@ export function SolutionsSection({
         {showHeader ? (
           <SectionHeading
             align="left"
-            eyebrow="Solutions"
+            eyebrow="Capabilities"
             title={
               <>
-                Capabilities that solve{" "}
-                <span className="text-brand-600">real operational problems</span>
+                Modules we design{" "}
+                <span className="text-brand-600">into real operations</span>
               </>
             }
-            description="From lead pipelines and reporting to payments, e-sign, and voice AI — modules and systems we build so your team spends less time fighting tools."
+            description="From lead pipelines and reporting to payments, e-sign, and voice AI — the building blocks we ship so your team spends less time fighting tools."
             aside={
               compact || limit ? (
                 <Link

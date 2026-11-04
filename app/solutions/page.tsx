@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SolutionsHelpSection } from "@/components/solutions-help-section";
 import { SolutionsSection } from "@/components/solutions-section";
 import { PageHeader } from "@/components/page-header";
 import { CtaSection } from "@/components/cta-section";
@@ -32,7 +33,11 @@ export default function SolutionsPage() {
         }
         description={solutionsPageHeader.subtitle}
       />
-      <SolutionsSection showHeader={false} className="border-t-0 bg-transparent" />
+      <SolutionsHelpSection className="border-t-0" />
+      <SolutionsSection
+        showHeader
+        className="border-t border-border bg-transparent"
+      />
       <CtaSection
         heading={
           <>

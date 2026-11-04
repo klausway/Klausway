@@ -1,6 +1,6 @@
 import { Hero } from "@/components/hero";
 import { HomeProducts } from "@/components/home-products";
-import { SolutionsSection } from "@/components/solutions-section";
+import { SolutionsHelpSection } from "@/components/solutions-help-section";
 import { IntegrationsSection } from "@/components/integrations-section";
 import { TrustedBySection } from "@/components/trusted-by-section";
 import { CtaSection } from "@/components/cta-section";
@@ -16,7 +16,7 @@ export default function HomePage() {
       />
       <Hero />
       <HomeProducts />
-      <SolutionsSection compact limit={6} />
+      <SolutionsHelpSection showViewAll />
       <IntegrationsSection />
       <TrustedBySection />
       <CtaSection location="cta_section:home" />
