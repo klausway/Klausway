@@ -175,6 +175,14 @@ const suppliersOrdering: IntegrationGroup = {
       description:
         "Browse the supplier catalog, place orders, and track deliveries against the job that needs them.",
     },
+    {
+      name: "ABC Supply",
+      mark: "AB",
+      logo: "/integrations/abc-supply.svg",
+      logoFill: true,
+      description:
+        "Live product, pricing, and branch availability from ABC's API — turn the estimate into a material order and track it on the job.",
+    },
   ],
 };
 

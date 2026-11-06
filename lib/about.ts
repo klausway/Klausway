@@ -61,14 +61,14 @@ export function isTeamBioHeading(entry: string) {
 export const teamMembers: TeamMember[] = [
   {
     slug: "jim",
-    name: "Jim Ravee",
-    role: "Co-Owner & CEO",
-    initials: "JR",
+    name: "Ravee “Jim” Tansangworn",
+    role: "Co-Founder & CEO",
+    initials: "RT",
     accent: "from-brand-500 to-indigo-600",
     image: "/team/jim.jpg",
     sortOrder: 0,
     bio: [
-      "As Co-Owner and CEO of Klaus Way Technology, I guide the company’s vision, strategy, and growth. My focus is on understanding our clients’ challenges and bringing together the people, ideas, and technology to help solve them.",
+      "As Co-Founder and CEO of Klaus Way Technology, I guide the company’s vision, strategy, and growth. My focus is on understanding our clients’ challenges and bringing together the people, ideas, and technology to help solve them.",
       "My background spans information technology, finance, and business operations, including overseeing financial and technology systems at Klaus Larsen Roofing. This experience has shaped my practical approach to technology—connecting business needs with solutions that simplify daily operations and support growth.",
       "I believe strong leadership starts with listening, setting a clear direction, and empowering people to do their best work. My goal is to build a company known for dependable service, practical solutions, and lasting client relationships, helping businesses move forward with confidence as technology evolves.",
     ],

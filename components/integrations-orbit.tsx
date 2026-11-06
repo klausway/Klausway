@@ -21,9 +21,10 @@ const rings: { radius: number; seats: { name: string; angle: number }[] }[] = [
   {
     radius: 175,
     seats: [
-      { name: "QuickBooks Online", angle: 38 },
-      { name: "GoHighLevel", angle: 94 },
-      { name: "QXO / Beacon", angle: 146 },
+      { name: "QuickBooks Online", angle: 30 },
+      { name: "GoHighLevel", angle: 72 },
+      { name: "ABC Supply", angle: 112 },
+      { name: "QXO / Beacon", angle: 152 },
     ],
   },
   {
