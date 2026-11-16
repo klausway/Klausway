@@ -2,15 +2,15 @@ import { Lightbulb, Users, Award, Shield } from "lucide-react";
 
 export const aboutPageHeader = {
   subtitle:
-    "Purpose-built technology for the way your business works. Start with a free consultation.",
+    "Klaus Way Technology builds purpose-built software and IT services for growing businesses — from WorkNex to custom apps, integrations, and cloud. Start with a free consultation.",
 };
 
 export const ourStory = {
   title: "Our Story",
   paragraphs: [
-    "Klaus Way started with a simple idea: businesses shouldn't have to fight their technology to grow. Under Klausway Technology, we began by building customizable CRM systems for roofing companies—an industry that needed better tools to manage customers, leads, sales, and projects without unnecessary complexity. By bringing everything into one intuitive platform, we helped teams spend less time on admin work and more time building their businesses.",
+    "Klaus Way started with a simple idea: businesses shouldn't have to fight their technology to grow. Under Klaus Way Technology, we began by building customizable CRM systems for roofing companies—an industry that needed better tools to manage customers, leads, sales, and projects without unnecessary complexity. By bringing everything into one intuitive platform, we helped teams spend less time on admin work and more time building their businesses.",
     "As we worked closely with our clients, it became clear that the challenges we were solving weren't unique to roofing. Companies across industries were facing the same inefficiencies, outdated systems, and disconnected tools. That realization led to the next chapter.",
-    "The first of those systems was built for Klaus Larsen Roofing. The public product that grew from that work is Klaus Connect — our flagship all-in-one platform for customers, quotes, jobs, scheduling, and teams, at klaus-connect.com. We also build ApronConnect, branded online ordering for independent restaurants. Klaus Way continues to design, build, and run products and custom systems for companies that need more than one-size-fits-all software.",
+    "The first of those systems was built for Klaus Larsen Roofing. The public product that grew from that work is WorkNex — our flagship all-in-one platform for customers, quotes, jobs, scheduling, and teams, at https://www.klaus-connect.com. We also build ApronConnect, branded online ordering for independent restaurants. Klaus Way continues to design, build, and run products and custom systems for companies that need more than one-size-fits-all software.",
     "Klaus Way emerged with a broader mission: to create smart, flexible technology that helps businesses of all kinds work better. Today, we design and support solutions that adapt to how companies actually operate—scaling with them as they grow, and evolving as their needs change.",
     "Our story is still being written, but our focus remains the same: we build, we connect, we simplify — technology that works for people, not the other way around.",
   ],
@@ -73,7 +73,7 @@ export const teamMembers: TeamMember[] = [
       "In 2010, the company began focusing exclusively on roofing and became Owens Corning’s first Platinum Preferred Contractor in Connecticut. Klaus’s Old World craftsmanship and attention to detail earned him a reputation for combining traditional quality with modern roofing technology.",
       "Over the years, Klaus learned that running a successful home improvement company takes more than craftsmanship. It also requires a team that can stay organized, communicate clearly, and give every customer the attention they deserve.",
       "Klaus later met Ravee “Jim” Tansangworn, who shared his interest in finding better ways to run a business through technology. Together, they founded Klaus Way Technology in 2019 and began building WorkNex CRM.",
-      "Built with the needs of home improvement businesses in mind, WorkNex CRM brings customer information, daily work, and team communication together to help companies stay organized as they grow.",
+      "Built with the needs of home improvement businesses in mind, WorkNex brings customer information, daily work, and team communication together to help companies stay organized as they grow. The public platform is available at https://www.klaus-connect.com.",
       "From renovating apartments in Denmark to building a roofing business and investing in technology, Klaus’s vision has remained consistent: find a better way to work, take care of people, and build something that lasts. He credits his co-owner Larry, his dedicated employees, and his customers for helping make that journey possible.",
     ],
   },
@@ -131,7 +131,7 @@ export const teamMembers: TeamMember[] = [
       "Another part of my work involved moving systems and data to cloud infrastructure and improving file storage. These changes helped reduce costs, improve reliability, and support the company’s expansion from two to four locations across Connecticut, Rhode Island, New York, and Massachusetts.",
       "## 2024 - Present: Expanding My Role at Klaus Larsen",
       "My responsibilities at Klaus Larsen have grown to include the company’s core business platform, products for other roofing companies, scheduling tools, AI features, and the infrastructure that keeps these systems running.",
-      "A major project has been Klaus Connect, a custom platform developed to replace the company’s reliance on FileMaker. The goal was to remove limitations in the existing system and give the business more flexibility as its operations and number of users grew. During the transition, I kept the old and new systems running alongside each other so that daily work could continue.",
+      "A major project has been WorkNex, a custom platform developed to replace the company’s reliance on FileMaker. The goal was to remove limitations in the existing system and give the business more flexibility as its operations and number of users grew. During the transition, I kept the old and new systems running alongside each other so that daily work could continue.",
       "I also designed and developed a customer relationship management platform for multiple roofing companies. It became a commercial product used by businesses in Oregon, New York, and Connecticut. The platform included real-time pricing that displayed results in under a second, helping users access pricing information quickly.",
       "Another significant project was a centralized scheduling system for more than 150 employees and over 100 monthly service jobs across five states. Bringing schedules from multiple locations into one place improved workforce planning by approximately 40% and reduced scheduling conflicts by 65%.",
       "I introduced AI-assisted roof image analysis to help identify roofing materials and flag potential structural concerns in uploaded photos. This gave teams additional information to review before visiting a property for an on-site inspection.",

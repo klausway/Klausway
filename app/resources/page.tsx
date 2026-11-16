@@ -10,16 +10,27 @@ import {
   absoluteUrl,
   breadcrumbJsonLd,
   buildPageMetadata,
+  feedUrl,
   siteConfig,
 } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = buildPageMetadata({
+const pageMetadata = buildPageMetadata({
   title: "Resources",
   description: resourcesPageHeader.subtitle,
   path: routes.resources,
 });
+
+export const metadata: Metadata = {
+  ...pageMetadata,
+  alternates: {
+    ...pageMetadata.alternates,
+    types: {
+      "application/rss+xml": feedUrl(),
+    },
+  },
+};
 
 export default async function ResourcesPage() {
   const posts = await getPublishedResourcePosts();

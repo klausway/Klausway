@@ -14,7 +14,7 @@ export const routes = {
 } as const;
 
 /** Public flagship product — all-in-one business platform sold to any company. */
-export const klausConnectUrl = "https://www.klaus-connect.com";
+export const worknexUrl = "https://www.klaus-connect.com";
 
 /** Branded online ordering for independent restaurants. */
 export const apronConnectUrl = "https://www.apronconnect.com/en";
@@ -61,7 +61,7 @@ export const footerLinks = {
     { label: "Detailed reporting", href: `${routes.solutions}#detailed-reporting` },
   ],
   company: [
-    { label: "Klaus Connect", href: klausConnectUrl },
+    { label: "WorkNex", href: worknexUrl },
     { label: "ApronConnect", href: apronConnectUrl },
     { label: "Home", href: routes.home },
     { label: "About Us", href: routes.about },

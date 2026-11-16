@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { SolutionsHelpSection } from "@/components/solutions-help-section";
 import { SolutionsSection } from "@/components/solutions-section";
 import { PageHeader } from "@/components/page-header";
+import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
+import { solutionsFaqs } from "@/lib/faqs";
 import { solutionsPageHeader } from "@/lib/solutions";
 import { routes } from "@/lib/navigation";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -24,7 +26,7 @@ export default function SolutionsPage() {
         ])}
       />
       <PageHeader
-        eyebrow="Klaus Way"
+        eyebrow="Klaus Way Solutions"
         title={
           <>
             Our{" "}
@@ -38,6 +40,7 @@ export default function SolutionsPage() {
         showHeader
         className="border-t border-border bg-transparent"
       />
+      <FaqSection group={solutionsFaqs} />
       <CtaSection
         heading={
           <>

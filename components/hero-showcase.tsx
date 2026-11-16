@@ -8,7 +8,7 @@ import { routes } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Cinematic product stage — one dominant Klaus Connect shot on an ink panel,
+ * Cinematic product stage — one dominant WorkNex shot on an ink panel,
  * with a real-screenshot filmstrip underneath. All cards open the in-site
  * product page (same as Dispatcher), not the external product sites.
  */
@@ -16,9 +16,9 @@ export function HeroShowcase() {
   return (
     <div className="relative mx-auto max-w-6xl">
       <Link
-        href={`${routes.products}/klaus-connect`}
+        href={`${routes.products}/worknex`}
         className="group relative block overflow-hidden rounded-[1.75rem] bg-ink shadow-2xl shadow-black/20 ring-1 ring-white/10"
-        aria-label="Explore Klaus Connect"
+        aria-label="Explore WorkNex"
       >
         <div
           aria-hidden
@@ -28,7 +28,7 @@ export function HeroShowcase() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={assetPath("/products/klaus-connect-hero.png")}
-            alt="Klaus Connect — company scoreboard with live pipeline and revenue"
+            alt="WorkNex — company scoreboard with live pipeline and revenue"
             className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.02]"
             loading="eager"
           />
@@ -53,7 +53,7 @@ export function HeroShowcase() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={assetPath(product.image)}
-                  alt=""
+                  alt={product.imageAlt}
                   className="h-full w-full object-cover object-top transition-transform duration-500 group-hover/card:scale-105"
                   loading="lazy"
                 />

@@ -32,7 +32,7 @@ const EXCLUDED_SOLUTION_IDS = new Set([
 export const solutionsPageHeader = {
   title: "Solutions",
   subtitle:
-    "Built for real business workflows. Tailored to your team — from CRM and scheduling to integrations, automation, and clear dashboards.",
+    "Workflow capabilities Klaus Way implements for your team — CRM and scheduling, integrations, automation, reporting, payments, and more — tailored to how you operate.",
 } as const;
 
 /** Outcome grid — “How Klaus Way helps.” */

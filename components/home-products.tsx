@@ -28,7 +28,7 @@ export function HomeProducts() {
               <span className="text-brand-600">and run in production</span>
             </>
           }
-          description="Packaged platforms you can try today — led by Klaus Connect, plus restaurant ordering, dispatch, AI, spend, and compliance."
+          description="Packaged platforms from Klaus Way Technology you can try today — led by WorkNex, plus restaurant ordering, dispatch, AI, spend, and compliance."
           aside={
             <Link
               href={routes.products}

@@ -165,7 +165,7 @@ Klausway/
 | `lib/brand.ts` | ชื่อแบรนด์, tagline |
 | `lib/about.ts` | หน้า About |
 | `lib/services.ts` | หน้า Services (`/apps`), anchor `#it-consulting` ฯลฯ |
-| `lib/products.ts` | HomeProducts, pillars (Klaus Connect ฯลฯ) |
+| `lib/products.ts` | HomeProducts, pillars (WorkNex ฯลฯ) |
 | `lib/portfolio.ts` | ข้อมูล fallback + `portfolioCategories` |
 | `lib/blog.ts` | ข้อมูล fallback blog |
 | `lib/showcase-dashboard-mock-data.ts` | Hero → ShowcaseDashboardAll (UI demo CRM) |
@@ -239,6 +239,7 @@ Klausway/
 | `RESEND_API_KEY`, `NOTIFICATION_FROM`, `CONTACT_TO` | Resend | ฟอร์ม Contact |
 | `JWT_SECRET` / `ADMIN_SECRET` | JWT ลงชื่อ admin | Login CMS |
 | `NEXT_PUBLIC_SITE_URL` | metadataBase, OG | SEO |
+| `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` | `<meta>` verification ใน root layout | ยืนยันเจ้าของเว็บใน Search Console / Bing Webmaster แล้ว submit `/sitemap.xml` |
 | `GITHUB_PAGES` | build แบบ static | CI GitHub Pages |
 | `NEXT_PUBLIC_BASE_PATH` | ตั้งโดย next.config | ลิงก์ asset บน Pages |
 

@@ -67,6 +67,10 @@ export type ResourcePost = {
   type: ResourceType;
   coverImage?: string | null;
   galleryImages?: string[];
+  /** SEO overrides; blank falls back to title / excerpt / coverImage. */
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  ogImage?: string | null;
 };
 
 /** @deprecated Use ResourcePost — kept for gradual migration */

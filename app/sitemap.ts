@@ -4,7 +4,7 @@ import { featuredProducts } from "@/lib/featured-products";
 import { routes } from "@/lib/navigation";
 import { absoluteUrl } from "@/lib/seo";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 const staticPaths = [
   routes.home,
@@ -23,11 +23,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const resourcePosts = await getPublishedResourcePosts();
 
+  const priorityFor = (path: string): number => {
+    if (path === routes.home) return 1;
+    if (path === routes.contact) return 0.9;
+    if (
+      path === routes.products ||
+      path === routes.about ||
+      path === routes.apps ||
+      path === routes.solutions
+    ) {
+      return 0.85;
+    }
+    return 0.7;
+  };
+
   const pages: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: absoluteUrl(path),
     lastModified: now,
     changeFrequency: path === routes.home ? "weekly" : "monthly",
-    priority: path === routes.home ? 1 : path === routes.contact ? 0.9 : 0.7,
+    priority: priorityFor(path),
   }));
 
   const posts: MetadataRoute.Sitemap = resourcePosts.map((post) => ({

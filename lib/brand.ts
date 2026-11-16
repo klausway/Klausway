@@ -4,7 +4,7 @@ export const brand = {
   slogan: "We build. We connect. We simplify.",
   tagline: "We build. We connect. We simplify.",
   supportingLine:
-    "Purpose-built technology for the way your business works. Start with a free consultation.",
+    "Klaus Way Technology builds purpose-built software and IT services for the way your business works. Start with a free consultation.",
   pillars: [
     {
       number: "01",

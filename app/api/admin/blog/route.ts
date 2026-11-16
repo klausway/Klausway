@@ -2,10 +2,16 @@ import { NextResponse } from "next/server";
 import { unauthorizedResponse, verifyAdmin } from "@/lib/admin-auth";
 import { db } from "@/lib/db";
 import { toPrismaResourceType } from "@/lib/blog";
+import { revalidateResources } from "@/lib/revalidate-resources";
 
 function parseGallery(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.map(String).filter(Boolean);
+}
+
+function optionalText(value: unknown): string | null {
+  const text = value == null ? "" : String(value).trim();
+  return text || null;
 }
 
 export async function GET(request: Request) {
@@ -39,6 +45,9 @@ export async function POST(request: Request) {
     const coverImage = body.coverImage ? String(body.coverImage) : null;
     const galleryImages = parseGallery(body.galleryImages);
     const type = toPrismaResourceType(body.type);
+    const metaTitle = optionalText(body.metaTitle);
+    const metaDescription = optionalText(body.metaDescription);
+    const ogImage = optionalText(body.ogImage);
 
     if (!slug || !title || !excerpt) {
       return NextResponse.json(
@@ -56,11 +65,15 @@ export async function POST(request: Request) {
         type,
         coverImage,
         galleryImages,
+        metaTitle,
+        metaDescription,
+        ogImage,
         published,
         date,
       },
     });
 
+    revalidateResources(post.slug);
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
     console.error("[admin blog POST]", error);

@@ -64,7 +64,7 @@ export const siteConfig = {
   tagline: brand.tagline,
   title: `${brand.name} — We build. We connect. We simplify.`,
   description:
-    "Purpose-built technology for the way your business works. Custom apps, system integration, and practical software — start with a free consultation.",
+    "Klaus Way Technology builds purpose-built software and IT services — WorkNex, custom apps, system integration, automation, and cloud. Start with a free consultation.",
   locale: "en_US",
   language: "en-US",
   email: "support@klausway.com",
@@ -81,11 +81,14 @@ export const siteConfig = {
   logoImage: "/Logo.jpg",
   keywords: [
     "Klaus Way",
-    "Klaus Connect",
+    "Klaus Way Technology",
+    "WorkNex",
     "ApronConnect",
     "IT consulting",
     "custom software",
     "CRM",
+    "roofing CRM",
+    "home improvement software",
     "system integration",
     "business automation",
     "cloud migration",
@@ -100,6 +103,11 @@ export function absoluteUrl(path = "/"): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   const withSlash = normalized.endsWith("/") ? normalized : `${normalized}/`;
   return `${base}${withSlash}`;
+}
+
+/** Absolute RSS feed URL (file route, so no trailing slash). */
+export function feedUrl(): string {
+  return `${getSiteUrl()}/feed.xml`;
 }
 
 /** Absolute asset/OG image URL (handles GitHub Pages basePath + remote S3 URLs). */
@@ -194,6 +202,9 @@ export function organizationJsonLd() {
     "@type": "Organization",
     "@id": `${getSiteUrl()}/#organization`,
     name: siteConfig.name,
+    legalName: "Klaus Way Technology",
+    alternateName: ["Klaus Way Technology", "Klausway"],
+    description: siteConfig.description,
     url: absoluteUrl("/"),
     logo: {
       "@type": "ImageObject",
@@ -274,13 +285,15 @@ export function blogPostingJsonLd(post: {
   updatedAt?: string;
   coverImage?: string | null;
   type?: string;
+  metaDescription?: string | null;
+  ogImage?: string | null;
 }) {
   const url = absoluteUrl(`${routes.resources}/${post.slug}`);
   return {
     "@context": "https://schema.org",
     "@type": post.type === "news" ? "NewsArticle" : "BlogPosting",
     headline: post.title,
-    description: post.excerpt,
+    description: post.metaDescription?.trim() || post.excerpt,
     datePublished: post.date,
     dateModified: post.updatedAt ?? post.date,
     keywords: resourceTypeKeywords(post.type).join(", "),
@@ -289,7 +302,7 @@ export function blogPostingJsonLd(post: {
       "@id": url,
     },
     url,
-    image: absoluteImageUrl(post.coverImage),
+    image: absoluteImageUrl(post.ogImage?.trim() || post.coverImage),
     author: {
       "@type": "Organization",
       name: siteConfig.name,
@@ -359,14 +372,31 @@ export function softwareApplicationJsonLd(product: {
     keywords: product.tags.join(", "),
     author: {
       "@type": "Organization",
+      "@id": `${getSiteUrl()}/#organization`,
       name: siteConfig.name,
       url: absoluteUrl("/"),
     },
-    offers: {
-      "@type": "Offer",
-      availability: "https://schema.org/InStock",
-      priceCurrency: "USD",
+    provider: {
+      "@type": "Organization",
+      "@id": `${getSiteUrl()}/#organization`,
+      name: siteConfig.name,
     },
+  };
+}
+
+/** FAQPage JSON-LD — only for questions/answers that also appear as visible page text. */
+export function faqPageJsonLd(items: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 }
 
@@ -375,6 +405,7 @@ export function professionalServiceJsonLd() {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     name: siteConfig.name,
+    alternateName: ["Klaus Way Technology", "Klausway"],
     description: siteConfig.description,
     url: absoluteUrl("/"),
     image: absoluteImageUrl(siteConfig.logoImage),
@@ -388,6 +419,14 @@ export function professionalServiceJsonLd() {
       "@type": "Country",
       name: "United States",
     },
+    serviceType: [
+      "IT consulting",
+      "Custom software development",
+      "System integration",
+      "Business automation",
+      "Cloud services",
+      "Data analytics",
+    ],
     priceRange: "$$",
   };
 }

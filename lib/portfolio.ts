@@ -35,13 +35,13 @@ export const portfolioCategories: PortfolioCategory[] = [
 export const portfolioProjects: PortfolioProject[] = [
   {
     id: "crm",
-    title: "Klaus Connect — Klaus Larsen Roofing",
+    title: "WorkNex — Klaus Larsen Roofing",
     description:
-      "Exclusive CRM built for Klaus Larsen Roofing — customers, quotes, jobs, scheduling, and crews in one system.",
+      "Custom CRM built for Klaus Larsen Roofing — customers, quotes, jobs, scheduling, and crews in one system.",
     overview:
-      "Klaus Connect started as a custom operating system we built for Klaus Larsen Roofing. It runs their full customer lifecycle — contacts, quoting, production, and payment — and grew into the public Klaus Connect platform at klaus-connect.com.",
+      "WorkNex started as a custom operating system we built for Klaus Larsen Roofing. It runs their full customer lifecycle — contacts, quoting, production, and payment — and grew into the public WorkNex platform at https://www.klaus-connect.com.",
     categories: ["CRM"],
-    tags: ["Exclusive", "CRM", "Roofing", "Klaus Larsen"],
+    tags: ["CRM", "Roofing", "Klaus Larsen", "Custom"],
     accent: "from-cyan-400 to-blue-500",
     coverImage: "/products/klaus-connect.png",
     galleryImages: [
@@ -140,7 +140,7 @@ export const portfolioProjects: PortfolioProject[] = [
     description:
       "End-to-end lead status, stage gates, and conversion tracking so every prospect has an owner and a next step.",
     overview:
-      "This lead pipeline is part of the exclusive Klaus Larsen Roofing CRM. A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook — so we built mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
+      "This lead pipeline is part of the WorkNex system we built for Klaus Larsen Roofing. A multi-crew contracting business was losing leads between the website, the phone, and the estimator’s notebook — so we built mandatory stages, ownership, and ROI visibility at every step. Marketing sees which campaigns convert; sales sees what’s stuck; leadership sees the funnel without a spreadsheet merge. The rule is simple: every lead has a status, an owner, and a next action.",
     categories: ["CRM"],
     tags: ["CRM", "Lead Management", "Sales Pipeline"],
     accent: "from-sky-400 to-cyan-500",

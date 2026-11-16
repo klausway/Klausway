@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { ServicesSection } from "@/components/services-section";
 import { PageHeader } from "@/components/page-header";
+import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
+import { servicesFaqs } from "@/lib/faqs";
 import { servicesPageHeader } from "@/lib/services";
 import { routes } from "@/lib/navigation";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -23,7 +25,7 @@ export default function AppsPage() {
         ])}
       />
       <PageHeader
-        eyebrow="Klaus Way"
+        eyebrow="Klaus Way Services"
         title={
           <>
             Our{" "}
@@ -33,6 +35,7 @@ export default function AppsPage() {
         description={servicesPageHeader.subtitle}
       />
       <ServicesSection showHeader={false} />
+      <FaqSection group={servicesFaqs} />
       <CtaSection
         heading={
           <>

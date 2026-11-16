@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { ProductDetail } from "@/components/product-detail";
+import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { featuredProducts, getFeaturedProduct } from "@/lib/featured-products";
+import { worknexFaqs } from "@/lib/faqs";
 import { routes } from "@/lib/navigation";
 import {
   breadcrumbJsonLd,
@@ -29,10 +31,16 @@ export async function generateMetadata({
 
   return buildPageMetadata({
     title: product.name,
-    description: product.tagline,
+    description: product.description,
     path: `${routes.products}/${product.id}`,
     image: product.image,
     canonicalUrl: product.productUrl,
+    keywords: [
+      product.name,
+      "Klaus Way",
+      "Klaus Way Technology",
+      ...product.tags,
+    ],
   });
 }
 
@@ -56,18 +64,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <PageHeader
         wide
         eyebrow={
-          product.id === "klaus-connect"
+          product.id === "worknex"
             ? "Klaus Way · Flagship product"
             : "Klaus Way Products"
         }
         title={product.name}
         description={
           product.productUrl
-            ? `${product.tagline} The full product site is ${new URL(product.productUrl).hostname}.`
-            : product.tagline
+            ? `${product.description} Full product site: ${new URL(product.productUrl).hostname}.`
+            : product.description
         }
       />
       <ProductDetail product={product} />
+      {product.id === "worknex" ? (
+        <FaqSection group={worknexFaqs} />
+      ) : null}
       <CtaSection
         heading={
           <>

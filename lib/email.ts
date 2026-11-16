@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { sanitizeHeaderValue } from "@/lib/contact-security";
-import { klausConnectUrl, routes } from "@/lib/navigation";
+import { worknexUrl, routes } from "@/lib/navigation";
 import { getSiteUrl } from "@/lib/seo";
 
 type ContactEmailInput = {
@@ -160,8 +160,8 @@ export async function sendLeadConfirmationEmail(input: {
   const productsUrl = `${getSiteUrl().replace(/\/$/, "")}${routes.products}/`;
   const flagshipLead =
     input.source?.includes("worknex") ||
-    input.source?.includes("apronconnect") ||
     input.source?.includes("klaus-connect") ||
+    input.source?.includes("apronconnect") ||
     input.intent === "demo";
 
   const { error } = await resend.emails.send({
@@ -178,15 +178,15 @@ export async function sendLeadConfirmationEmail(input: {
       "",
       ...(flagshipLead
         ? [
-            "You asked about a product demo — here’s Klaus Connect, our public business platform:",
-            klausConnectUrl,
+            "You asked about a product demo — here’s WorkNex, our public business platform:",
+            worknexUrl,
             "",
             "See the rest of what we build and run:",
             productsUrl,
           ]
         : [
-            "In the meantime, our flagship product is Klaus Connect:",
-            klausConnectUrl,
+            "In the meantime, our flagship product is WorkNex:",
+            worknexUrl,
             "",
             "Browse everything we build and run:",
             productsUrl,

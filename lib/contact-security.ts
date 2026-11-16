@@ -76,11 +76,11 @@ export type ContactPayload = {
 };
 
 export type ContactGuardOptions = {
-  /** Server-to-server ingest from klaus-connect.com — skip dwell / recaptcha traps. */
+  /** Server-to-server ingest from the WorkNex product site — skip dwell / recaptcha traps. */
   trustedIngest?: boolean;
 };
 
-/** Header shared by Klaus Connect when proxying leads into this API. */
+/** Header shared by WorkNex when proxying leads into this API. */
 export const CONTACT_INGEST_HEADER = "x-contact-ingest-secret";
 
 export function isContactIngestAuthorized(request: Request): boolean {
@@ -131,7 +131,7 @@ export function parseContactBody(body: unknown): ContactPayload {
     source: String(record.source ?? "").trim(),
     company: String(record.company ?? "").trim(),
     size: String(record.size ?? "").trim(),
-    // Accept legacy honeypot names too (older clients + Klaus Connect `website`)
+    // Accept legacy honeypot names too (older clients + WorkNex `website`)
     hpField: String(
       record.hpField ?? record.companyWebsite ?? record.website ?? "",
     ).trim(),

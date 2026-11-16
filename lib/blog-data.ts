@@ -14,6 +14,9 @@ function mapResourcePost(post: {
   type: string;
   coverImage: string | null;
   galleryImages: string[];
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  ogImage?: string | null;
   date: Date;
   updatedAt?: Date;
 }): ResourcePost & { content: string } {
@@ -25,6 +28,9 @@ function mapResourcePost(post: {
     type: fromPrismaResourceType(post.type),
     coverImage: post.coverImage,
     galleryImages: post.galleryImages,
+    metaTitle: post.metaTitle ?? null,
+    metaDescription: post.metaDescription ?? null,
+    ogImage: post.ogImage ?? null,
     date: post.date.toISOString().slice(0, 10),
     updatedAt: (post.updatedAt ?? post.date).toISOString().slice(0, 10),
   };

@@ -72,6 +72,9 @@ type BlogRecord = {
   type: ResourceType;
   coverImage?: string | null;
   galleryImages?: string[];
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  ogImage?: string | null;
   published: boolean;
   date: string;
 };
@@ -133,6 +136,7 @@ const emptyBlog = (
   slug: "", title: "", excerpt: "", content: "",
   type,
   coverImage: null, galleryImages: [], published: false,
+  metaTitle: null, metaDescription: null, ogImage: null,
   date: new Date().toISOString().slice(0, 10),
 });
 
@@ -458,6 +462,9 @@ export function CmsDashboard() {
         type: editingBlog.type ?? "article",
         coverImage: editingBlog.coverImage ?? null,
         galleryImages: editingBlog.galleryImages ?? [],
+        metaTitle: editingBlog.metaTitle ?? null,
+        metaDescription: editingBlog.metaDescription ?? null,
+        ogImage: editingBlog.ogImage ?? null,
         published: editingBlog.published ?? false,
         date: editingBlog.date ?? new Date().toISOString().slice(0, 10),
       }),
@@ -741,6 +748,38 @@ export function CmsDashboard() {
                     <PublishToggle
                       checked={editingBlog.published ?? false}
                       onChange={(v) => setEditingBlog({ ...editingBlog, published: v })}
+                    />
+                  </EditorSection>
+                )}
+
+                {blogEditorTab === "settings" && (
+                  <EditorSection
+                    title="SEO"
+                    description="Search and social sharing overrides. Leave blank to use the title, excerpt, and cover image."
+                  >
+                    <AdminField
+                      label="Meta title"
+                      hint="Search result headline · aim for under 60 characters"
+                      value={editingBlog.metaTitle ?? ""}
+                      onChange={(v) => setEditingBlog({ ...editingBlog, metaTitle: v })}
+                      required={false}
+                      placeholder={editingBlog.title || "Defaults to the resource title"}
+                    />
+                    <AdminTextarea
+                      label="Meta description"
+                      hint="Search result snippet · aim for 120–160 characters"
+                      value={editingBlog.metaDescription ?? ""}
+                      onChange={(v) => setEditingBlog({ ...editingBlog, metaDescription: v })}
+                      rows={3}
+                      placeholder={editingBlog.excerpt || "Defaults to the excerpt"}
+                    />
+                    <SingleImageField
+                      token={token}
+                      image={editingBlog.ogImage}
+                      folder="resources"
+                      label="Social share image"
+                      hint="1200×630 works best · defaults to the cover image"
+                      onChange={(url) => setEditingBlog({ ...editingBlog, ogImage: url })}
                     />
                   </EditorSection>
                 )}

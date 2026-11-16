@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import {
   absoluteImageUrl,
   absoluteUrl,
+  feedUrl,
   getSiteUrl,
   organizationJsonLd,
   professionalServiceJsonLd,
@@ -39,6 +40,8 @@ const jetbrainsMono = localFont({
 });
 
 const ogImage = absoluteImageUrl(siteConfig.defaultOgImage);
+const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+const bingSiteVerification = process.env.BING_SITE_VERIFICATION?.trim();
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${getSiteUrl()}/`),
@@ -61,7 +64,20 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: absoluteUrl("/"),
+    types: {
+      "application/rss+xml": feedUrl(),
+    },
   },
+  ...(googleSiteVerification || bingSiteVerification
+    ? {
+        verification: {
+          ...(googleSiteVerification ? { google: googleSiteVerification } : {}),
+          ...(bingSiteVerification
+            ? { other: { "msvalidate.01": bingSiteVerification } }
+            : {}),
+        },
+      }
+    : {}),
   robots: {
     index: true,
     follow: true,
@@ -74,9 +90,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: `${siteConfig.name} — Strategic IT Solutions`,
-    description:
-      "Transform your digital infrastructure with custom apps, integration, automation, and cloud expertise.",
+    title: siteConfig.title,
+    description: siteConfig.description,
     url: absoluteUrl("/"),
     siteName: siteConfig.name,
     locale: siteConfig.locale,
@@ -86,15 +101,14 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} logo`,
+        alt: `${siteConfig.name} — ${siteConfig.tagline}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — Strategic IT Solutions`,
-    description:
-      "Transform your digital infrastructure with custom apps, integration, automation, and cloud expertise.",
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: [ogImage],
   },
   icons: {

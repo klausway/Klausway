@@ -125,7 +125,7 @@ export function ProductTour({ productName, steps, accent }: ProductTourProps) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={assetPath(item.image)}
-                alt=""
+                alt={`${productName} — ${item.title}`}
                 className="h-20 w-32 object-cover object-top sm:h-24 sm:w-40"
               />
               <span className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/70 text-[10px] font-semibold text-white">

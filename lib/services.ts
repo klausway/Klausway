@@ -112,7 +112,7 @@ export const whyChooseUs = [
   {
     title: "Proven in Production",
     description:
-      "Seven of our products run real businesses today — CRM, dispatch, payments, compliance, and voice AI.",
+      "Six of our products run real businesses today — CRM, dispatch, payments, compliance, and voice AI.",
   },
 ] as const;
 
@@ -128,5 +128,6 @@ export const featuredSolutions = [
 
 export const servicesPageHeader = {
   title: "Our Services",
-  subtitle: "Comprehensive IT solutions designed to drive your business forward.",
+  subtitle:
+    "IT consulting, custom apps, system integration, automation, data analytics, and cloud services — designed around how your business actually works.",
 } as const;

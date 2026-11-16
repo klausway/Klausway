@@ -4,7 +4,7 @@ import { AmbientBackground } from "./animation/ambient-background";
 import { TrackedLink } from "./tracked-link";
 import { ButtonArrow, buttonVariants } from "./ui/button";
 import { featuredProducts } from "@/lib/featured-products";
-import { klausConnectUrl, routes } from "@/lib/navigation";
+import { worknexUrl, routes } from "@/lib/navigation";
 
 export function Hero() {
   return (
@@ -34,7 +34,8 @@ export function Hero() {
             className="mx-auto mt-7 max-w-xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl animate-fade-up-stagger"
             style={{ animationDelay: "250ms" }}
           >
-            Purpose-built technology for the way your business works.
+            Purpose-built software from Klaus Way Technology — WorkNex,
+            custom apps, and IT services.
             <br className="hidden sm:block" />
             Start with a{" "}
             <span className="font-medium text-foreground">free consultation</span>
@@ -55,15 +56,15 @@ export function Hero() {
               <ButtonArrow />
             </TrackedLink>
             <TrackedLink
-              href={klausConnectUrl}
+              href={worknexUrl}
               external
               target="_blank"
               rel="noopener noreferrer"
               event="cta_click"
-              eventParams={{ location: "hero", product: "klaus_connect" }}
+              eventParams={{ location: "hero", product: "worknex" }}
               className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
-              Visit Klaus Connect
+              Visit WorkNex
               <ArrowRight className="h-4 w-4" />
             </TrackedLink>
           </div>

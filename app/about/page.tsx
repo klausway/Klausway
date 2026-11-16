@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { AboutSection } from "@/components/about-section";
 import { PageHeader } from "@/components/page-header";
+import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { aboutPageHeader } from "@/lib/about";
+import { aboutFaqs } from "@/lib/faqs";
 import { getPublishedTeamMembers } from "@/lib/team-data";
 import { routes } from "@/lib/navigation";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
@@ -28,7 +30,7 @@ export default async function AboutPage() {
         ])}
       />
       <PageHeader
-        eyebrow="About Klaus Way"
+        eyebrow="About Klaus Way Technology"
         title={
           <>
             <span className="block">We build.</span>
@@ -39,6 +41,7 @@ export default async function AboutPage() {
         description={aboutPageHeader.subtitle}
       />
       <AboutSection teamMembers={teamMembers} />
+      <FaqSection group={aboutFaqs} />
       <CtaSection
         heading={
           <>

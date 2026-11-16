@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { FeaturedProductsSection } from "@/components/featured-products-section";
 import { PageHeader } from "@/components/page-header";
+import { FaqSection } from "@/components/faq-section";
 import { CtaSection } from "@/components/cta-section";
 import { JsonLd } from "@/components/json-ld";
 import { productsPageHeader } from "@/lib/featured-products";
+import { productsFaqs } from "@/lib/faqs";
 import { routes } from "@/lib/navigation";
 import { breadcrumbJsonLd, buildPageMetadata } from "@/lib/seo";
 
@@ -23,7 +25,7 @@ export default function ProductsPage() {
         ])}
       />
       <PageHeader
-        eyebrow="Klaus Way"
+        eyebrow="Klaus Way Products"
         title={
           <>
             Our{" "}
@@ -33,6 +35,7 @@ export default function ProductsPage() {
         description={productsPageHeader.subtitle}
       />
       <FeaturedProductsSection />
+      <FaqSection group={productsFaqs} />
       <CtaSection
         heading={
           <>

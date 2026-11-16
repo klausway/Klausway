@@ -38,10 +38,10 @@ export async function generateMetadata({
   const post = await getResourcePost(slug);
   if (!post) return { title: "Resource Not Found", robots: { index: false } };
   return buildPageMetadata({
-    title: post.title,
-    description: post.excerpt,
+    title: post.metaTitle?.trim() || post.title,
+    description: post.metaDescription?.trim() || post.excerpt,
     path: `${routes.resources}/${post.slug}`,
-    image: post.coverImage,
+    image: post.ogImage?.trim() || post.coverImage,
     type: "article",
     keywords: resourceTypeKeywords(post.type),
     publishedTime: post.date,
