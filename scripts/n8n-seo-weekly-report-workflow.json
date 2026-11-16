@@ -1,0 +1,811 @@
+{
+  "name": "Klausway — Weekly SEO Monitor",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "nodes": [
+    {
+      "id": "sticky",
+      "name": "Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "content": "## Klausway — Weekly SEO Monitor\n1. GSC 28d vs prior 28d (configurable properties)\n2. Sitemap + sampled page health checks\n3. Cautious OpenAI recommendations\n4. Email support@klausway.com (or SEO_REPORT_TO)\n5. Save history to Postgres\n6. Optional urgent alerts with dedupe\n\n**Inactive by default.** Connect Google OAuth with `webmasters.readonly`, set `GSC_N8N_CREDENTIAL_ID`, test via webhook, then activate.",
+        "height": 320,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
+      "id": "schedule",
+      "name": "Weekly Monday 9AM ET",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        240
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "webhook",
+      "name": "Test Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        520,
+        460
+      ],
+      "webhookId": "seo-weekly-report-test",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "seo-weekly-report-test",
+        "options": {}
+      }
+    },
+    {
+      "id": "config",
+      "name": "Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const envTo = (typeof process !== 'undefined' && process.env && process.env.SEO_REPORT_TO)\n  ? String(process.env.SEO_REPORT_TO).trim()\n  : '';\nconst reportTo = envTo || 'support@klausway.com';\n\nconst now = new Date();\n// Approximate \"today\" in America/New_York for period math\nconst fmt = new Intl.DateTimeFormat('en-CA', {\n  timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'\n});\nconst todayEt = fmt.format(now); // YYYY-MM-DD\n\nfunction addDays(iso, days) {\n  const d = new Date(iso + 'T12:00:00Z');\n  d.setUTCDate(d.getUTCDate() + days);\n  return d.toISOString().slice(0, 10);\n}\n\nconst dataDelayDays = 3;\nconst lookbackDays = 28;\nconst periodEnd = addDays(todayEt, -dataDelayDays);\nconst periodStart = addDays(periodEnd, -lookbackDays + 1);\nconst prevEnd = addDays(periodStart, -1);\nconst prevStart = addDays(prevEnd, -lookbackDays + 1);\n\nconst properties = [\n  {\n    id: 'klausway',\n    label: 'Klaus Way',\n    gscSiteUrl: 'sc-domain:klausway.com',\n    baseUrl: 'https://www.klausway.com',\n    sitemapUrl: 'https://www.klausway.com/sitemap.xml',\n    robotsUrl: 'https://www.klausway.com/robots.txt',\n    priorityPaths: ['/', '/contact/', '/resources/', '/products/', '/about/', '/apps/', '/solutions/'],\n  },\n  {\n    id: 'worknex',\n    label: 'Worknex',\n    gscSiteUrl: 'sc-domain:work-nex.com',\n    baseUrl: 'https://www.work-nex.com',\n    sitemapUrl: 'https://www.work-nex.com/sitemap.xml',\n    robotsUrl: 'https://www.work-nex.com/robots.txt',\n    priorityPaths: ['/'],\n  },\n];\n\nreturn [{\n  json: {\n    reportTo,\n    timezone: 'America/New_York',\n    lookbackDays,\n    compareDays: lookbackDays,\n    dataDelayDays,\n    periodStart,\n    periodEnd,\n    prevStart,\n    prevEnd,\n    maxPagesToCheck: 25,\n    requestDelayMs: 400,\n    minImpressionsForLowCtr: 100,\n    lowCtrThreshold: 0.02,\n    urgentEnabled: true,\n    urgentRetryDelaySec: 60,\n    properties,\n    companyContext: {\n      klausway: 'Klaus Way Technology builds purpose-built software and IT services — WorkNex, custom apps, system integration, automation, and cloud. Site: https://www.klausway.com/',\n      worknex: 'Worknex is Klaus Way\\'s operations / CRM product site at https://www.work-nex.com/. Do not invent pricing, customers, or features beyond what page content shows.',\n    },\n    executionId: $execution.id,\n    reportDate: todayEt,\n  }\n}];"
+      }
+    },
+    {
+      "id": "build-gsc",
+      "name": "Build GSC Requests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        240
+      ],
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst rows = [];\nfor (const site of cfg.properties) {\n  const encoded = encodeURIComponent(site.gscSiteUrl);\n  const endpoint = `https://www.googleapis.com/webmasters/v3/sites/${encoded}/searchAnalytics/query`;\n  const periods = [\n    { key: 'current', startDate: cfg.periodStart, endDate: cfg.periodEnd },\n    { key: 'previous', startDate: cfg.prevStart, endDate: cfg.prevEnd },\n  ];\n  const dims = [\n    { name: 'aggregate', dimensions: [] },\n    { name: 'page', dimensions: ['page'] },\n    { name: 'query', dimensions: ['query'] },\n  ];\n  for (const p of periods) {\n    for (const d of dims) {\n      rows.push({\n        json: {\n          siteId: site.id,\n          siteLabel: site.label,\n          gscSiteUrl: site.gscSiteUrl,\n          periodKey: p.key,\n          dimKey: d.name,\n          requestUrl: endpoint,\n          body: {\n            startDate: p.startDate,\n            endDate: p.endDate,\n            dimensions: d.dimensions,\n            rowLimit: d.name === 'aggregate' ? 1 : 250,\n            startRow: 0,\n          },\n        },\n      });\n    }\n  }\n}\nreturn rows;"
+      }
+    },
+    {
+      "id": "gsc-http",
+      "name": "GSC Search Analytics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1260,
+        240
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.requestUrl }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "attach-meta",
+      "name": "Attach GSC Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        240
+      ],
+      "parameters": {
+        "jsCode": "const reqs = $('Build GSC Requests').all();\nconst outs = $input.all();\nreturn outs.map((item, i) => {\n  const meta = reqs[i]?.json || {};\n  const body = item.json;\n  const rows = body.rows || body.body?.rows || [];\n  return {\n    json: {\n      ...meta,\n      rows,\n      error: body.error || null,\n      httpCode: body.statusCode || body.status || null,\n      rawKeys: Object.keys(body || {}),\n    },\n  };\n});"
+      }
+    },
+    {
+      "id": "analyze-gsc",
+      "name": "Analyze GSC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1740,
+        240
+      ],
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst items = $input.all();\nconst bySite = {};\n\nfunction ensure(siteId) {\n  if (!bySite[siteId]) {\n    bySite[siteId] = {\n      siteId,\n      gscStatus: 'ok',\n      gscError: null,\n      current: { clicks: 0, impressions: 0, ctr: 0, position: 0 },\n      previous: { clicks: 0, impressions: 0, ctr: 0, position: 0 },\n      pagesCurrent: [],\n      pagesPrevious: [],\n      queriesCurrent: [],\n      queriesPrevious: [],\n    };\n  }\n  return bySite[siteId];\n}\n\nfor (const item of items) {\n  const meta = item.json;\n  const site = ensure(meta.siteId || meta.siteLabel || 'unknown');\n  if (meta.error || meta.message === 'Unauthorized' || (meta.error && meta.error.message)) {\n    site.gscStatus = 'error';\n    site.gscError = meta.error?.message || meta.message || JSON.stringify(meta).slice(0, 300);\n    continue;\n  }\n  // n8n HTTP may nest response under body or return rows at top level\n  const rows = Array.isArray(meta.rows)\n    ? meta.rows\n    : (Array.isArray(meta.body?.rows) ? meta.body.rows : []);\n  const periodKey = meta.periodKey;\n  const dimKey = meta.dimKey;\n  if (!periodKey || !dimKey) {\n    // Response-only items: try paired metadata from binary/pairedItem — skip if missing\n    continue;\n  }\n  if (dimKey === 'aggregate') {\n    const r = rows[0] || { clicks: 0, impressions: 0, ctr: 0, position: 0 };\n    site[periodKey] = {\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    };\n  } else if (dimKey === 'page') {\n    const mapped = rows.map((r) => ({\n      page: r.keys?.[0] || '',\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    }));\n    if (periodKey === 'current') site.pagesCurrent = mapped;\n    else site.pagesPrevious = mapped;\n  } else if (dimKey === 'query') {\n    const mapped = rows.map((r) => ({\n      query: r.keys?.[0] || '',\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    }));\n    if (periodKey === 'current') site.queriesCurrent = mapped;\n    else site.queriesPrevious = mapped;\n  }\n}\n\n// Re-parse using paired request metadata stored on each item\nconst rebuilt = {};\nfor (const item of items) {\n  const j = item.json;\n  const siteId = j.siteId;\n  if (!siteId) continue;\n  if (!rebuilt[siteId]) {\n    rebuilt[siteId] = {\n      siteId,\n      siteLabel: j.siteLabel,\n      gscSiteUrl: j.gscSiteUrl,\n      gscStatus: 'ok',\n      gscError: null,\n      current: { clicks: 0, impressions: 0, ctr: 0, position: 0 },\n      previous: { clicks: 0, impressions: 0, ctr: 0, position: 0 },\n      pagesCurrent: [],\n      pagesPrevious: [],\n      queriesCurrent: [],\n      queriesPrevious: [],\n    };\n  }\n  const site = rebuilt[siteId];\n  const errMsg = j.error?.message || (typeof j.error === 'string' ? j.error : null);\n  if (errMsg || j.httpCode >= 400) {\n    site.gscStatus = 'error';\n    site.gscError = errMsg || `HTTP ${j.httpCode}`;\n    continue;\n  }\n  const rows = Array.isArray(j.rows) ? j.rows : [];\n  const periodKey = j.periodKey;\n  const dimKey = j.dimKey;\n  if (dimKey === 'aggregate') {\n    const r = rows[0] || {};\n    site[periodKey] = {\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    };\n  } else if (dimKey === 'page') {\n    const mapped = rows.map((r) => ({\n      page: r.keys?.[0] || '',\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    }));\n    if (periodKey === 'current') site.pagesCurrent = mapped;\n    else site.pagesPrevious = mapped;\n  } else if (dimKey === 'query') {\n    const mapped = rows.map((r) => ({\n      query: r.keys?.[0] || '',\n      clicks: Number(r.clicks || 0),\n      impressions: Number(r.impressions || 0),\n      ctr: Number(r.ctr || 0),\n      position: Number(r.position || 0),\n    }));\n    if (periodKey === 'current') site.queriesCurrent = mapped;\n    else site.queriesPrevious = mapped;\n  }\n}\n\nfunction indexBy(arr, key) {\n  const m = new Map();\n  for (const row of arr) m.set(row[key], row);\n  return m;\n}\n\nconst insights = [];\nfor (const site of Object.values(rebuilt)) {\n  const prevPages = indexBy(site.pagesPrevious, 'page');\n  const pageDeltas = site.pagesCurrent.map((p) => {\n    const prev = prevPages.get(p.page) || { clicks: 0, impressions: 0 };\n    return { ...p, clicksDelta: p.clicks - prev.clicks, impressionsDelta: p.impressions - prev.impressions };\n  });\n  const gainers = [...pageDeltas].sort((a, b) => b.clicksDelta - a.clicksDelta).slice(0, 5);\n  const losers = [...pageDeltas].sort((a, b) => a.clicksDelta - b.clicksDelta).slice(0, 5);\n  const lowCtr = site.pagesCurrent\n    .filter((p) => p.impressions >= cfg.minImpressionsForLowCtr && p.ctr < cfg.lowCtrThreshold)\n    .sort((a, b) => b.impressions - a.impressions)\n    .slice(0, 8)\n    .map((p) => ({ ...p, note: 'Meaningful impressions with relatively low CTR — investigate title/description/intent fit; not proof of a ranking problem.' }));\n\n  const prevQueries = indexBy(site.queriesPrevious, 'query');\n  const queryDeltas = site.queriesCurrent.map((q) => {\n    const prev = prevQueries.get(q.query) || { clicks: 0 };\n    return { ...q, clicksDelta: q.clicks - prev.clicks };\n  });\n  const topQueries = [...site.queriesCurrent].sort((a, b) => b.clicks - a.clicks).slice(0, 10);\n  const risingQueries = [...queryDeltas].sort((a, b) => b.clicksDelta - a.clicksDelta).slice(0, 5);\n\n  insights.push({\n    ...site,\n    clicksDelta: site.current.clicks - site.previous.clicks,\n    impressionsDelta: site.current.impressions - site.previous.impressions,\n    topPages: [...site.pagesCurrent].sort((a, b) => b.clicks - a.clicks).slice(0, 8),\n    gainers,\n    losers,\n    lowCtrCandidates: lowCtr,\n    topQueries,\n    risingQueries,\n  });\n}\n\nreturn [{ json: { gscInsights: insights, periodStart: cfg.periodStart, periodEnd: cfg.periodEnd, prevStart: cfg.prevStart, prevEnd: cfg.prevEnd } }];"
+      }
+    },
+    {
+      "id": "load-robots",
+      "name": "Load Robots Snapshots",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1020,
+        520
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT site_id, robots_hash, robots_text, updated_at FROM n8n_seo_robots_snapshots;",
+        "options": {}
+      }
+    },
+    {
+      "id": "load-alerts",
+      "name": "Load Alert State",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1020,
+        700
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, issue_key, site_id, severity, last_alerted_at, resolved_at FROM n8n_seo_alert_state WHERE resolved_at IS NULL;",
+        "options": {}
+      }
+    },
+    {
+      "id": "health",
+      "name": "Website Health Checks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        560
+      ],
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nconst crypto = require('crypto');\n\nfunction sleep(ms) {\n  return new Promise((r) => setTimeout(r, ms));\n}\n\nfunction hash(text) {\n  return crypto.createHash('sha256').update(text || '').digest('hex');\n}\n\nfunction extractMeta(html) {\n  const title = (html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i) || [])[1]?.replace(/\\s+/g, ' ').trim() || '';\n  const desc = (html.match(/<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']*)[\"']/i)\n    || html.match(/<meta[^>]+content=[\"']([^\"']*)[\"'][^>]+name=[\"']description[\"']/i)\n    || [])[1]?.trim() || '';\n  const robots = (html.match(/<meta[^>]+name=[\"']robots[\"'][^>]+content=[\"']([^\"']*)[\"']/i)\n    || html.match(/<meta[^>]+content=[\"']([^\"']*)[\"'][^>]+name=[\"']robots[\"']/i)\n    || [])[1]?.toLowerCase() || '';\n  return { title, description: desc, robots };\n}\n\nfunction parseRobots(text) {\n  const lines = String(text || '').split(/\\n/);\n  let agent = '*';\n  const rules = { '*': { allow: [], disallow: [] }, 'OAI-SearchBot': { allow: [], disallow: [] } };\n  for (const raw of lines) {\n    const line = raw.split('#')[0].trim();\n    if (!line) continue;\n    const m = line.match(/^(user-agent|allow|disallow)\\s*:\\s*(.*)$/i);\n    if (!m) continue;\n    const key = m[1].toLowerCase();\n    const val = m[2].trim();\n    if (key === 'user-agent') {\n      agent = val;\n      if (!rules[agent]) rules[agent] = { allow: [], disallow: [] };\n    } else if (key === 'allow') {\n      (rules[agent] || (rules[agent] = { allow: [], disallow: [] })).allow.push(val);\n    } else if (key === 'disallow') {\n      (rules[agent] || (rules[agent] = { allow: [], disallow: [] })).disallow.push(val);\n    }\n  }\n  return rules;\n}\n\nfunction oaiAllowed(rules) {\n  const oai = rules['OAI-SearchBot'] || rules['oai-searchbot'];\n  if (oai) {\n    if (oai.disallow.includes('/')) return false;\n    return true;\n  }\n  const star = rules['*'] || { disallow: [] };\n  if (star.disallow.includes('/')) return false;\n  return true;\n}\n\nasync function fetchText(url, opts = {}) {\n  try {\n    const res = await this.helpers.httpRequest({\n      method: 'GET',\n      url,\n      returnFullResponse: true,\n      ignoreHttpStatusErrors: true,\n      timeout: 20000,\n      headers: { 'User-Agent': 'KlausWaySeoMonitor/1.0 (+https://www.klausway.com/)' },\n      ...opts,\n    });\n    const status = res.statusCode || res.status || 0;\n    const body = typeof res.body === 'string' ? res.body : (res.data || '');\n    const headers = res.headers || {};\n    return { ok: status >= 200 && status < 400, status, body: String(body || ''), headers, error: null };\n  } catch (e) {\n    return { ok: false, status: 0, body: '', headers: {}, error: e.message || String(e) };\n  }\n}\n\nfunction sitemapLocs(xml) {\n  const locs = [];\n  const re = /<loc>\\s*([^<]+)\\s*<\\/loc>/gi;\n  let m;\n  while ((m = re.exec(xml)) && locs.length < 500) locs.push(m[1].trim());\n  return locs;\n}\n\nconst snapshots = {};\ntry {\n  for (const row of $('Load Robots Snapshots').all()) {\n    if (row.json.site_id) snapshots[row.json.site_id] = row.json;\n  }\n} catch (_) {}\n\nconst results = [];\nfor (const site of cfg.properties) {\n  const issues = [];\n  const critical = [];\n  let healthStatus = 'ok';\n  const baseHost = new URL(site.baseUrl).host;\n\n  const robotsRes = await fetchText.call(this, site.robotsUrl);\n  await sleep(cfg.requestDelayMs);\n  let robotsChanged = false;\n  let oaiOk = null;\n  let robotsHash = null;\n  if (!robotsRes.ok) {\n    healthStatus = 'error';\n    issues.push({ severity: 'error', code: 'robots_unreachable', message: `robots.txt fetch failed (${robotsRes.status || robotsRes.error})` });\n  } else {\n    robotsHash = hash(robotsRes.body);\n    const prev = snapshots[site.id];\n    if (prev && prev.robots_hash && prev.robots_hash !== robotsHash) {\n      robotsChanged = true;\n      issues.push({ severity: 'warning', code: 'robots_changed', message: 'robots.txt content changed since last snapshot — review manually.' });\n    }\n    const rules = parseRobots(robotsRes.body);\n    oaiOk = oaiAllowed(rules);\n    if (!oaiOk) {\n      issues.push({ severity: 'warning', code: 'oai_disallow', message: 'robots.txt appears to disallow OAI-SearchBot or all bots on /. Confirm in Search Console / hosting — HTTP alone cannot prove CDN allowlisting.' });\n    } else {\n      issues.push({ severity: 'info', code: 'oai_allow_heuristic', message: 'robots.txt appears to allow OAI-SearchBot on public paths. CDN/WAF bot policies need a separate hosting review.' });\n    }\n  }\n\n  const smRes = await fetchText.call(this, site.sitemapUrl);\n  await sleep(cfg.requestDelayMs);\n  let locs = [];\n  if (!smRes.ok) {\n    healthStatus = 'error';\n    critical.push({ severity: 'critical', code: 'sitemap_down', message: `Sitemap unreachable (${smRes.status || smRes.error})`, issueKey: `sitemap:${site.id}` });\n    issues.push(critical[critical.length - 1]);\n  } else {\n    locs = sitemapLocs(smRes.body);\n    if (!locs.length) {\n      issues.push({ severity: 'warning', code: 'sitemap_empty', message: 'Sitemap returned no <loc> URLs.' });\n    }\n  }\n\n  const priorityUrls = site.priorityPaths.map((p) => new URL(p, site.baseUrl).toString());\n  const sample = [];\n  const seen = new Set();\n  for (const u of [...priorityUrls, ...locs]) {\n    if (seen.has(u)) continue;\n    try {\n      if (new URL(u).host !== baseHost && !new URL(u).host.endsWith(baseHost.replace(/^www\\./, ''))) continue;\n    } catch { continue; }\n    seen.add(u);\n    sample.push(u);\n    if (sample.length >= cfg.maxPagesToCheck) break;\n  }\n\n  const titles = new Map();\n  const pageReports = [];\n  for (const url of sample) {\n    const res = await fetchText.call(this, url, { redirect: 'manual' });\n    await sleep(cfg.requestDelayMs);\n    const status = res.status;\n    const loc = res.headers.location || res.headers.Location;\n    if (status >= 300 && status < 400 && loc) {\n      try {\n        const dest = new URL(loc, url);\n        if (dest.host !== baseHost && !dest.href.startsWith(site.baseUrl)) {\n          issues.push({ severity: 'warning', code: 'unexpected_redirect', url, message: `Redirects off-host to ${dest.href}` });\n        }\n      } catch {}\n    }\n    if (status >= 400 || status === 0) {\n      const issue = { severity: status >= 500 || status === 0 ? 'critical' : 'error', code: 'http_error', url, message: `HTTP ${status || 'error'}: ${res.error || ''}`, issueKey: `http:${site.id}:${url}` };\n      issues.push(issue);\n      if (issue.severity === 'critical' && (url === site.baseUrl || url === site.baseUrl + '/')) critical.push(issue);\n      if (status >= 500 || status === 0) healthStatus = 'error';\n      pageReports.push({ url, status, error: res.error });\n      continue;\n    }\n    if (status >= 200 && status < 300) {\n      const meta = extractMeta(res.body);\n      if (!meta.title) issues.push({ severity: 'warning', code: 'missing_title', url, message: 'Missing <title>' });\n      if (!meta.description) issues.push({ severity: 'warning', code: 'missing_description', url, message: 'Missing meta description' });\n      if (meta.robots.includes('noindex')) issues.push({ severity: 'warning', code: 'noindex', url, message: `Unexpected noindex: ${meta.robots}` });\n      if (meta.title) {\n        if (!titles.has(meta.title)) titles.set(meta.title, []);\n        titles.get(meta.title).push(url);\n      }\n      pageReports.push({ url, status, title: meta.title, description: meta.description, robots: meta.robots });\n    }\n  }\n  for (const [title, urls] of titles.entries()) {\n    if (urls.length > 1) {\n      issues.push({ severity: 'warning', code: 'duplicate_title', message: `Duplicate title \"${title.slice(0, 80)}\" on ${urls.length} pages`, urls });\n    }\n  }\n\n  results.push({\n    siteId: site.id,\n    siteLabel: site.label,\n    baseUrl: site.baseUrl,\n    healthStatus,\n    robotsHash,\n    robotsText: robotsRes.ok ? robotsRes.body.slice(0, 20000) : null,\n    robotsChanged,\n    oaiSearchBotAllowedHeuristic: oaiOk,\n    sitemapOk: smRes.ok,\n    pagesChecked: pageReports.length,\n    issues,\n    critical,\n    pageReports: pageReports.slice(0, 40),\n  });\n}\n\nreturn [{ json: { health: results } }];"
+      }
+    },
+    {
+      "id": "wait-both",
+      "name": "Wait GSC + Health",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1860,
+        400
+      ],
+      "parameters": {
+        "mode": "chooseBranch",
+        "chooseBranchMode": "waitForAll",
+        "output": "empty"
+      }
+    },
+    {
+      "id": "merge",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        400
+      ],
+      "parameters": {
+        "jsCode": "const cfg = $('Config').first().json;\nlet gsc = { gscInsights: [] };\ntry { gsc = $('Analyze GSC').first().json; } catch (_) {}\nlet health = { health: [] };\ntry { health = $('Website Health Checks').first().json; } catch (_) {}\n\nconst alertRows = [];\ntry {\n  for (const r of $('Load Alert State').all()) alertRows.push(r.json);\n} catch (_) {}\n\nconst openAlerts = new Map();\nfor (const a of alertRows) {\n  if (a.issue_key && !a.resolved_at) openAlerts.set(a.issue_key, a);\n}\n\nconst critical = [];\nfor (const h of health.health || []) {\n  for (const c of h.critical || []) critical.push({ ...c, siteId: h.siteId });\n}\n\nconst gscFailed = (gsc.gscInsights || []).some((s) => s.gscStatus === 'error');\nconst healthFailed = (health.health || []).some((h) => h.healthStatus === 'error');\nlet status = 'ok';\nif (gscFailed && healthFailed) status = 'error';\nelse if (gscFailed || healthFailed) status = 'partial';\n\nconst newCritical = critical.filter((c) => c.issueKey && !openAlerts.has(c.issueKey));\n\nreturn [{\n  json: {\n    cfg,\n    gscInsights: gsc.gscInsights || [],\n    health: health.health || [],\n    status,\n    gscFailed,\n    healthFailed,\n    critical,\n    newCritical,\n    openAlerts: [...openAlerts.keys()],\n    needsUrgent: cfg.urgentEnabled && newCritical.length > 0,\n  }\n}];"
+      }
+    },
+    {
+      "id": "if-urgent",
+      "name": "Needs Urgent Alert?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2220,
+        280
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.needsUrgent }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "wait-retry",
+      "name": "Wait Before Retry",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2460,
+        160
+      ],
+      "webhookId": "seo-urgent-wait",
+      "parameters": {
+        "amount": "={{ $('Config').first().json.urgentRetryDelaySec }}",
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "recheck",
+      "name": "Recheck Critical",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2700,
+        160
+      ],
+      "parameters": {
+        "jsCode": "const merge = $('Merge Results').first().json;\nconst still = [];\nfor (const c of merge.newCritical || []) {\n  const url = c.url || (c.code === 'sitemap_down'\n    ? (merge.cfg.properties.find(p => p.id === c.siteId) || {}).sitemapUrl\n    : (merge.cfg.properties.find(p => p.id === c.siteId) || {}).baseUrl);\n  if (!url) { still.push(c); continue; }\n  try {\n    const res = await this.helpers.httpRequest({\n      method: 'GET', url, returnFullResponse: true, ignoreHttpStatusErrors: true, timeout: 20000,\n      headers: { 'User-Agent': 'KlausWaySeoMonitor/1.0' },\n    });\n    const status = res.statusCode || res.status || 0;\n    if (status === 0 || status >= 500 || (c.code === 'sitemap_down' && status >= 400)) still.push(c);\n  } catch {\n    still.push(c);\n  }\n}\nreturn [{ json: { ...merge, confirmedCritical: still, needsUrgent: still.length > 0 } }];"
+      }
+    },
+    {
+      "id": "if-still-urgent",
+      "name": "Still Critical?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2940,
+        160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.needsUrgent }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "build-urgent",
+      "name": "Build Urgent Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3180,
+        80
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nconst cfg = d.cfg;\nconst lines = (d.confirmedCritical || []).map((c) => '- [' + c.siteId + '] ' + c.message + (c.url ? ' (' + c.url + ')' : ''));\nconst html = '<p>Urgent SEO / availability alert for Klaus Way monitored sites.</p><p>Confirmed after retry:</p><ul>' +\n  lines.map((l) => '<li>' + String(l).replace(/</g,'&lt;') + '</li>').join('') +\n  '</ul><p>Not the weekly report. Check hosting/CDN if this looks like a block.</p>';\nreturn [{ json: { to: cfg.reportTo, subject: 'Klaus Way SEO Alert — ' + lines.length + ' critical issue(s)', html, text: lines.join('\\n'), alerts: d.confirmedCritical || [], cfg, merge: d } }];"
+      }
+    },
+    {
+      "id": "send-urgent",
+      "name": "Send Urgent Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        3420,
+        80
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "mTYHf3hI2i3EA8CL",
+          "name": "no-reply@klauslarsen.com"
+        }
+      },
+      "parameters": {
+        "fromEmail": "no-reply@klauslarsen.com",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "save-alerts",
+      "name": "Upsert Alert State",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3660,
+        80
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ (() => {\n  const alerts = $json.alerts || $('Build Urgent Email').first().json.alerts || [];\n  if (!alerts.length) return \"SELECT 1 WHERE false;\";\n  return alerts.map((a) => {\n    const key = String(a.issueKey || '').replace(/'/g, \"''\");\n    const site = String(a.siteId || '').replace(/'/g, \"''\");\n    const sev = String(a.severity || 'critical').replace(/'/g, \"''\");\n    const details = JSON.stringify(a).replace(/'/g, \"''\");\n    return `INSERT INTO n8n_seo_alert_state (id, issue_key, site_id, severity, last_alerted_at, resolved_at, details_json, created_at, updated_at)\nVALUES ('${Date.now()}_${Math.random().toString(36).slice(2,8)}', '${key}', '${site}', '${sev}', NOW(), NULL, '${details}'::jsonb, NOW(), NOW())\nON CONFLICT (issue_key) DO UPDATE SET last_alerted_at = NOW(), resolved_at = NULL, details_json = EXCLUDED.details_json, updated_at = NOW();`;\n  }).join('\\n');\n})() }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "build-ai",
+      "name": "Build AI Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2220,
+        520
+      ],
+      "parameters": {
+        "jsCode": "const data = $json;\nconst cfg = data.cfg;\nconst payload = {\n  period: { current: [cfg.periodStart, cfg.periodEnd], previous: [cfg.prevStart, cfg.prevEnd] },\n  companyContext: cfg.companyContext,\n  gsc: data.gscInsights.map((s) => ({\n    siteId: s.siteId,\n    label: s.siteLabel,\n    gscStatus: s.gscStatus,\n    gscError: s.gscError,\n    current: s.current,\n    previous: s.previous,\n    clicksDelta: s.clicksDelta,\n    impressionsDelta: s.impressionsDelta,\n    topPages: s.topPages,\n    gainers: s.gainers,\n    losers: s.losers,\n    lowCtrCandidates: s.lowCtrCandidates,\n    topQueries: s.topQueries,\n    risingQueries: s.risingQueries,\n  })),\n  health: data.health.map((h) => ({\n    siteId: h.siteId,\n    healthStatus: h.healthStatus,\n    issues: h.issues?.filter((i) => i.severity !== 'info').slice(0, 30),\n    pagesChecked: h.pagesChecked,\n    oaiSearchBotAllowedHeuristic: h.oaiSearchBotAllowedHeuristic,\n    robotsChanged: h.robotsChanged,\n  })),\n  limitations: [\n    data.gscFailed ? 'One or more Google Search Console queries failed.' : null,\n    data.healthFailed ? 'One or more website health checks failed.' : null,\n    'GSC recent days excluded via dataDelayDays; numbers can still lag.',\n    'Page checks sample a limited URL set; not a full crawl.',\n    'robots.txt allow for OAI-SearchBot does not prove CDN/WAF allowlisting.',\n  ].filter(Boolean),\n};\n\nconst system = `You are an SEO analyst for Klaus Way Technology. Use ONLY the JSON evidence provided. Do not invent product features, pricing, customers, reviews, certifications, or relationships. Prefer a few high-value recommendations over a long generic list. Never claim guaranteed ranking improvements. Flag anything needing human verification.\n\nReturn strict JSON with shape:\n{\n  \"executiveSummary\": \"2-4 sentences\",\n  \"recommendations\": [{\"priority\":1,\"pageOrQuery\":\"\",\"evidence\":\"\",\"whyItMightMatter\":\"\",\"nextStep\":\"\",\"draft\":null,\"needsHumanVerification\":true}],\n  \"contentIdeas\": [{\"title\":\"\",\"angle\":\"\",\"supportedBy\":\"\",\"needsHumanVerification\":true}]\n}\nMax 5 recommendations, max 3 content ideas (omit contentIdeas if none are data-backed).`;\n\nreturn [{\n  json: {\n    ...data,\n    aiSystem: system,\n    aiUser: JSON.stringify(payload),\n  }\n}];"
+      }
+    },
+    {
+      "id": "openai",
+      "name": "AI Recommendations",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2460,
+        520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "wksEFndmlSjEMyop",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "={{ $json.aiSystem }}"
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.aiUser }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.2,
+          "maxTokens": 2500
+        }
+      }
+    },
+    {
+      "id": "parse-ai",
+      "name": "Parse AI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2700,
+        520
+      ],
+      "parameters": {
+        "jsCode": "const raw = $json.message?.content || $json.text || $json.output || JSON.stringify($json);\nlet parsed = { executiveSummary: '', recommendations: [], contentIdeas: [] };\ntry {\n  const text = typeof raw === 'string' ? raw : JSON.stringify(raw);\n  const match = text.match(/\\{[\\s\\S]*\\}/);\n  parsed = JSON.parse(match ? match[0] : text);\n} catch (e) {\n  parsed = {\n    executiveSummary: 'AI response could not be parsed. See raw metrics below and review manually.',\n    recommendations: [],\n    contentIdeas: [],\n    parseError: e.message,\n    raw: String(raw).slice(0, 2000),\n  };\n}\nconst base = $('Build AI Prompt').first().json;\nreturn [{ json: { ...base, ai: parsed } }];"
+      }
+    },
+    {
+      "id": "build-email",
+      "name": "Build Weekly Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2940,
+        520
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nconst cfg = d.cfg;\nconst ai = d.ai || {};\nconst periodLabel = `${cfg.periodStart} to ${cfg.periodEnd}`;\n\nfunction esc(s) {\n  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');\n}\n\nfunction pct(n) { return (Number(n) * 100).toFixed(2) + '%'; }\nfunction num(n) { return Number(n || 0).toLocaleString('en-US'); }\n\nlet perfHtml = '';\nfor (const s of d.gscInsights || []) {\n  if (s.gscStatus === 'error') {\n    perfHtml += `<p><strong>${esc(s.siteLabel || s.siteId)}</strong>: Search Console error — ${esc(s.gscError)}</p>`;\n    continue;\n  }\n  perfHtml += `<h3>${esc(s.siteLabel || s.siteId)}</h3>\n  <ul>\n    <li>Clicks: <strong>${num(s.current.clicks)}</strong> (prev ${num(s.previous.clicks)}, Δ ${num(s.clicksDelta)})</li>\n    <li>Impressions: <strong>${num(s.current.impressions)}</strong> (prev ${num(s.previous.impressions)}, Δ ${num(s.impressionsDelta)})</li>\n    <li>CTR: ${pct(s.current.ctr)} (prev ${pct(s.previous.ctr)})</li>\n    <li>Avg position: ${Number(s.current.position||0).toFixed(1)} (prev ${Number(s.previous.position||0).toFixed(1)}) — directional only</li>\n  </ul>`;\n  const topPages = (s.topPages || []).slice(0, 5).map((p) => `<li>${esc(p.page)} — ${num(p.clicks)} clicks, ${num(p.impressions)} impr, CTR ${pct(p.ctr)}</li>`).join('');\n  const topQ = (s.topQueries || []).slice(0, 5).map((q) => `<li>\"${esc(q.query)}\" — ${num(q.clicks)} clicks, ${num(q.impressions)} impr</li>`).join('');\n  perfHtml += `<p><strong>Top pages</strong></p><ol>${topPages || '<li>None</li>'}</ol>`;\n  perfHtml += `<p><strong>Top queries</strong></p><ol>${topQ || '<li>None</li>'}</ol>`;\n}\n\nlet healthHtml = '';\nfor (const h of d.health || []) {\n  const errs = (h.issues || []).filter((i) => i.severity === 'error' || i.severity === 'critical');\n  const warns = (h.issues || []).filter((i) => i.severity === 'warning');\n  healthHtml += `<h3>${esc(h.siteLabel || h.siteId)}</h3>`;\n  if (!errs.length && !warns.length) {\n    healthHtml += `<p>No checked issues found on ${h.pagesChecked || 0} sampled pages (sample-based; not a full crawl).</p>`;\n  } else {\n    healthHtml += `<ul>${[...errs, ...warns].slice(0, 20).map((i) => `<li>[${esc(i.severity)}] ${esc(i.message)}${i.url ? ' — ' + esc(i.url) : ''}</li>`).join('')}</ul>`;\n  }\n}\n\nconst recs = (ai.recommendations || []).map((r, i) => `<li><strong>#${r.priority || i+1} ${esc(r.pageOrQuery)}</strong><br/>Evidence: ${esc(r.evidence)}<br/>Why: ${esc(r.whyItMightMatter)}<br/>Next: ${esc(r.nextStep)}${r.draft ? '<br/>Draft: ' + esc(typeof r.draft === 'string' ? r.draft : JSON.stringify(r.draft)) : ''}${r.needsHumanVerification ? '<br/><em>Needs human verification</em>' : ''}</li>`).join('');\nconst ideas = (ai.contentIdeas || []).map((c) => `<li><strong>${esc(c.title)}</strong> — ${esc(c.angle)} (supported by: ${esc(c.supportedBy)})${c.needsHumanVerification ? ' <em>verify</em>' : ''}</li>`).join('');\n\nconst limitations = [\n  ...(d.gscFailed ? ['Search Console data incomplete or failed for at least one property.'] : []),\n  ...(d.healthFailed ? ['Website health checks failed for at least one property.'] : []),\n  'Recent GSC days excluded for incomplete data.',\n  'Health checks sample a limited set of public URLs.',\n  'AI suggestions are not guaranteed ranking improvements.',\n  ai.parseError ? 'AI JSON parse issue — recommendations may be incomplete.' : null,\n].filter(Boolean).map((l) => `<li>${esc(l)}</li>`).join('');\n\nconst summary = ai.executiveSummary\n  || (d.status === 'ok'\n    ? 'Weekly SEO snapshot ready. Review performance and any health warnings below.'\n    : 'Weekly SEO snapshot completed with failures or partial data — do not treat the site as fully healthy.');\n\nconst html = `<!DOCTYPE html><html><body style=\"font-family:system-ui,sans-serif;line-height:1.45;color:#111\">\n<h1>Klaus Way Weekly SEO Report</h1>\n<p><strong>Period:</strong> ${esc(periodLabel)} (vs previous ${esc(cfg.prevStart)} to ${esc(cfg.prevEnd)})</p>\n<p><strong>Status:</strong> ${esc(d.status)}</p>\n<h2>1. Executive summary</h2>\n<p>${esc(summary)}</p>\n<h2>2. Search performance</h2>\n${perfHtml || '<p>No Search Console data.</p>'}\n<h2>3. Website health</h2>\n${healthHtml || '<p>No health results.</p>'}\n<h2>4. Top recommended actions</h2>\n<ol>${recs || '<li>No AI recommendations this week (or AI unavailable).</li>'}</ol>\n<h2>5. Content ideas</h2>\n<ul>${ideas || '<li>None supported by this week\\'s data.</li>'}</ul>\n<h2>6. Limitations</h2>\n<ul>${limitations}</ul>\n<p style=\"color:#666;font-size:12px\">Automated report from n8n Klausway — Weekly SEO Monitor. Recipient: ${esc(cfg.reportTo)}</p>\n</body></html>`;\n\nconst text = [\n  `Klaus Way Weekly SEO Report — ${periodLabel}`,\n  `Status: ${d.status}`,\n  '',\n  summary,\n  '',\n  'See HTML email for tables and details.',\n].join('\\n');\n\nreturn [{\n  json: {\n    ...d,\n    email: {\n      to: cfg.reportTo,\n      subject: `Klaus Way Weekly SEO Report — ${periodLabel}`,\n      html,\n      text,\n    },\n    savePayload: {\n      id: `seo_${cfg.executionId}`,\n      execution_id: String(cfg.executionId),\n      report_date: cfg.reportDate,\n      sites: (cfg.properties || []).map((p) => p.id),\n      period_start: cfg.periodStart,\n      period_end: cfg.periodEnd,\n      metrics_json: JSON.stringify({ gscInsights: d.gscInsights, healthSummary: (d.health || []).map((h) => ({ siteId: h.siteId, healthStatus: h.healthStatus, pagesChecked: h.pagesChecked })) }),\n      issues_json: JSON.stringify({ health: d.health, critical: d.critical }),\n      recommendations_json: JSON.stringify(ai),\n      status: d.status,\n    },\n  }\n}];"
+      }
+    },
+    {
+      "id": "send-email",
+      "name": "Send Weekly Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        3180,
+        520
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "mTYHf3hI2i3EA8CL",
+          "name": "no-reply@klauslarsen.com"
+        }
+      },
+      "parameters": {
+        "fromEmail": "no-reply@klauslarsen.com",
+        "toEmail": "={{ $json.email.to }}",
+        "subject": "={{ $json.email.subject }}",
+        "emailType": "html",
+        "html": "={{ $json.email.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      }
+    },
+    {
+      "id": "save-report",
+      "name": "Save Report History",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3420,
+        520
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ (() => {\n  const p = $json.savePayload;\n  const e = (s) => String(s ?? '').replace(/'/g, \"''\");\n  const sites = (p.sites || []).map((s) => \"'\" + e(s) + \"'\").join(',');\n  return `INSERT INTO n8n_seo_reports (id, execution_id, report_date, sites, period_start, period_end, metrics_json, issues_json, recommendations_json, status, created_at)\nVALUES ('${e(p.id)}', '${e(p.execution_id)}', '${e(p.report_date)}'::date, ARRAY[${sites}]::text[], '${e(p.period_start)}'::date, '${e(p.period_end)}'::date, '${e(p.metrics_json)}'::jsonb, '${e(p.issues_json)}'::jsonb, '${e(p.recommendations_json)}'::jsonb, '${e(p.status)}', NOW())\nON CONFLICT (execution_id) DO UPDATE SET\n  metrics_json = EXCLUDED.metrics_json,\n  issues_json = EXCLUDED.issues_json,\n  recommendations_json = EXCLUDED.recommendations_json,\n  status = EXCLUDED.status\nRETURNING id, execution_id, status;`;\n})() }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "save-robots",
+      "name": "Upsert Robots Snapshots",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        3660,
+        520
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "gkDTjnaiYMJ6dDdr",
+          "name": "Klausway Website Postgres"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ (() => {\n  const health = $('Build Weekly Email').first().json.health || [];\n  const stmts = health.filter((h) => h.robotsHash && h.robotsText).map((h) => {\n    const e = (s) => String(s ?? '').replace(/'/g, \"''\");\n    return `INSERT INTO n8n_seo_robots_snapshots (site_id, robots_hash, robots_text, updated_at)\nVALUES ('${e(h.siteId)}', '${e(h.robotsHash)}', '${e(h.robotsText)}', NOW())\nON CONFLICT (site_id) DO UPDATE SET robots_hash = EXCLUDED.robots_hash, robots_text = EXCLUDED.robots_text, updated_at = NOW();`;\n  });\n  return stmts.length ? stmts.join('\\n') : 'SELECT 1 WHERE false;';\n})() }}",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Monday 9AM ET": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Webhook": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Build GSC Requests",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Load Robots Snapshots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build GSC Requests": {
+      "main": [
+        [
+          {
+            "node": "GSC Search Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GSC Search Analytics": {
+      "main": [
+        [
+          {
+            "node": "Attach GSC Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach GSC Meta": {
+      "main": [
+        [
+          {
+            "node": "Analyze GSC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Robots Snapshots": {
+      "main": [
+        [
+          {
+            "node": "Load Alert State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Alert State": {
+      "main": [
+        [
+          {
+            "node": "Website Health Checks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze GSC": {
+      "main": [
+        [
+          {
+            "node": "Wait GSC + Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Health Checks": {
+      "main": [
+        [
+          {
+            "node": "Wait GSC + Health",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait GSC + Health": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Needs Urgent Alert?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Build AI Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Urgent Alert?": {
+      "main": [
+        [
+          {
+            "node": "Wait Before Retry",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Wait Before Retry": {
+      "main": [
+        [
+          {
+            "node": "Recheck Critical",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recheck Critical": {
+      "main": [
+        [
+          {
+            "node": "Still Critical?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Still Critical?": {
+      "main": [
+        [
+          {
+            "node": "Build Urgent Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Build Urgent Email": {
+      "main": [
+        [
+          {
+            "node": "Send Urgent Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Urgent Email": {
+      "main": [
+        [
+          {
+            "node": "Upsert Alert State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build AI Prompt": {
+      "main": [
+        [
+          {
+            "node": "AI Recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Recommendations": {
+      "main": [
+        [
+          {
+            "node": "Parse AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI": {
+      "main": [
+        [
+          {
+            "node": "Build Weekly Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Weekly Email": {
+      "main": [
+        [
+          {
+            "node": "Send Weekly Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Weekly Email": {
+      "main": [
+        [
+          {
+            "node": "Save Report History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Report History": {
+      "main": [
+        [
+          {
+            "node": "Upsert Robots Snapshots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "notes": "Import inactive. Create Google OAuth credential with webmasters.readonly and attach to GSC Search Analytics node. Default email: support@klausway.com"
+  }
+}

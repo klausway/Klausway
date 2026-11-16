@@ -69,6 +69,49 @@ model N8nArticleCandidate {
   @@map("n8n_article_candidates")
 }
 
+/// Weekly SEO Monitor report history (idempotent on execution_id).
+model N8nSeoReport {
+  id                  String   @id
+  executionId         String   @unique @map("execution_id")
+  reportDate          DateTime @map("report_date") @db.Date
+  sites               String[]
+  periodStart         DateTime @map("period_start") @db.Date
+  periodEnd           DateTime @map("period_end") @db.Date
+  metricsJson         Json     @map("metrics_json")
+  issuesJson          Json     @map("issues_json")
+  recommendationsJson Json     @map("recommendations_json")
+  status              String
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  @@map("n8n_seo_reports")
+}
+
+/// Dedupes urgent SEO alerts until the issue is resolved.
+model N8nSeoAlertState {
+  id            String    @id @default(cuid())
+  issueKey      String    @unique @map("issue_key")
+  siteId        String    @map("site_id")
+  severity      String
+  lastAlertedAt DateTime? @map("last_alerted_at")
+  resolvedAt    DateTime? @map("resolved_at")
+  detailsJson   Json?     @map("details_json")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([siteId])
+  @@map("n8n_seo_alert_state")
+}
+
+/// Last seen robots.txt hash per site for change detection.
+model N8nSeoRobotsSnapshot {
+  siteId     String   @id @map("site_id")
+  robotsHash String   @map("robots_hash")
+  robotsText String   @map("robots_text") @db.Text
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("n8n_seo_robots_snapshots")
+}
+
 model PortfolioProject {
   id            String   @id @default(cuid())
   slug          String   @unique
