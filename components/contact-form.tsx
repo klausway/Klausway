@@ -7,7 +7,7 @@ import { ArrowRight, CircleCheck, Phone } from "lucide-react";
 import { Reveal } from "./animation/reveal";
 import { useRecaptchaV3 } from "@/hooks/use-recaptcha-v3";
 import { apiUrl } from "@/lib/api-path";
-import { trackEvent } from "@/lib/analytics";
+import { trackAdsLeadConversion, trackEvent } from "@/lib/analytics";
 import { getFeaturedProduct } from "@/lib/featured-products";
 import { routes } from "@/lib/navigation";
 
@@ -94,6 +94,7 @@ function ContactFormInner({ productId, initialIntent }: ContactFormInnerProps) {
       setSubmittedName(name.split(" ")[0] ?? "");
       setSubmitted(true);
       trackEvent("generate_lead", { source, intent, mode: "mailto" });
+      trackAdsLeadConversion();
       setLoading(false);
       return;
     }
@@ -140,6 +141,7 @@ function ContactFormInner({ productId, initialIntent }: ContactFormInnerProps) {
       setSubmittedName(name.split(" ")[0] ?? "");
       setSubmitted(true);
       trackEvent("generate_lead", { source, intent });
+      trackAdsLeadConversion();
       form.reset();
       setFormStartedAt(Date.now());
     } catch (err) {
