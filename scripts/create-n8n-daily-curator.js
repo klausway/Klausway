@@ -18,15 +18,10 @@ const API_KEY = (
   process.env.N8N_API_KEY ||
   ""
 ).replace(/^"|"$/g, "");
-const GNEWS_API_KEY = (process.env.GNEWS_API_KEY || "").replace(/^"|"$/g, "");
+let GNEWS_API_KEY = (process.env.GNEWS_API_KEY || "").replace(/^"|"$/g, "");
 
 if (!N8N_URL || !API_KEY) {
   console.error("Missing n8n_url (or N8N_BASE_URL) / n8n_api_key");
-  process.exit(1);
-}
-
-if (!GNEWS_API_KEY) {
-  console.error("Missing GNEWS_API_KEY (see .env.example)");
   process.exit(1);
 }
 
@@ -344,6 +339,8 @@ return [{
     title: String(article.title || '').trim(),
     slug,
     excerpt: String(article.excerpt || '').trim().slice(0, 500),
+    metaTitle: String(article.title || '').trim().slice(0, 70),
+    metaDescription: String(article.excerpt || '').trim().slice(0, 160),
     type: typeMap[article.type] || 'ARTICLE',
     contentHtml: String(article.contentHtml || '').trim(),
     imagePrompt: String(article.imagePrompt || ('Professional editorial cover for: ' + article.title)).trim(),
@@ -618,7 +615,7 @@ return [{
       parameters: {
         operation: "executeQuery",
         query:
-          "={{ (() => { const a = $('Build Publish Payload').item.json; const e = (s) => String(s ?? '').replace(/'/g, \"''\"); return `INSERT INTO \\\"BlogPost\\\" (id, slug, title, excerpt, content, type, \\\"coverImage\\\", \\\"galleryImages\\\", published, date, \\\"createdAt\\\", \\\"updatedAt\\\") VALUES ('${e(a.id)}', '${e(a.slug)}', '${e(a.title)}', '${e(a.excerpt)}', '${e(a.contentHtml)}', '${e(a.type)}'::\\\"ResourceType\\\", '${e(a.coverImage)}', ARRAY[]::text[], true, NOW(), NOW(), NOW()) ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, excerpt = EXCLUDED.excerpt, content = EXCLUDED.content, type = EXCLUDED.type, \\\"coverImage\\\" = EXCLUDED.\\\"coverImage\\\", published = true, \\\"updatedAt\\\" = NOW() RETURNING id, slug, title, published;`; })() }}",
+          "={{ (() => { const a = $('Build Publish Payload').item.json; const e = (s) => String(s ?? '').replace(/'/g, \"''\"); const mt = e(a.metaTitle || String(a.title || '').slice(0, 70)); const md = e(a.metaDescription || String(a.excerpt || '').slice(0, 160)); return `INSERT INTO \\\"BlogPost\\\" (id, slug, title, excerpt, content, type, \\\"coverImage\\\", \\\"galleryImages\\\", \\\"metaTitle\\\", \\\"metaDescription\\\", published, date, \\\"createdAt\\\", \\\"updatedAt\\\") VALUES ('${e(a.id)}', '${e(a.slug)}', '${e(a.title)}', '${e(a.excerpt)}', '${e(a.contentHtml)}', '${e(a.type)}'::\\\"ResourceType\\\", '${e(a.coverImage)}', ARRAY[]::text[], '${mt}', '${md}', true, NOW(), NOW(), NOW()) ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, excerpt = EXCLUDED.excerpt, content = EXCLUDED.content, type = EXCLUDED.type, \\\"coverImage\\\" = EXCLUDED.\\\"coverImage\\\", \\\"metaTitle\\\" = COALESCE(NULLIF(trim(\\\"BlogPost\\\".\\\"metaTitle\\\"), ''), EXCLUDED.\\\"metaTitle\\\"), \\\"metaDescription\\\" = COALESCE(NULLIF(trim(\\\"BlogPost\\\".\\\"metaDescription\\\"), ''), EXCLUDED.\\\"metaDescription\\\"), published = true, \\\"updatedAt\\\" = NOW() RETURNING id, slug, title, published;`; })() }}",
         options: {},
       },
     },
@@ -749,6 +746,15 @@ return [{
   },
 };
 
+function setGnewsKeyOnWorkflow(key) {
+  const gnews = workflow.nodes.find((n) => n.name === "Fetch GNews");
+  if (!gnews) return;
+  const params = gnews.parameters?.queryParameters?.parameters;
+  if (!Array.isArray(params)) return;
+  const keyParam = params.find((p) => p.name === "apikey");
+  if (keyParam) keyParam.value = key;
+}
+
 async function main() {
   // Check if workflow already exists
   const listRes = await fetch(`${N8N_URL}/api/v1/workflows?limit=100`, {
@@ -757,9 +763,31 @@ async function main() {
   const list = await listRes.json();
   const existing = (list.data || []).find((w) => w.name === workflow.name);
 
+  if (!GNEWS_API_KEY && existing?.id) {
+    const fullRes = await fetch(`${N8N_URL}/api/v1/workflows/${existing.id}`, {
+      headers: { "X-N8N-API-KEY": API_KEY },
+    });
+    const full = await fullRes.json();
+    const gnews = (full.nodes || []).find((n) => n.name === "Fetch GNews");
+    const params = gnews?.parameters?.queryParameters?.parameters || [];
+    const keyParam = params.find((p) => p.name === "apikey");
+    GNEWS_API_KEY = String(keyParam?.value || "").trim();
+    if (GNEWS_API_KEY) {
+      setGnewsKeyOnWorkflow(GNEWS_API_KEY);
+      console.log("Reusing GNEWS apikey from live workflow");
+    }
+  }
+
+  if (!GNEWS_API_KEY) {
+    console.error("Missing GNEWS_API_KEY (see .env.example)");
+    process.exit(1);
+  }
+  setGnewsKeyOnWorkflow(GNEWS_API_KEY);
+
   let result;
   if (existing) {
     console.log("Updating existing workflow", existing.id);
+    const wasActive = !!existing.active;
     const putRes = await fetch(`${N8N_URL}/api/v1/workflows/${existing.id}`, {
       method: "PUT",
       headers: {
@@ -777,6 +805,14 @@ async function main() {
     if (!putRes.ok) {
       console.error(JSON.stringify(result, null, 2));
       process.exit(1);
+    }
+    if (wasActive && result?.id && !result.active) {
+      await fetch(`${N8N_URL}/api/v1/workflows/${result.id}/activate`, {
+        method: "POST",
+        headers: { "X-N8N-API-KEY": API_KEY },
+      });
+      result.active = true;
+      console.log("Re-activated daily curator", result.id);
     }
   } else {
     console.log("Creating new workflow");

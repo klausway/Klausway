@@ -10,7 +10,7 @@
  *   GSC_N8N_CREDENTIAL_ID  — n8n Google OAuth2 credential id with webmasters.readonly
  *   SEO_REPORT_TO          — override default support@klausway.com (also readable at runtime)
  *
- * Does NOT activate the workflow or send email.
+ * Does NOT activate the workflow or send email unless --activate is passed.
  */
 const fs = require("fs");
 const path = require("path");
@@ -33,6 +33,7 @@ const GSC_CRED_ID = (process.env.GSC_N8N_CREDENTIAL_ID || "").replace(
   "",
 );
 const DRY_RUN = process.argv.includes("--dry-run");
+const ACTIVATE = process.argv.includes("--activate");
 
 const WORKFLOW_NAME = "Klausway — Weekly SEO Monitor";
 
@@ -118,6 +119,8 @@ return [{
     lowCtrThreshold: 0.02,
     urgentEnabled: true,
     urgentRetryDelaySec: 60,
+    // Safe CMS self-fix: fill blank BlogPost meta from title/excerpt only.
+    metaBackfillEnabled: true,
     properties,
     companyContext: {
       klausway: 'Klaus Way Technology builds purpose-built software and IT services — WorkNex, custom apps, system integration, automation, and cloud. Site: https://www.klausway.com/',
@@ -343,14 +346,23 @@ for (const site of Object.values(rebuilt)) {
 return [{ json: { gscInsights: insights, periodStart: cfg.periodStart, periodEnd: cfg.periodEnd, prevStart: cfg.prevStart, prevEnd: cfg.prevEnd } }];`;
 
 const HEALTH_CHECK_CODE = `const cfg = $('Config').first().json;
-const crypto = require('crypto');
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// Simple non-crypto fingerprint (n8n Code sandbox disallows require('crypto'))
 function hash(text) {
-  return crypto.createHash('sha256').update(text || '').digest('hex');
+  const s = String(text || '');
+  let h1 = 2166136261 >>> 0;
+  let h2 = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    h1 ^= c;
+    h1 = Math.imul(h1, 16777619) >>> 0;
+    h2 = (h2 * 33 + c) >>> 0;
+  }
+  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0') + s.length.toString(16);
 }
 
 function extractMeta(html) {
@@ -398,6 +410,40 @@ function oaiAllowed(rules) {
   return true;
 }
 
+// n8n Code sandbox may not expose URL; keep helpers pure-string
+function parseUrl(href) {
+  const m = String(href || '').match(/^(https?):\\/\\/([^\\/?#]+)([^?#]*)?/i);
+  if (!m) throw new Error('Invalid URL: ' + href);
+  return { protocol: m[1].toLowerCase(), host: m[2].toLowerCase(), pathname: m[3] || '/', href: String(href) };
+}
+function joinUrl(base, path) {
+  if (/^https?:\\/\\//i.test(path)) return path;
+  const b = String(base || '').replace(/\\/$/, '');
+  const p = String(path || '').startsWith('/') ? path : '/' + path;
+  return b + p;
+}
+function resolveUrl(base, relative) {
+  if (/^https?:\\/\\//i.test(relative)) return relative;
+  if (String(relative).startsWith('//')) {
+    const proto = String(base).match(/^(https?):/i)?.[1] || 'https';
+    return proto + ':' + relative;
+  }
+  try {
+    const b = parseUrl(base);
+    if (String(relative).startsWith('/')) return b.protocol + '://' + b.host + relative;
+    const dir = b.pathname.replace(/[^/]*$/, '');
+    return b.protocol + '://' + b.host + dir + relative;
+  } catch {
+    return joinUrl(base, relative);
+  }
+}
+function sameSiteHost(host, baseHost) {
+  const h = String(host || '').toLowerCase();
+  const b = String(baseHost || '').toLowerCase();
+  const bare = b.replace(/^www\\./, '');
+  return h === b || h === bare || h.endsWith('.' + bare);
+}
+
 async function fetchText(url, opts = {}) {
   try {
     const res = await this.helpers.httpRequest({
@@ -438,7 +484,7 @@ for (const site of cfg.properties) {
   const issues = [];
   const critical = [];
   let healthStatus = 'ok';
-  const baseHost = new URL(site.baseUrl).host;
+  const baseHost = parseUrl(site.baseUrl).host;
 
   const robotsRes = await fetchText.call(this, site.robotsUrl);
   await sleep(cfg.requestDelayMs);
@@ -478,13 +524,13 @@ for (const site of cfg.properties) {
     }
   }
 
-  const priorityUrls = site.priorityPaths.map((p) => new URL(p, site.baseUrl).toString());
+  const priorityUrls = site.priorityPaths.map((p) => joinUrl(site.baseUrl, p));
   const sample = [];
   const seen = new Set();
   for (const u of [...priorityUrls, ...locs]) {
     if (seen.has(u)) continue;
     try {
-      if (new URL(u).host !== baseHost && !new URL(u).host.endsWith(baseHost.replace(/^www\\./, ''))) continue;
+      if (!sameSiteHost(parseUrl(u).host, baseHost)) continue;
     } catch { continue; }
     seen.add(u);
     sample.push(u);
@@ -500,9 +546,10 @@ for (const site of cfg.properties) {
     const loc = res.headers.location || res.headers.Location;
     if (status >= 300 && status < 400 && loc) {
       try {
-        const dest = new URL(loc, url);
-        if (dest.host !== baseHost && !dest.href.startsWith(site.baseUrl)) {
-          issues.push({ severity: 'warning', code: 'unexpected_redirect', url, message: \`Redirects off-host to \${dest.href}\` });
+        const destHref = resolveUrl(url, loc);
+        const dest = parseUrl(destHref);
+        if (!sameSiteHost(dest.host, baseHost) && !destHref.startsWith(site.baseUrl)) {
+          issues.push({ severity: 'warning', code: 'unexpected_redirect', url, message: \`Redirects off-host to \${destHref}\` });
         }
       } catch {}
     }
@@ -557,6 +604,12 @@ try { gsc = $('Analyze GSC').first().json; } catch (_) {}
 let health = { health: [] };
 try { health = $('Website Health Checks').first().json; } catch (_) {}
 
+let metaBackfill = { enabled: !!cfg.metaBackfillEnabled, updated: 0, slugs: [], skipped: false };
+try {
+  const mb = $('Summarize Meta Backfill').first().json.metaBackfill;
+  if (mb) metaBackfill = mb;
+} catch (_) {}
+
 const alertRows = [];
 try {
   for (const r of $('Load Alert State').all()) alertRows.push(r.json);
@@ -585,6 +638,7 @@ return [{
     cfg,
     gscInsights: gsc.gscInsights || [],
     health: health.health || [],
+    metaBackfill,
     status,
     gscFailed,
     healthFailed,
@@ -715,12 +769,24 @@ for (const h of d.health || []) {
 const recs = (ai.recommendations || []).map((r, i) => \`<li><strong>#\${r.priority || i+1} \${esc(r.pageOrQuery)}</strong><br/>Evidence: \${esc(r.evidence)}<br/>Why: \${esc(r.whyItMightMatter)}<br/>Next: \${esc(r.nextStep)}\${r.draft ? '<br/>Draft: ' + esc(typeof r.draft === 'string' ? r.draft : JSON.stringify(r.draft)) : ''}\${r.needsHumanVerification ? '<br/><em>Needs human verification</em>' : ''}</li>\`).join('');
 const ideas = (ai.contentIdeas || []).map((c) => \`<li><strong>\${esc(c.title)}</strong> — \${esc(c.angle)} (supported by: \${esc(c.supportedBy)})\${c.needsHumanVerification ? ' <em>verify</em>' : ''}</li>\`).join('');
 
+const mb = d.metaBackfill || { updated: 0, slugs: [] };
+let metaHtml = '';
+if (mb.skipped) {
+  metaHtml = '<p>Meta backfill skipped (disabled in Config).</p>';
+} else if (!mb.updated) {
+  metaHtml = '<p>No empty BlogPost meta fields needed filling.</p>';
+} else {
+  const slugList = (mb.slugs || []).slice(0, 25).map((s) => \`<li>\${esc(s)}</li>\`).join('');
+  metaHtml = \`<p>Auto-filled empty meta on <strong>\${num(mb.updated)}</strong> CMS post(s) from title/excerpt only (never overwrote custom values).</p><ul>\${slugList}</ul>\`;
+}
+
 const limitations = [
   ...(d.gscFailed ? ['Search Console data incomplete or failed for at least one property.'] : []),
   ...(d.healthFailed ? ['Website health checks failed for at least one property.'] : []),
   'Recent GSC days excluded for incomplete data.',
   'Health checks sample a limited set of public URLs.',
   'AI suggestions are not guaranteed ranking improvements.',
+  'Meta auto-fix only fills blank BlogPost metaTitle/metaDescription from title/excerpt.',
   ai.parseError ? 'AI JSON parse issue — recommendations may be incomplete.' : null,
 ].filter(Boolean).map((l) => \`<li>\${esc(l)}</li>\`).join('');
 
@@ -739,11 +805,13 @@ const html = \`<!DOCTYPE html><html><body style="font-family:system-ui,sans-seri
 \${perfHtml || '<p>No Search Console data.</p>'}
 <h2>3. Website health</h2>
 \${healthHtml || '<p>No health results.</p>'}
-<h2>4. Top recommended actions</h2>
+<h2>4. Safe meta auto-fix (CMS)</h2>
+\${metaHtml}
+<h2>5. Top recommended actions</h2>
 <ol>\${recs || '<li>No AI recommendations this week (or AI unavailable).</li>'}</ol>
-<h2>5. Content ideas</h2>
+<h2>6. Content ideas</h2>
 <ul>\${ideas || '<li>None supported by this week\\'s data.</li>'}</ul>
-<h2>6. Limitations</h2>
+<h2>7. Limitations</h2>
 <ul>\${limitations}</ul>
 <p style="color:#666;font-size:12px">Automated report from n8n Klausway — Weekly SEO Monitor. Recipient: \${esc(cfg.reportTo)}</p>
 </body></html>\`;
@@ -773,7 +841,7 @@ return [{
       sites: (cfg.properties || []).map((p) => p.id),
       period_start: cfg.periodStart,
       period_end: cfg.periodEnd,
-      metrics_json: JSON.stringify({ gscInsights: d.gscInsights, healthSummary: (d.health || []).map((h) => ({ siteId: h.siteId, healthStatus: h.healthStatus, pagesChecked: h.pagesChecked })) }),
+      metrics_json: JSON.stringify({ gscInsights: d.gscInsights, healthSummary: (d.health || []).map((h) => ({ siteId: h.siteId, healthStatus: h.healthStatus, pagesChecked: h.pagesChecked })), metaBackfill: mb }),
       issues_json: JSON.stringify({ health: d.health, critical: d.critical }),
       recommendations_json: JSON.stringify(ai),
       status: d.status,
@@ -813,8 +881,8 @@ const workflow = {
       position: [0, 0],
       parameters: {
         content:
-          "## Klausway — Weekly SEO Monitor\n1. GSC 28d vs prior 28d (configurable properties)\n2. Sitemap + sampled page health checks\n3. Cautious OpenAI recommendations\n4. Email support@klausway.com (or SEO_REPORT_TO)\n5. Save history to Postgres\n6. Optional urgent alerts with dedupe\n\n**Inactive by default.** Connect Google OAuth with `webmasters.readonly`, set `GSC_N8N_CREDENTIAL_ID`, test via webhook, then activate.",
-        height: 320,
+          "## Klausway — Weekly SEO Monitor\n1. GSC 28d vs prior 28d (configurable properties)\n2. Sitemap + sampled page health checks\n3. Safe CMS meta backfill (empty BlogPost meta only)\n4. Cautious OpenAI recommendations\n5. Email support@klausway.com (or SEO_REPORT_TO)\n6. Save history to Postgres\n7. Optional urgent alerts with dedupe\n\nPass `--activate` on the create script after a successful test. Google OAuth needs `webmasters.readonly`.",
+        height: 360,
         width: 460,
         color: 4,
       },
@@ -858,11 +926,69 @@ const workflow = {
       parameters: { jsCode: CONFIG_CODE },
     },
     {
+      id: "backfill-meta",
+      name: "Backfill Empty Blog Meta",
+      type: "n8n-nodes-base.postgres",
+      typeVersion: 2.5,
+      position: [1020, 340],
+      credentials: { postgres: CREDS.postgres },
+      onError: "continueRegularOutput",
+      alwaysOutputData: true,
+      parameters: {
+        operation: "executeQuery",
+        query: `={{ (() => {
+  const cfg = $json;
+  if (!cfg.metaBackfillEnabled) return "SELECT 'skipped' AS status WHERE true;";
+  return \`UPDATE "BlogPost"
+SET
+  "metaTitle" = CASE
+    WHEN coalesce(trim("metaTitle"), '') = '' THEN left(trim(title), 70)
+    ELSE "metaTitle"
+  END,
+  "metaDescription" = CASE
+    WHEN coalesce(trim("metaDescription"), '') = '' THEN left(trim(excerpt), 160)
+    ELSE "metaDescription"
+  END,
+  "updatedAt" = NOW()
+WHERE published = true
+  AND (
+    coalesce(trim("metaTitle"), '') = ''
+    OR coalesce(trim("metaDescription"), '') = ''
+  )
+RETURNING slug, "metaTitle", "metaDescription";\`;
+})() }}`,
+        options: {},
+      },
+    },
+    {
+      id: "summarize-meta",
+      name: "Summarize Meta Backfill",
+      type: "n8n-nodes-base.code",
+      typeVersion: 2,
+      position: [1260, 340],
+      parameters: {
+        jsCode: `const cfg = $('Config').first().json;
+const rows = $input.all().map((i) => i.json).filter((r) => r && r.slug);
+const skipped = !cfg.metaBackfillEnabled || $input.all().some((i) => i.json && i.json.status === 'skipped');
+return [{
+  json: {
+    cfg,
+    metaBackfill: {
+      enabled: !!cfg.metaBackfillEnabled,
+      skipped: skipped && rows.length === 0,
+      updated: rows.length,
+      slugs: rows.map((r) => r.slug),
+    },
+  },
+}];`,
+      },
+    },
+    {
       id: "build-gsc",
       name: "Build GSC Requests",
       type: "n8n-nodes-base.code",
       typeVersion: 2,
-      position: [1020, 240],
+      position: [1500, 240],
       parameters: { jsCode: BUILD_GSC_REQUESTS_CODE },
     },
     {
@@ -932,6 +1058,7 @@ return outs.map((item, i) => {
       position: [1020, 520],
       credentials: { postgres: CREDS.postgres },
       onError: "continueRegularOutput",
+      alwaysOutputData: true,
       parameters: {
         operation: "executeQuery",
         query:
@@ -947,6 +1074,7 @@ return outs.map((item, i) => {
       position: [1020, 700],
       credentials: { postgres: CREDS.postgres },
       onError: "continueRegularOutput",
+      alwaysOutputData: true,
       parameters: {
         operation: "executeQuery",
         query:
@@ -1209,7 +1337,8 @@ ON CONFLICT (issue_key) DO UPDATE SET last_alerted_at = NOW(), resolved_at = NUL
       parameters: {
         operation: "executeQuery",
         query: `={{ (() => {
-  const p = $json.savePayload;
+  const p = $('Build Weekly Email').first().json.savePayload;
+  if (!p) return "SELECT 'missing_save_payload' AS error;";
   const e = (s) => String(s ?? '').replace(/'/g, "''");
   const sites = (p.sites || []).map((s) => "'" + e(s) + "'").join(',');
   return \`INSERT INTO n8n_seo_reports (id, execution_id, report_date, sites, period_start, period_end, metrics_json, issues_json, recommendations_json, status, created_at)
@@ -1256,6 +1385,12 @@ ON CONFLICT (site_id) DO UPDATE SET robots_hash = EXCLUDED.robots_hash, robots_t
       main: [[{ node: "Config", type: "main", index: 0 }]],
     },
     Config: {
+      main: [[{ node: "Backfill Empty Blog Meta", type: "main", index: 0 }]],
+    },
+    "Backfill Empty Blog Meta": {
+      main: [[{ node: "Summarize Meta Backfill", type: "main", index: 0 }]],
+    },
+    "Summarize Meta Backfill": {
       main: [
         [
           { node: "Build GSC Requests", type: "main", index: 0 },
@@ -1413,13 +1548,21 @@ async function main() {
     console.log("Created workflow", saved.id, "(left inactive)");
   }
 
-  // Ensure inactive
-  if (saved?.id && saved.active) {
+  if (!saved?.id) return;
+
+  if (ACTIVATE) {
+    const act = await fetch(`${N8N_URL}/api/v1/workflows/${saved.id}/activate`, {
+      method: "POST",
+      headers: { "X-N8N-API-KEY": API_KEY },
+    });
+    const body = await act.json().catch(() => ({}));
+    console.log("Activated workflow", saved.id, "active=", body.active ?? true);
+  } else if (saved.active) {
     await fetch(`${N8N_URL}/api/v1/workflows/${saved.id}/deactivate`, {
       method: "POST",
       headers: { "X-N8N-API-KEY": API_KEY },
     });
-    console.log("Deactivated workflow", saved.id);
+    console.log("Deactivated workflow", saved.id, "(pass --activate to keep on)");
   }
 }
 

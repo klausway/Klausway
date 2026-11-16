@@ -1,13 +1,16 @@
 # Klausway — Weekly SEO Monitor (n8n)
 
-Inactive n8n workflow that emails a Monday **9:00 AM America/New_York** SEO report to **support@klausway.com** (override with `SEO_REPORT_TO`).
+n8n workflow that emails a Monday **9:00 AM America/New_York** SEO report to **support@klausway.com** (override with `SEO_REPORT_TO`).
+
+Safe self-fix: before health/GSC analysis it fills **empty** `BlogPost.metaTitle` / `metaDescription` from title / excerpt only (never overwrites custom values). One-shot local backfill: `node --env-file=.env scripts/backfill-blog-seo-meta.js`.
 
 Files:
 
 | File | Purpose |
 |------|---------|
-| `scripts/n8n-seo-weekly-report-workflow.json` | Importable workflow (active: false) |
-| `scripts/create-n8n-seo-weekly-report.js` | Upsert via Public API + rewrite JSON |
+| `scripts/n8n-seo-weekly-report-workflow.json` | Importable workflow JSON |
+| `scripts/create-n8n-seo-weekly-report.js` | Upsert via Public API + rewrite JSON (`--activate` to leave on) |
+| `scripts/backfill-blog-seo-meta.js` | One-shot CMS meta backfill |
 | `scripts/sql/n8n_seo_tables.sql` | Postgres DDL (also in Prisma) |
 | Prisma models `N8nSeoReport`, `N8nSeoAlertState`, `N8nSeoRobotsSnapshot` | History + alert dedupe + robots hash |
 
@@ -108,8 +111,9 @@ Only properties listed in Config are queried. If GSC access is missing for a pro
 After you approve a test email:
 
 1. Open **Klausway — Weekly SEO Monitor**
-2. Confirm Config `reportTo` / sites / thresholds
-3. Toggle **Active**
+2. Confirm Config `reportTo` / sites / thresholds / `metaBackfillEnabled`
+3. Toggle **Active**, or re-run:
+   `node --env-file=.env scripts/create-n8n-seo-weekly-report.js --activate`
 4. Schedule: cron `0 9 * * 1` in workflow timezone `America/New_York` (Monday 9:00 AM ET)
 
 To pause: deactivate the workflow.
