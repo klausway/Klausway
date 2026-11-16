@@ -60,6 +60,24 @@ export function isTeamBioHeading(entry: string) {
 
 export const teamMembers: TeamMember[] = [
   {
+    slug: "klaus",
+    name: "Klaus Larsen",
+    role: "Co-Founder",
+    initials: "KL",
+    accent: "from-amber-500 to-orange-600",
+    image: "/team/klaus.jpg",
+    sortOrder: 0,
+    bio: [
+      "Klaus Larsen’s story began in Denmark, where he bought his first apartment building at the age of 21. He renovated all 13 apartments himself in less than three years, developing the attention to detail and hands-on work ethic that would guide his career.",
+      "At 32, Klaus immigrated to the United States with his tools, $300 in his pocket, and a dream of building a better future. In 1998, he started his own home improvement business. Through hard work and a commitment to quality, he built it from the ground up.",
+      "In 2010, the company began focusing exclusively on roofing and became Owens Corning’s first Platinum Preferred Contractor in Connecticut. Klaus’s Old World craftsmanship and attention to detail earned him a reputation for combining traditional quality with modern roofing technology.",
+      "Over the years, Klaus learned that running a successful home improvement company takes more than craftsmanship. It also requires a team that can stay organized, communicate clearly, and give every customer the attention they deserve.",
+      "Klaus later met Ravee “Jim” Tansangworn, who shared his interest in finding better ways to run a business through technology. Together, they founded Klaus Way Technology in 2019 and began building WorkNex CRM.",
+      "Built with the needs of home improvement businesses in mind, WorkNex CRM brings customer information, daily work, and team communication together to help companies stay organized as they grow.",
+      "From renovating apartments in Denmark to building a roofing business and investing in technology, Klaus’s vision has remained consistent: find a better way to work, take care of people, and build something that lasts. He credits his co-owner Larry, his dedicated employees, and his customers for helping make that journey possible.",
+    ],
+  },
+  {
     slug: "jim",
     name: "Ravee “Jim” Tansangworn",
     role: "Co-Founder & CEO",

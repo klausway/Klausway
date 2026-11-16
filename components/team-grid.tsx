@@ -70,12 +70,12 @@ export function TeamGrid({ members }: { members: TeamMember[] }) {
 
   return (
     <>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 flex flex-wrap justify-center gap-6">
         {members.map((member, i) => (
           <Reveal
             key={member.slug}
             delay={((i % 4) * 100) as 0 | 100 | 200 | 300}
-            className="hover-lift group overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
+            className="hover-lift group w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] overflow-hidden rounded-2xl border border-border bg-card backdrop-blur transition-all hover:border-border-strong hover:bg-card hover:shadow-xl hover:shadow-black/8"
           >
             <TeamCard member={member} onOpen={() => setActive(member)} />
           </Reveal>
