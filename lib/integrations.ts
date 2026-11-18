@@ -71,6 +71,13 @@ const phoneTextVoice: IntegrationGroup = {
         "Calls, texts, and recordings attach themselves to the right customer and job automatically.",
     },
     {
+      name: "Crexendo",
+      mark: "CX",
+      logo: "/integrations/crexendo.png",
+      description:
+        "A cloud phone system for the office and the field, with call activity logged against the customer it belongs to.",
+    },
+    {
       name: "Vapi",
       mark: "VP",
       logo: "/integrations/vapi.svg",
@@ -84,14 +91,6 @@ const phoneTextVoice: IntegrationGroup = {
       logo: "/integrations/hatch.png",
       logoFill: true,
       description: "Two-way messaging workspaces with contact sync.",
-    },
-    {
-      name: "sent.dm",
-      mark: "SD",
-      logo: "/integrations/sent-dm.png",
-      logoFill: true,
-      description:
-        "SMS for verification codes and templated updates to homeowners.",
     },
   ],
 };
@@ -121,13 +120,6 @@ const propertyData: IntegrationGroup = {
   icon: Satellite,
   accent: "from-violet-500 to-purple-600",
   items: [
-    {
-      name: "Nearmap",
-      mark: "NM",
-      logo: "/integrations/nearmap.png",
-      logoFill: true,
-      description: "Current aerial imagery on every property record.",
-    },
     {
       name: "RoofScope",
       mark: "RS",
