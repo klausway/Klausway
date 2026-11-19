@@ -16,17 +16,15 @@ export function Logo({
   showText = false,
   textClassName,
 }: LogoProps) {
-  const width = Math.round(height * 3.6);
-
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <Image
-        src={assetPath("/Logo.jpg")}
-        alt="The Klaus Way logo"
-        width={width}
+        src={assetPath("/logo-mark.png")}
+        alt="Klaus Way Technology logo"
+        width={height}
         height={height}
-        className="h-auto w-auto max-h-10 rounded-lg object-contain object-left sm:max-h-11"
-        style={{ maxHeight: height, width: "auto" }}
+        className="rounded-lg object-contain"
+        style={{ width: height, height }}
         priority
       />
       {showText && (
